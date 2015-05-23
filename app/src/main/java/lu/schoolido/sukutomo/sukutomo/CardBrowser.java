@@ -24,20 +24,23 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.LinkedList;
 
 
 public class CardBrowser extends Activity {
-    private ProgressDialog pDialog;
-    private Bitmap bitmap;
-    private static ImageView img;
+    // We'll need these attributes to be static for now, in order to print Images from Card.java
+    static ProgressDialog pDialog;
+    static Bitmap bitmap;
+    static ImageView img;
     private static String cardImageUrl;
     private final HttpClient Client;
     private String siteURL = "http://schoolido.lu/api/cards/";
     private static int currentCard = 1;
-    private static int userCards;
-    // Crear clase Card que modele las cartas, y almacenarlas en userCards
+    private static LinkedList<Card> userCards;
+
     public CardBrowser() {
         Client = new DefaultHttpClient();
+        userCards = new LinkedList<>();
     }
 
     @Override
@@ -72,18 +75,17 @@ public class CardBrowser extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void evalu(String data) throws JSONException {
-        Log.d("Debug", "Dentro del evalu");
+    protected void getCards(String data) throws JSONException {
         JSONObject obj = new JSONObject(data);
         JSONArray cardList = obj.getJSONArray("results");
         int n = cardList.length();
         for(int i=0; i < n && i < 9; i++) {
             System.out.println(String.valueOf(cardList.getJSONObject(i)));
+            userCards.add(new Card(cardList.getJSONObject(1)));
         }
-        JSONObject obj1 = cardList.getJSONObject(1);
-        cardImageUrl = obj1.getString("card_image");
-        // Los Toast parecen entorpecer la impresión de imágenes en un mismo hilo.
-        //Toast.makeText(MainActivity.this, cardImageUrl, Toast.LENGTH_SHORT).show();
+        //JSONObject obj1 = cardList.getJSONObject(1);
+        //cardImageUrl = obj1.getString("card_image");
+        userCards.getFirst().showImage();
     }
     // http://www.learn2crack.com/2014/06/android-load-image-from-internet.html
     private class LoadCards extends AsyncTask<String, String, Bitmap> {
@@ -101,7 +103,7 @@ public class CardBrowser extends Activity {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             try {
                 data = Client.execute(httpget, responseHandler);
-                evalu(data);
+                getCards(data);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -124,12 +126,12 @@ public class CardBrowser extends Activity {
                 pDialog.show();
                 pDialog.dismiss();
 
-            }else{
+            }/*else{
 
                 pDialog.dismiss();
                 Toast.makeText(CardBrowser.this, "Not found", Toast.LENGTH_SHORT).show();
 
-            }
+            }*/
         }
     }
 }
