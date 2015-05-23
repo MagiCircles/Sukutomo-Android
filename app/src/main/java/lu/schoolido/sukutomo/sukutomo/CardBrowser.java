@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,7 +28,7 @@ import java.net.URL;
 import java.util.LinkedList;
 
 
-public class CardBrowser extends Activity {
+public class CardBrowser extends Activity implements View.OnClickListener {
     // We'll need these attributes to be static for now, in order to print Images from Card.java
     static ProgressDialog pDialog;
     static Bitmap bitmap;
@@ -49,8 +50,16 @@ public class CardBrowser extends Activity {
         setContentView(R.layout.activity_card_browser);
 
         img = (ImageView) findViewById(R.id.card_image);
+        img.setOnClickListener(this);
         LoadCards li = new LoadCards();
         li.execute();
+    }
+
+    @Override
+    public void onClick(View v) {
+        CardBrowser.currentCard = (CardBrowser.currentCard + 1) % CardBrowser.userCards.size();
+        Toast.makeText(CardBrowser.this, CardBrowser.userCards.get(CardBrowser.currentCard).getImageURL(), Toast.LENGTH_SHORT).show();
+        CardBrowser.userCards.get(CardBrowser.currentCard).showImage();
     }
 
     @Override
@@ -79,15 +88,17 @@ public class CardBrowser extends Activity {
         JSONObject obj = new JSONObject(data);
         JSONArray cardList = obj.getJSONArray("results");
         int n = cardList.length();
-        for(int i=0; i < n && i < 9; i++) {
+        for(int i=0; i < n; i++) {
             System.out.println(String.valueOf(cardList.getJSONObject(i)));
-            userCards.add(new Card(cardList.getJSONObject(1)));
+            userCards.add(new Card(cardList.getJSONObject(i)));
         }
         //JSONObject obj1 = cardList.getJSONObject(1);
         //cardImageUrl = obj1.getString("card_image");
         userCards.getFirst().showImage();
     }
-    // http://www.learn2crack.com/2014/06/android-load-image-from-internet.html
+
+    // I will refactor this class so that it can be used with any method you pass to it.
+    // If I do that, we'll be able to simplify some things in the future.
     private class LoadCards extends AsyncTask<String, String, Bitmap> {
         @Override
         protected void onPreExecute() {
@@ -126,12 +137,12 @@ public class CardBrowser extends Activity {
                 pDialog.show();
                 pDialog.dismiss();
 
-            }/*else{
+            }else{
 
                 pDialog.dismiss();
-                Toast.makeText(CardBrowser.this, "Not found", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(CardBrowser.this, "Not found", Toast.LENGTH_SHORT).show();
 
-            }*/
+            }
         }
     }
 }

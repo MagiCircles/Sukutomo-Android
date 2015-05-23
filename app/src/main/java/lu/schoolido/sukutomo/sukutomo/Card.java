@@ -86,8 +86,8 @@ public class Card {
 
             if(image != null){
                 CardBrowser.img.setImageBitmap(image);
-                //pDialog.show();
-                //pDialog.dismiss();
+                //CardBrowser.pDialog.show();
+                //CardBrowser.pDialog.dismiss();
 
             }
         }
