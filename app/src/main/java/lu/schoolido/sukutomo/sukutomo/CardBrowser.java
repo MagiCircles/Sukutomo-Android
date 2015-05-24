@@ -6,10 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,14 +31,17 @@ import java.util.LinkedList;
 
 public class CardBrowser extends Activity implements View.OnClickListener {
     // We'll need these attributes to be static for now, in order to print Images from Card.java
-    static ProgressDialog pDialog;
-    static Bitmap bitmap;
+    private ProgressDialog pDialog;
+    private Bitmap bitmap;
     static ImageView img;
     private static String cardImageUrl;
     private final HttpClient Client;
     private String siteURL = "http://schoolido.lu/api/cards/";
-    private static int currentCard = 1;
+    private static int currentCard = 0;
+    private static boolean showIdolized = false;
     private static LinkedList<Card> userCards;
+    private static Animation slideUpAnimation;
+    private static Animation slideDownAnimation;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -51,15 +55,51 @@ public class CardBrowser extends Activity implements View.OnClickListener {
 
         img = (ImageView) findViewById(R.id.card_image);
         img.setOnClickListener(this);
+        img.setOnTouchListener(new OnSlideListener(this) {
+            @Override
+            public boolean onSlideLeft(float delta) {
+                // do something
+                return true;
+            }
+
+            @Override
+            public boolean onSlideRight(float delta) {
+                // do something
+                return true;
+            }
+
+            @Override
+            public boolean onSlideUp(float delta) {
+                if(currentCard > 1)
+                    currentCard = currentCard - 1;
+                else
+                    currentCard = userCards.size()-1;
+                Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+                userCards.get(currentCard).showImage(showIdolized, bitmap);
+                img.startAnimation(slideUpAnimation);
+                return true;
+            }
+
+            @Override
+            public boolean onSlideDown(float delta) {
+                currentCard = (currentCard + 1) % userCards.size();
+                Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+                userCards.get(currentCard).showImage(showIdolized, bitmap);
+                img.startAnimation(slideDownAnimation);
+                return true;
+            }
+        });
+        slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_up);
+        slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_enter_down);
         LoadCards li = new LoadCards();
         li.execute();
     }
 
     @Override
     public void onClick(View v) {
-        CardBrowser.currentCard = (CardBrowser.currentCard + 1) % CardBrowser.userCards.size();
-        Toast.makeText(CardBrowser.this, CardBrowser.userCards.get(CardBrowser.currentCard).getImageURL(), Toast.LENGTH_SHORT).show();
-        CardBrowser.userCards.get(CardBrowser.currentCard).showImage();
+        showIdolized = !showIdolized;
+        Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+        userCards.get(currentCard).showImage(showIdolized, bitmap);
     }
 
     @Override
@@ -94,7 +134,8 @@ public class CardBrowser extends Activity implements View.OnClickListener {
         }
         //JSONObject obj1 = cardList.getJSONObject(1);
         //cardImageUrl = obj1.getString("card_image");
-        userCards.getFirst().showImage();
+        showIdolized = false;
+        userCards.getFirst().showImage(showIdolized, bitmap);
     }
 
     // I will refactor this class so that it can be used with any method you pass to it.

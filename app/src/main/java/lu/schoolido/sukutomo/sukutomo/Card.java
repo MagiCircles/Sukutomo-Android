@@ -1,16 +1,12 @@
 package lu.schoolido.sukutomo.sukutomo;
 
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,50 +19,65 @@ public class Card {
     // General
     private int id = 0;
     private String name = "";
-    private String jpName = "";
+    private String japanese_name = "";
     private String collection = "";
-    private String jpCollection = "";
+    private String japanese_collection = "";
     private Attribute attribute = Attribute.SMILE;
-    private boolean japanOnly = false;
-    private String image = "";
-    private String roundImage = "";
+    private boolean japan_only = false;
+    private String card_image = "";
+    private String round_card_image = "";
     private Rarity rarity = Rarity.N;
 
     // IdolCard
     private String event = "";
-    private int maxHP = 0;
-    private List<Integer> minStats = new ArrayList<Integer>(3);
-    private List<Integer> maxStats = new ArrayList<Integer>(3);
-    private List<Integer> maxIdolStats = new ArrayList<Integer>(3);
-    private String idolImage = "";
-    private String videoStory = null;
+    private int hp = 0;
+    private List<Integer> minimum_statistics = new ArrayList<Integer>(3);
+    private List<Integer> non_idolized_maximum_statistics = new ArrayList<Integer>(3);
+    private List<Integer> idolized_maximum_statistics = new ArrayList<Integer>(3);
+    private String card_idolized_image = "";
+    private String video_story = null;
+    private String japanese_video_story = null;
 
     // Support and RareCard
     private String skill = "None";
-    private String jpSkill = "無し";
+    private String japanese_skill = "無し";
+    //private String skill_details = "None";
+    //private String japanese_skill_details = "無し";
 
     // RareCard
-    private boolean isPromo = false;
-    private String promoItem = null;
-    private boolean isSpecial = false;
-    private String centerSkill = "None";
-    private String jpCenterSkill = "無し";
+    private boolean is_promo = false;
+    private String promo_item = null;
+    private boolean is_special = false;
+    private String center_skill = "None";
+    private String japanese_center_skill = "無し";
     //private Bitmap bitmap;
     //private ImageView img;
 
     public Card(JSONObject object) throws JSONException {
-        image = object.getString("card_image");
+        card_image = object.getString("card_image");
+        card_idolized_image = object.getString("card_idolized_image");
     }
 
-    public String getImageURL() {
-        return image;
+    public String getImageURL(boolean idolized) {
+        if(idolized)
+            return card_image;
+        else
+            return card_idolized_image;
     }
 
-    public void showImage() {
-        new LoadImage().execute(image);
+    public void showImage(boolean idolized, Bitmap bitmap) {
+        if(idolized)
+            new LoadImage(bitmap).execute(card_image);
+        else
+            new LoadImage(bitmap).execute(card_idolized_image);
     }
 
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
+        Bitmap bitmap;
+        protected LoadImage(Bitmap bitmap) {
+            bitmap = bitmap;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -74,12 +85,12 @@ public class Card {
 
         protected Bitmap doInBackground(String... args) {
             try {
-                CardBrowser.bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
+                bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return CardBrowser.bitmap;
+            return bitmap;
         }
 
         protected void onPostExecute(Bitmap image) {
