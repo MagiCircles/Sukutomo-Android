@@ -6,8 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -29,10 +33,10 @@ import java.net.URL;
 import java.util.LinkedList;
 
 
-public class CardBrowser extends Activity implements View.OnClickListener {
+public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
     // We'll need these attributes to be static for now, in order to print Images from Card.java
     private ProgressDialog pDialog;
-    private Bitmap bitmap;
+    static Bitmap bitmap;
     static ImageView img;
     private static String cardImageUrl;
     private final HttpClient Client;
@@ -42,6 +46,9 @@ public class CardBrowser extends Activity implements View.OnClickListener {
     private static LinkedList<Card> userCards;
     private static Animation slideUpAnimation;
     private static Animation slideDownAnimation;
+    private static Animation zoomInAnimation;
+    private static Animation zoomOutAnimation;
+    private GestureDetectorCompat mDetector;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -54,53 +61,22 @@ public class CardBrowser extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_card_browser);
 
         img = (ImageView) findViewById(R.id.card_image);
-        img.setOnClickListener(this);
-        img.setOnTouchListener(new OnSlideListener(this) {
-            @Override
-            public boolean onSlideLeft(float delta) {
-                // do something
-                return true;
-            }
+        mDetector = new GestureDetectorCompat(this, new GestureListener());
 
-            @Override
-            public boolean onSlideRight(float delta) {
-                // do something
-                return true;
-            }
-
-            @Override
-            public boolean onSlideUp(float delta) {
-                if(currentCard > 1)
-                    currentCard = currentCard - 1;
-                else
-                    currentCard = userCards.size()-1;
-                Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-                userCards.get(currentCard).showImage(showIdolized, bitmap);
-                img.startAnimation(slideUpAnimation);
-                return true;
-            }
-
-            @Override
-            public boolean onSlideDown(float delta) {
-                currentCard = (currentCard + 1) % userCards.size();
-                Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-                userCards.get(currentCard).showImage(showIdolized, bitmap);
-                img.startAnimation(slideDownAnimation);
-                return true;
-            }
-        });
         slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_up);
         slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_enter_down);
+        zoomInAnimation = AnimationUtils.loadAnimation(this, R.anim.zoom_in);
+        zoomOutAnimation = AnimationUtils.loadAnimation(this, R.anim.zoom_out);
         LoadCards li = new LoadCards();
         li.execute();
     }
 
     @Override
-    public void onClick(View v) {
-        showIdolized = !showIdolized;
-        Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-        userCards.get(currentCard).showImage(showIdolized, bitmap);
+    public boolean onTouchEvent(MotionEvent event) {
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,7 +111,7 @@ public class CardBrowser extends Activity implements View.OnClickListener {
         //JSONObject obj1 = cardList.getJSONObject(1);
         //cardImageUrl = obj1.getString("card_image");
         showIdolized = false;
-        userCards.getFirst().showImage(showIdolized, bitmap);
+        userCards.getFirst().showImage(showIdolized, bitmap, img);
     }
 
     // I will refactor this class so that it can be used with any method you pass to it.
@@ -185,5 +161,95 @@ public class CardBrowser extends Activity implements View.OnClickListener {
 
             }
         }
+    }
+
+
+    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        private final String TAG = GestureListener.class.getSimpleName();
+
+        private static final int SLIDE_THRESHOLD = 100;
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            try {
+                float deltaY = e2.getY() - e1.getY();
+                float deltaX = e2.getX() - e1.getX();
+
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (Math.abs(deltaX) > SLIDE_THRESHOLD) {
+                        if (deltaX > 0) {
+                            return onSlideRight();
+                        } else {
+                            return onSlideLeft();
+                        }
+                    }/* else {
+                        return onTouchEvent();
+                    }*/
+                } else {
+                    if (Math.abs(deltaY) > SLIDE_THRESHOLD) {
+                        if (deltaY > 0) {
+                            return onSlideDown();
+                        } else {
+                            return onSlideUp();
+                        }
+                    } /*else {
+                        return onTouchEvent();
+                    }*/
+                }
+            } catch (Exception exception) {
+                Log.e(TAG, exception.getMessage());
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            showIdolized = !showIdolized;
+            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            return true;
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        public boolean onSlideLeft() {
+            return false;
+        }
+
+        public boolean onSlideRight() {
+            return false;
+        }
+
+        public boolean onSlideUp() throws InterruptedException {
+            img.startAnimation(slideUpAnimation);
+            if (currentCard > 1)
+                currentCard = currentCard - 1;
+            else
+                currentCard = userCards.size() - 1;
+
+            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            try {
+                wait(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            img.startAnimation(zoomInAnimation);
+            return true;
+        }
+
+        public boolean onSlideDown() {
+            img.startAnimation(zoomOutAnimation);
+            currentCard = (currentCard + 1) % userCards.size();
+            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            img.startAnimation(slideDownAnimation);
+            return true;
+        }
+
     }
 }

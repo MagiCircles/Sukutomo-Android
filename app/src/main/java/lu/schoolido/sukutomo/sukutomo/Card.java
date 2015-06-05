@@ -3,11 +3,13 @@ package lu.schoolido.sukutomo.sukutomo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.widget.ImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,22 +62,24 @@ public class Card {
 
     public String getImageURL(boolean idolized) {
         if(idolized)
-            return card_image;
-        else
             return card_idolized_image;
+        else
+            return card_image;
     }
 
-    public void showImage(boolean idolized, Bitmap bitmap) {
+    public void showImage(boolean idolized, Bitmap bitmap, ImageView view) {
         if(idolized)
-            new LoadImage(bitmap).execute(card_image);
+            new LoadImage(bitmap, view).execute(card_idolized_image);
         else
-            new LoadImage(bitmap).execute(card_idolized_image);
+            new LoadImage(bitmap, view).execute(card_image);
     }
 
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;
-        protected LoadImage(Bitmap bitmap) {
+        final WeakReference<ImageView> viewReference;
+        protected LoadImage(Bitmap bitmap, ImageView view) {
             bitmap = bitmap;
+            viewReference = new WeakReference<ImageView>( view );
         }
 
         @Override
@@ -96,7 +100,10 @@ public class Card {
         protected void onPostExecute(Bitmap image) {
 
             if(image != null){
-                CardBrowser.img.setImageBitmap(image);
+                ImageView imageView = viewReference.get();
+                if( imageView != null ) {
+                    imageView.setImageBitmap( bitmap );
+                }
                 //CardBrowser.pDialog.show();
                 //CardBrowser.pDialog.dismiss();
 
