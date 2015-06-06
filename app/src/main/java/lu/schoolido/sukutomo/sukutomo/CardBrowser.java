@@ -12,7 +12,6 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -46,8 +45,6 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
     private static LinkedList<Card> userCards;
     private static Animation slideUpAnimation;
     private static Animation slideDownAnimation;
-    private static Animation zoomInAnimation;
-    private static Animation zoomOutAnimation;
     private GestureDetectorCompat mDetector;
 
     public CardBrowser() {
@@ -64,9 +61,7 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
         mDetector = new GestureDetectorCompat(this, new GestureListener());
 
         slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_up);
-        slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_enter_down);
-        zoomInAnimation = AnimationUtils.loadAnimation(this, R.anim.zoom_in);
-        zoomOutAnimation = AnimationUtils.loadAnimation(this, R.anim.zoom_out);
+        slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_down);
         LoadCards li = new LoadCards();
         li.execute();
     }
@@ -233,21 +228,26 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
 
             Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
-            try {
+            /*try {
                 wait(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            img.startAnimation(zoomInAnimation);
+            img.startAnimation(zoomInAnimation);*/
             return true;
         }
 
         public boolean onSlideDown() {
-            img.startAnimation(zoomOutAnimation);
+            img.startAnimation(slideDownAnimation);
             currentCard = (currentCard + 1) % userCards.size();
             Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
-            img.startAnimation(slideDownAnimation);
+            /*try {
+                wait(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            img.startAnimation(slideEnterDownAnimation);*/
             return true;
         }
 
