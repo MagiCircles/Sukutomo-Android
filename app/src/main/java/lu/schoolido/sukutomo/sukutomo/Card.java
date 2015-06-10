@@ -71,8 +71,8 @@ public class Card implements Parcelable{
         id = object.getInt("id");
         name = object.getString("name");
         japanese_name = object.getString("japanese_name");
-        collection = object.getString("collection");
-        japanese_collection = object.getString("japanese_collection");
+        //collection = object.getString("collection");
+        //japanese_collection = object.getString("japanese_collection");
 
         String at = object.getString("attribute");
         if(at.equalsIgnoreCase("smile"))
@@ -120,7 +120,7 @@ public class Card implements Parcelable{
         skill = object.getString("skill");
         japanese_skill = object.getString("japanese_skill");
         skill_details = object.getString("skill_details");
-        japanese_skill_details = object.getString("japanese_skill_details");
+        //japanese_skill_details = object.getString("japanese_skill_details");
 
         // RareCard
         is_promo = object.getBoolean("is_promo");
@@ -128,8 +128,8 @@ public class Card implements Parcelable{
         is_special = object.getBoolean("is_special");
         center_skill = object.getString("center_skill");
         japanese_center_skill = object.getString("japanese_center_skill");
-        center_skill_details = object.getString("center_skill_details");
-        japanese_center_skill_details = object.getString("japanese_center_skill_details");
+        //center_skill_details = object.getString("center_skill_details");
+        //japanese_center_skill_details = object.getString("japanese_center_skill_details");
     }
 
     public String getImageURL(boolean idolized) {
@@ -144,6 +144,10 @@ public class Card implements Parcelable{
             new LoadImage(bitmap, view).execute(card_idolized_image);
         else
             new LoadImage(bitmap, view).execute(card_image);
+    }
+
+    public void showRoundImage(Bitmap bitmap, ImageView view) {
+        new LoadImage(bitmap, view).execute(round_card_image);
     }
 
 

@@ -35,11 +35,10 @@ import java.util.LinkedList;
 
 public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
     // We'll need these attributes to be static for now, in order to print Images from Card.java
-    private ProgressDialog pDialog;
+    static ProgressDialog pDialog;
     static Bitmap bitmap;
     static ImageView img;
-    private static String cardImageUrl;
-    private final HttpClient Client;
+    static String cardImageUrl;
     private String siteURL = "http://schoolido.lu/api/cards/";
     private static int currentCard = 0;
     private static boolean showIdolized = false;
@@ -48,6 +47,7 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
     private static Animation slideDownAnimation;
     private static Animation slideRightAnimation;
     private GestureDetectorCompat mDetector;
+    private final HttpClient Client;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -98,7 +98,7 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void getCards(String data) throws JSONException {
+    protected static void getCards(String data) throws JSONException {
         JSONObject obj = new JSONObject(data);
         JSONArray cardList = obj.getJSONArray("results");
         int n = cardList.length();
@@ -112,8 +112,92 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
         userCards.getFirst().showImage(showIdolized, bitmap, img);
     }
 
-    // I will refactor this class so that it can be used with any method you pass to it.
-    // If I do that, we'll be able to simplify some things in the future.
+
+
+    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        private final String TAG = GestureListener.class.getSimpleName();
+
+        private static final int SLIDE_THRESHOLD = 100;
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            try {
+                float deltaY = e2.getY() - e1.getY();
+                float deltaX = e2.getX() - e1.getX();
+
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (Math.abs(deltaX) > SLIDE_THRESHOLD) {
+                        if (deltaX > 0) {
+                            return onSlideRight();
+                        } else {
+                            return onSlideLeft();
+                        }
+                    }
+                } else {
+                    if (Math.abs(deltaY) > SLIDE_THRESHOLD) {
+                        if (deltaY > 0) {
+                            return onSlideDown();
+                        } else {
+                            return onSlideUp();
+                        }
+                    }
+                }
+            } catch (Exception exception) {
+                Log.e(TAG, exception.getMessage());
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            showIdolized = !showIdolized;
+            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            return true;
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        public boolean onSlideLeft() {
+            return false;
+        }
+
+        public boolean onSlideRight() {
+            Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
+            img.startAnimation(slideRightAnimation);
+
+            info1.putExtra("card", userCards.get(currentCard));
+            startActivity(info1);
+            return true;
+        }
+
+        public boolean onSlideUp() throws InterruptedException {
+            img.startAnimation(slideUpAnimation);
+            if (currentCard > 1)
+                currentCard = currentCard - 1;
+            else
+                currentCard = userCards.size() - 1;
+
+            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+
+            return true;
+        }
+
+        public boolean onSlideDown() {
+            img.startAnimation(slideDownAnimation);
+            currentCard = (currentCard + 1) % userCards.size();
+            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            return true;
+        }
+
+    }
+
     private class LoadCards extends AsyncTask<String, String, Bitmap> {
         @Override
         protected void onPreExecute() {
@@ -159,104 +243,5 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
 
             }
         }
-    }
-
-
-    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
-        private final String TAG = GestureListener.class.getSimpleName();
-
-        private static final int SLIDE_THRESHOLD = 100;
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            try {
-                float deltaY = e2.getY() - e1.getY();
-                float deltaX = e2.getX() - e1.getX();
-
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    if (Math.abs(deltaX) > SLIDE_THRESHOLD) {
-                        if (deltaX > 0) {
-                            return onSlideRight();
-                        } else {
-                            return onSlideLeft();
-                        }
-                    }/* else {
-                        return onTouchEvent();
-                    }*/
-                } else {
-                    if (Math.abs(deltaY) > SLIDE_THRESHOLD) {
-                        if (deltaY > 0) {
-                            return onSlideDown();
-                        } else {
-                            return onSlideUp();
-                        }
-                    } /*else {
-                        return onTouchEvent();
-                    }*/
-                }
-            } catch (Exception exception) {
-                Log.e(TAG, exception.getMessage());
-            }
-
-            return false;
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            showIdolized = !showIdolized;
-            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
-            return true;
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-
-        public boolean onSlideLeft() {
-            return false;
-        }
-
-        public boolean onSlideRight() {
-            Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
-            img.startAnimation(slideRightAnimation);
-            startActivity(info1);
-            info1.putExtra("card", userCards.get(currentCard));
-            return true;
-        }
-
-        public boolean onSlideUp() throws InterruptedException {
-            img.startAnimation(slideUpAnimation);
-            if (currentCard > 1)
-                currentCard = currentCard - 1;
-            else
-                currentCard = userCards.size() - 1;
-
-            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
-            /*try {
-                wait(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            img.startAnimation(zoomInAnimation);*/
-            return true;
-        }
-
-        public boolean onSlideDown() {
-            img.startAnimation(slideDownAnimation);
-            currentCard = (currentCard + 1) % userCards.size();
-            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
-            /*try {
-                wait(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            img.startAnimation(slideEnterDownAnimation);*/
-            return true;
-        }
-
     }
 }
