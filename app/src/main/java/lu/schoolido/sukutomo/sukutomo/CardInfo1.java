@@ -1,17 +1,83 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 public class CardInfo1 extends ActionBarActivity {
+    private Card card_info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_info1);
+        Intent intent = getIntent();
+        card_info = (Card) intent.getParcelableExtra("card");
+        // Filling text views
+        TextView txt = (TextView) findViewById(R.id.card_id);
+        txt.setText(card_info.getId());
+        txt = (TextView) findViewById(R.id.card_name);
+        txt.setText(card_info.getName());
+        txt = (TextView) findViewById(R.id.card_rarity);
+        txt.setText(card_info.getRarity().toString());
+        txt = (TextView) findViewById(R.id.card_attr);
+        txt.setText(card_info.getAttribute().toString());
+        txt = (TextView) findViewById(R.id.release_date);
+        txt.setText(card_info.getRelease_date().toString());
+
+        // Text views for stats
+        int[] min_stats = card_info.getMinimum_statistics();
+        int[] non_idolized_max_stats = card_info.getNon_idolized_maximum_statistics();
+        int[] idolized_max_stats = card_info.getIdolized_maximum_statistics();
+
+        txt = (TextView) findViewById(R.id.smile_val1);
+        txt.setText(min_stats[0]);
+        txt = (TextView) findViewById(R.id.pure_val1);
+        txt.setText(min_stats[1]);
+        txt = (TextView) findViewById(R.id.cool_val1);
+        txt.setText(min_stats[2]);
+
+        txt = (TextView) findViewById(R.id.smile_val2);
+        txt.setText(non_idolized_max_stats[0]);
+        txt = (TextView) findViewById(R.id.pure_val2);
+        txt.setText(non_idolized_max_stats[1]);
+        txt = (TextView) findViewById(R.id.cool_val2);
+        txt.setText(non_idolized_max_stats[2]);
+
+        txt = (TextView) findViewById(R.id.smile_val3);
+        txt.setText(idolized_max_stats[0]);
+        txt = (TextView) findViewById(R.id.pure_val3);
+        txt.setText(idolized_max_stats[1]);
+        txt = (TextView) findViewById(R.id.cool_val3);
+        txt.setText(idolized_max_stats[2]);
+
+        // ProgressBar for stats
+        ProgressBar bar = (ProgressBar) findViewById(R.id.smile_bar1);
+        bar.setProgress(min_stats[0]);
+        bar = (ProgressBar) findViewById(R.id.pure_bar1);
+        bar.setProgress(min_stats[1]);
+        bar = (ProgressBar) findViewById(R.id.cool_bar1);
+        bar.setProgress(min_stats[2]);
+
+        bar = (ProgressBar) findViewById(R.id.smile_bar2);
+        bar.setProgress(non_idolized_max_stats[0]);
+        bar = (ProgressBar) findViewById(R.id.pure_bar2);
+        bar.setProgress(non_idolized_max_stats[1]);
+        bar = (ProgressBar) findViewById(R.id.cool_bar2);
+        bar.setProgress(non_idolized_max_stats[2]);
+
+        bar = (ProgressBar) findViewById(R.id.smile_bar3);
+        bar.setProgress(idolized_max_stats[0]);
+        bar = (ProgressBar) findViewById(R.id.pure_bar3);
+        bar.setProgress(idolized_max_stats[1]);
+        bar = (ProgressBar) findViewById(R.id.cool_bar3);
+        bar.setProgress(idolized_max_stats[2]);
+
     }
 
     @Override

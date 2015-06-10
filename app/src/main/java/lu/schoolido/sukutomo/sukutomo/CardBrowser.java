@@ -222,6 +222,7 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
             Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
             img.startAnimation(slideRightAnimation);
             startActivity(info1);
+            info1.putExtra("card", userCards.get(currentCard));
             return true;
         }
 

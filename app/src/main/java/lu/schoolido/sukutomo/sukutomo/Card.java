@@ -13,7 +13,11 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +35,7 @@ public class Card implements Parcelable{
     private String card_image = "";
     private String round_card_image = "";
     private Rarity rarity = Rarity.N;
+    private Date release_date;
 
     // IdolCard
     private String event = "";
@@ -104,6 +109,12 @@ public class Card implements Parcelable{
         card_idolized_image = object.getString("card_idolized_image");
         video_story = object.getString("video_story");
         japanese_video_story = object.getString("japanese_video_story");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            release_date = format.parse(object.getString("release_date"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         // Support and RareCard
         skill = object.getString("skill");
@@ -133,6 +144,127 @@ public class Card implements Parcelable{
             new LoadImage(bitmap, view).execute(card_idolized_image);
         else
             new LoadImage(bitmap, view).execute(card_image);
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getJapanese_name() {
+        return japanese_name;
+    }
+
+    public String getCollection() {
+        return collection;
+    }
+
+    public String getJapanese_collection() {
+        return japanese_collection;
+    }
+
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
+    public boolean isJapan_only() {
+        return japan_only;
+    }
+
+    public String getCard_image() {
+        return card_image;
+    }
+
+    public String getRound_card_image() {
+        return round_card_image;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int[] getMinimum_statistics() {
+        return minimum_statistics;
+    }
+
+    public int[] getNon_idolized_maximum_statistics() {
+        return non_idolized_maximum_statistics;
+    }
+
+    public int[] getIdolized_maximum_statistics() {
+        return idolized_maximum_statistics;
+    }
+
+    public String getCard_idolized_image() {
+        return card_idolized_image;
+    }
+
+    public String getVideo_story() {
+        return video_story;
+    }
+
+    public String getJapanese_video_story() {
+        return japanese_video_story;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
+
+    public String getJapanese_skill() {
+        return japanese_skill;
+    }
+
+    public String getSkill_details() {
+        return skill_details;
+    }
+
+    public String getJapanese_skill_details() {
+        return japanese_skill_details;
+    }
+
+    public boolean is_promo() {
+        return is_promo;
+    }
+
+    public String getPromo_item() {
+        return promo_item;
+    }
+
+    public boolean is_special() {
+        return is_special;
+    }
+
+    public String getCenter_skill() {
+        return center_skill;
+    }
+
+    public String getJapanese_center_skill() {
+        return japanese_center_skill;
+    }
+
+    public String getCenter_skill_details() {
+        return center_skill_details;
+    }
+
+    public String getJapanese_center_skill_details() {
+        return japanese_center_skill_details;
+    }
+
+    public Date getRelease_date() {
+        return release_date;
     }
 
     @Override
