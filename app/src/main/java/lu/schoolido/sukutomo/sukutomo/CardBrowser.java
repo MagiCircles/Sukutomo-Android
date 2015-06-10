@@ -2,6 +2,7 @@ package lu.schoolido.sukutomo.sukutomo;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -45,6 +46,7 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
     private static LinkedList<Card> userCards;
     private static Animation slideUpAnimation;
     private static Animation slideDownAnimation;
+    private static Animation slideRightAnimation;
     private GestureDetectorCompat mDetector;
 
     public CardBrowser() {
@@ -62,6 +64,7 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
 
         slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_up);
         slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_down);
+        slideRightAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_right);
         LoadCards li = new LoadCards();
         li.execute();
     }
@@ -216,7 +219,10 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
         }
 
         public boolean onSlideRight() {
-            return false;
+            Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
+            img.startAnimation(slideRightAnimation);
+            startActivity(info1);
+            return true;
         }
 
         public boolean onSlideUp() throws InterruptedException {
