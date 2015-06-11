@@ -182,15 +182,19 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
             else
                 currentCard = userCards.size() - 1;
 
+            img.setTranslationY(0);
             Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
 
             return true;
         }
 
-        public boolean onSlideDown() {
+        public boolean onSlideDown() throws InterruptedException {
             img.startAnimation(slideDownAnimation);
             currentCard = (currentCard + 1) % userCards.size();
+
+            img.setTranslationY(0);
+
             Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
             return true;

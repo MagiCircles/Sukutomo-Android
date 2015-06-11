@@ -9,4 +9,10 @@
     <string name="skill">Habilidad</string>
     <string name="center_skill">Hab. centro</string>
     <string name="release_date">Fecha de salida</string>
+    <string name="level_1">Nivel 1</string>
+    <string name="level_30">Nivel 30</string>
+    <string name="level_40">Nivel 40</string>
+    <string name="level_60">Nivel 60</string>
+    <string name="level_80">Nivel 80</string>
+    <string name="level_100">Nivel 100</string>
 </resources>

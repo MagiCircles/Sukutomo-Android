@@ -6,13 +6,30 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 
 public class CardInfo1 extends ActionBarActivity {
     private Card card_info;
+    private Button level_button1;
+    private Button level_button2;
+    private Button level_button3;
+    private int[] min_stats;
+    private int[] non_idolized_max_stats;
+    private int[] idolized_max_stats;
+    private TextView smile_stats_text;
+    private TextView pure_stats_text;
+    private TextView cool_stats_text;
+    private ProgressBar smile_stats_bar;
+    private ProgressBar pure_stats_bar;
+    private ProgressBar cool_stats_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +39,8 @@ public class CardInfo1 extends ActionBarActivity {
         card_info = (Card) intent.getParcelableExtra("card");
         // Filling text views
         TextView txt = (TextView) findViewById(R.id.card_id);
+        txt.setText("#" + String.valueOf(card_info.getId()));
 
-        txt.setText(String.valueOf(card_info.getId()));
         txt = (TextView) findViewById(R.id.card_name);
         txt.setText(card_info.getName());
         txt = (TextView) findViewById(R.id.card_rarity);
@@ -31,59 +48,76 @@ public class CardInfo1 extends ActionBarActivity {
         txt = (TextView) findViewById(R.id.card_attr);
         txt.setText(card_info.getAttribute().toString());
         txt = (TextView) findViewById(R.id.release_date);
-        //txt.setText(card_info.getRelease_date().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM d yyyy", Locale.US);
+        if(card_info.getRelease_date()!=null)
+            txt.setText(sdf.format(card_info.getRelease_date()).toString());
+        else
+            txt.setText("Unknown");
 
         // Text views for stats
-        int[] min_stats = card_info.getMinimum_statistics();
-        int[] non_idolized_max_stats = card_info.getNon_idolized_maximum_statistics();
-        int[] idolized_max_stats = card_info.getIdolized_maximum_statistics();
+        min_stats = card_info.getMinimum_statistics();
+        non_idolized_max_stats = card_info.getNon_idolized_maximum_statistics();
+        idolized_max_stats = card_info.getIdolized_maximum_statistics();
 
-        txt = (TextView) findViewById(R.id.smile_val1);
-        txt.setText(String.valueOf(min_stats[0]));
-        txt = (TextView) findViewById(R.id.pure_val1);
-        txt.setText(String.valueOf(min_stats[1]));
-        txt = (TextView) findViewById(R.id.cool_val1);
-        txt.setText(String.valueOf(min_stats[2]));
-
-        txt = (TextView) findViewById(R.id.smile_val2);
-        txt.setText(String.valueOf(non_idolized_max_stats[0]));
-        txt = (TextView) findViewById(R.id.pure_val2);
-        txt.setText(String.valueOf(non_idolized_max_stats[1]));
-        txt = (TextView) findViewById(R.id.cool_val2);
-        txt.setText(String.valueOf(non_idolized_max_stats[2]));
-
-        txt = (TextView) findViewById(R.id.smile_val3);
-        txt.setText(String.valueOf(idolized_max_stats[0]));
-        txt = (TextView) findViewById(R.id.pure_val3);
-        txt.setText(String.valueOf(idolized_max_stats[1]));
-        txt = (TextView) findViewById(R.id.cool_val3);
-        txt.setText(String.valueOf(idolized_max_stats[2]));
-
-        // ProgressBar for stats
-        ProgressBar bar = (ProgressBar) findViewById(R.id.smile_bar1);
-        bar.setProgress(min_stats[0]);
-        bar = (ProgressBar) findViewById(R.id.pure_bar1);
-        bar.setProgress(min_stats[1]);
-        bar = (ProgressBar) findViewById(R.id.cool_bar1);
-        bar.setProgress(min_stats[2]);
-
-        bar = (ProgressBar) findViewById(R.id.smile_bar2);
-        bar.setProgress(non_idolized_max_stats[0]);
-        bar = (ProgressBar) findViewById(R.id.pure_bar2);
-        bar.setProgress(non_idolized_max_stats[1]);
-        bar = (ProgressBar) findViewById(R.id.cool_bar2);
-        bar.setProgress(non_idolized_max_stats[2]);
-
-        bar = (ProgressBar) findViewById(R.id.smile_bar3);
-        bar.setProgress(idolized_max_stats[0]);
-        bar = (ProgressBar) findViewById(R.id.pure_bar3);
-        bar.setProgress(idolized_max_stats[1]);
-        bar = (ProgressBar) findViewById(R.id.cool_bar3);
-        bar.setProgress(idolized_max_stats[2]);
+        updateStats(min_stats);
 
         // Round Image
         ImageView im = (ImageView) findViewById(R.id.card_image);
         card_info.showRoundImage(null, im);
+
+        level_button1 = (Button) findViewById(R.id.level_button1);
+        level_button1.setText(R.string.level_1);
+        level_button2 = (Button) findViewById(R.id.level_button2);
+        level_button3 = (Button) findViewById(R.id.level_button3);
+
+        switch(card_info.getRarity()) {
+            case N: level_button2.setText(R.string.level_30);
+                    level_button3.setText(R.string.level_40);
+                    break;
+            case R: level_button2.setText(R.string.level_40);
+                    level_button3.setText(R.string.level_60);
+                    break;
+            case SR: level_button2.setText(R.string.level_60);
+                    level_button3.setText(R.string.level_80);
+                    break;
+            case UR: level_button2.setText(R.string.level_80);
+                    level_button3.setText(R.string.level_100);
+                    break;
+        }
+
+        level_button1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                updateStats(min_stats);
+            }
+        });
+        level_button2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                updateStats(non_idolized_max_stats);
+            }
+        });
+        level_button3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                updateStats(idolized_max_stats);
+            }
+        });
+
+    }
+
+    private void updateStats(int[] stats) {
+        smile_stats_text = (TextView) findViewById(R.id.smile_val1);
+        smile_stats_text.setText(String.valueOf(stats[0]));
+        pure_stats_text = (TextView) findViewById(R.id.pure_val1);
+        pure_stats_text.setText(String.valueOf(stats[1]));
+        cool_stats_text = (TextView) findViewById(R.id.cool_val1);
+        cool_stats_text.setText(String.valueOf(stats[2]));
+
+        // ProgressBar for stats
+        smile_stats_bar = (ProgressBar) findViewById(R.id.smile_bar1);
+        smile_stats_bar.setProgress(stats[0]);
+        pure_stats_bar = (ProgressBar) findViewById(R.id.pure_bar1);
+        pure_stats_bar.setProgress(stats[1]);
+        cool_stats_bar = (ProgressBar) findViewById(R.id.cool_bar1);
+        cool_stats_bar.setProgress(stats[2]);
     }
 
     @Override
