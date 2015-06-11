@@ -1,0 +1,58 @@
+{"id":1,
+"name":"Ousaka Shizuku",
+"japanese_name":"桜坂しずく",
+"idol": {
+	"name":"Ousaka Shizuku",
+	"japanese_name":"桜坂しずく",
+	"main":false,
+	"age":null,
+	"birthday":"04-03",
+	"astrological_sign":"Aries",
+	"blood":"A",
+	"height":157,
+	"measurements":"B80 / W58 / H83",
+	"favorite_food":null,
+	"least_favorite_food":null,
+	"hobbies":"Theater",
+	"attribute":"Smile",
+	"year":"First",
+	"cv":null,
+	"summary":null,
+	"website_url":"http://schoolido.lu/cards/?name=Ousaka%20Shizuku",
+	"wiki_url":"http://decaf.kouhi.me/lovelive/index.php?title=Ousaka%20Shizuku",
+	"official_url":null
+},
+"japanese_collection":null,
+"rarity":"N",
+"attribute":"Smile",
+"japanese_attribute":"スマイル"
+"is_promo":false
+"promo_item":null
+"release_date":"2013-04-16"
+"japan_only":false
+"event":null
+"is_special":false
+"hp":2
+"minimum_statistics_smile":960
+"minimum_statistics_pure":450
+"minimum_statistics_cool":308
+"non_idolized_maximum_statistics_smile":0
+"non_idolized_maximum_statistics_pure":0
+"non_idolized_maximum_statistics_cool":0
+"idolized_maximum_statistics_smile":1340
+"idolized_maximum_statistics_pure":690
+"idolized_maximum_statistics_cool":500
+"skill":null
+"japanese_skill":null
+"skill_details":null
+"japanese_skill_details":null
+"center_skill":null
+"japanese_center_skill":null
+"japanese_center_skill_details":null
+"card_image":"http://s3-ap-northeast-1.amazonaws.com/deby/web/static/cards/1.jpg"
+"card_idolized_image":"http://s3-ap-northeast-1.amazonaws.com/deby/web/static/cards/1idolized.jpg"
+"round_card_image":"http://s3-ap-northeast-1.amazonaws.com/deby/web/static/cards/1round.jpg"
+"video_story":"http://www.youtube.com/watch?v=Mcz9C67Pd1c"
+"japanese_video_story":null
+"website_url":"http://schoolido.lu/cards/1/"
+"owned_cards":null}

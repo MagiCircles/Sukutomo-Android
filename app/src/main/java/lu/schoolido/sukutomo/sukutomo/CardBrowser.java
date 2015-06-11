@@ -2,14 +2,13 @@ package lu.schoolido.sukutomo.sukutomo;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -33,8 +32,7 @@ import java.net.URL;
 import java.util.LinkedList;
 
 
-public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
-    // We'll need these attributes to be static for now, in order to print Images from Card.java
+public class CardBrowser extends Activity {
     static ProgressDialog pDialog;
     static Bitmap bitmap;
     static ImageView img;
@@ -43,9 +41,6 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
     private static int currentCard = 0;
     private static boolean showIdolized = false;
     private static LinkedList<Card> userCards;
-    private static Animation slideUpAnimation;
-    private static Animation slideDownAnimation;
-    private static Animation slideRightAnimation;
     private GestureDetectorCompat mDetector;
     private final HttpClient Client;
 
@@ -60,11 +55,8 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
         setContentView(R.layout.activity_card_browser);
 
         img = (ImageView) findViewById(R.id.card_image);
-        mDetector = new GestureDetectorCompat(this, new GestureListener());
+        mDetector = new GestureDetectorCompat(this, new GestureListener(this));
 
-        slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_up);
-        slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_down);
-        slideRightAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_exit_right);
         LoadCards li = new LoadCards();
         li.execute();
     }
@@ -114,39 +106,13 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
 
 
 
-    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+    private final class GestureListener extends GenericGestureListener {
         private final String TAG = GestureListener.class.getSimpleName();
 
         private static final int SLIDE_THRESHOLD = 100;
 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            try {
-                float deltaY = e2.getY() - e1.getY();
-                float deltaX = e2.getX() - e1.getX();
-
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    if (Math.abs(deltaX) > SLIDE_THRESHOLD) {
-                        if (deltaX > 0) {
-                            return onSlideRight();
-                        } else {
-                            return onSlideLeft();
-                        }
-                    }
-                } else {
-                    if (Math.abs(deltaY) > SLIDE_THRESHOLD) {
-                        if (deltaY > 0) {
-                            return onSlideDown();
-                        } else {
-                            return onSlideUp();
-                        }
-                    }
-                }
-            } catch (Exception exception) {
-                Log.e(TAG, exception.getMessage());
-            }
-
-            return false;
+        public GestureListener(Context context) {
+            super(context);
         }
 
         @Override
@@ -158,42 +124,38 @@ public class CardBrowser extends Activity /*implements View.OnClickListener*/ {
         }
 
         @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-
         public boolean onSlideLeft() {
             return false;
         }
 
+        @Override
         public boolean onSlideRight() {
             Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
-            img.startAnimation(slideRightAnimation);
+            img.startAnimation(super.slideRightAnimation);
 
             info1.putExtra("card", userCards.get(currentCard));
             startActivity(info1);
             return true;
         }
 
-        public boolean onSlideUp() throws InterruptedException {
-            img.startAnimation(slideUpAnimation);
+        @Override
+        public boolean onSlideUp() {
+            img.startAnimation(super.slideUpAnimation);
             if (currentCard > 1)
                 currentCard = currentCard - 1;
             else
                 currentCard = userCards.size() - 1;
 
-            img.setTranslationY(0);
             Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
 
             return true;
         }
 
-        public boolean onSlideDown() throws InterruptedException {
-            img.startAnimation(slideDownAnimation);
+        @Override
+        public boolean onSlideDown() {
+            img.startAnimation(super.slideDownAnimation);
             currentCard = (currentCard + 1) % userCards.size();
-
-            img.setTranslationY(0);
 
             Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);

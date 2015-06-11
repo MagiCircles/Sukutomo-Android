@@ -1,7 +1,8 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,6 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 
+/**
+ * CardInfo1 shows the main information for each card. It'll be possible to switch between this
+ * Activity, CardInfo2 and CardBrowser activity.
+ */
 public class CardInfo1 extends ActionBarActivity {
     private Card card_info;
     private Button level_button1;
@@ -30,6 +35,7 @@ public class CardInfo1 extends ActionBarActivity {
     private ProgressBar smile_stats_bar;
     private ProgressBar pure_stats_bar;
     private ProgressBar cool_stats_bar;
+    private GestureDetectorCompat mDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,7 @@ public class CardInfo1 extends ActionBarActivity {
         setContentView(R.layout.activity_card_info1);
         Intent intent = getIntent();
         card_info = (Card) intent.getParcelableExtra("card");
+        mDetector = new GestureDetectorCompat(this, new GestureListener(this));
         // Filling text views
         TextView txt = (TextView) findViewById(R.id.card_id);
         txt.setText("#" + String.valueOf(card_info.getId()));
@@ -103,6 +110,9 @@ public class CardInfo1 extends ActionBarActivity {
 
     }
 
+    /** Updates the stats bars and text with the stats received.
+     * @param stats int[3], stats to apply (minimum, maximum, or idolized maximum)
+     */
     private void updateStats(int[] stats) {
         smile_stats_text = (TextView) findViewById(R.id.smile_val1);
         smile_stats_text.setText(String.valueOf(stats[0]));
@@ -140,5 +150,17 @@ public class CardInfo1 extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class GestureListener extends GenericGestureListener {
+        public GestureListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean onSlideLeft() {
+            finish();
+            return true;
+        }
     }
 }
