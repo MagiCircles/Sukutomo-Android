@@ -1,9 +1,9 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-public class CardInfo2 extends ActionBarActivity {
+public class CardInfo2 extends Activity {
 
     private GestureDetectorCompat mDetector;
     private Card card_info;

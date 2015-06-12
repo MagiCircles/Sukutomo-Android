@@ -4,12 +4,12 @@
     <string name="welcome">Welcome!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_card">Card Info</string>
+    <string name="title_activity_card_info1">Card Info</string>
 
     <string name="Cards">Cards</string>
     <string name="Card">Card</string>
     <string name="skill">Skill</string>
     <string name="center_skill">Center skill</string>
-    <string name="title_activity_card_info1">Card Info</string>
     <string name="release_date">Release Date</string>
     <string name="stats">Stats</string>
 

@@ -1,9 +1,9 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,7 @@ import java.util.Locale;
  * CardInfo1 shows the main information for each card. It'll be possible to switch between this
  * Activity, CardInfo2 and CardBrowser activity.
  */
-public class CardInfo1 extends ActionBarActivity {
+public class CardInfo1 extends Activity {
     private Card card_info;
     private Button level_button1;
     private Button level_button2;
