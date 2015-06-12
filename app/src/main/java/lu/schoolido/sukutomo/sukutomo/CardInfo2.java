@@ -1,17 +1,52 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class CardInfo2 extends ActionBarActivity {
+
+    private GestureDetectorCompat mDetector;
+    private Card card_info;
+    private ImageView im;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_info2);
+        Intent intent = getIntent();
+        card_info = (Card) intent.getParcelableExtra("card");
+        mDetector = new GestureDetectorCompat(this, new GestureListener(this));
+        // Filling text views
+        TextView txt = (TextView) findViewById(R.id.skill_name);
+        if(card_info.getSkill()==null || card_info.getSkill().equalsIgnoreCase("none"))
+            txt.setText(getString(R.string.none));
+        else
+            txt.setText(card_info.getSkill());
+
+        txt = (TextView) findViewById(R.id.skill_details);
+        if(card_info.getSkill_details()==null || card_info.getSkill_details().equalsIgnoreCase("null"))
+            txt.setText("");
+        else
+            txt.setText(card_info.getSkill_details());
+
+        txt = (TextView) findViewById(R.id.center_skill);
+        if(card_info.getCenter_skill()==null || card_info.getCenter_skill().equalsIgnoreCase("none") || card_info.getCenter_skill().equalsIgnoreCase("null"))
+            txt.setText(getString(R.string.none));
+        else
+            txt.setText(card_info.getCenter_skill());
+
+        // Round Image
+        im = (ImageView) findViewById(R.id.roundImage);
+        card_info.showRoundImage(null, im);
     }
 
     @Override
@@ -34,5 +69,24 @@ public class CardInfo2 extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    private class GestureListener extends GenericGestureListener {
+        public GestureListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean onSlideLeft() {
+            finish();
+            overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+            return true;
+        }
     }
 }

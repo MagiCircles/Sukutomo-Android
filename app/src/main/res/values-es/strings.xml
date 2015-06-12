@@ -4,8 +4,10 @@
     <string name="welcome">¡Bienvenido!</string>
     <string name="action_settings">Preferencias</string>
     <string name="title_activity_card">Info. Carta</string>
+    <string name="title_activity_card_info1">Info. Carta</string>
 
     <string name="Cards">Cartas</string>
+    <string name="Card">Carta</string>
     <string name="skill">Habilidad</string>
     <string name="center_skill">Hab. centro</string>
     <string name="release_date">Fecha de salida</string>
@@ -15,4 +17,6 @@
     <string name="level_60">Nivel 60</string>
     <string name="level_80">Nivel 80</string>
     <string name="level_100">Nivel 100</string>
+    <string name="unknown">Desconocida</string>
+    <string name="none">Ninguna</string>
 </resources>

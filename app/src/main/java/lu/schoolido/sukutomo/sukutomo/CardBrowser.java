@@ -12,8 +12,6 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -118,7 +116,7 @@ public class CardBrowser extends Activity {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             showIdolized = !showIdolized;
-            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
             return true;
         }
@@ -131,10 +129,10 @@ public class CardBrowser extends Activity {
         @Override
         public boolean onSlideRight() {
             Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
-            img.startAnimation(super.slideRightAnimation);
 
             info1.putExtra("card", userCards.get(currentCard));
             startActivity(info1);
+            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
             return true;
         }
 
@@ -146,7 +144,7 @@ public class CardBrowser extends Activity {
             else
                 currentCard = userCards.size() - 1;
 
-            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
 
             return true;
@@ -157,7 +155,7 @@ public class CardBrowser extends Activity {
             img.startAnimation(super.slideDownAnimation);
             currentCard = (currentCard + 1) % userCards.size();
 
-            Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
             userCards.get(currentCard).showImage(showIdolized, bitmap, img);
             return true;
         }

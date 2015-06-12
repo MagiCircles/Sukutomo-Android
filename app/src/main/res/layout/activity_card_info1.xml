@@ -88,9 +88,12 @@
         android:id="@+id/roundImage"
         android:layout_gravity="right"
         android:src="@drawable/round"
-        android:layout_alignRight="@+id/card_id"
-        android:layout_alignEnd="@+id/card_id"
-        android:layout_above="@+id/imageView" />
+        android:scaleType="fitXY"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:minHeight="64dp"
+        android:minWidth="64dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -224,7 +227,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Smile"
+                android:text="Cool"
                 android:id="@+id/cool_text1"
                 android:layout_column="0"
                 android:layout_marginLeft="5dp" />

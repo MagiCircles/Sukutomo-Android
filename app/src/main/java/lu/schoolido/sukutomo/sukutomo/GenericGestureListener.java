@@ -16,12 +16,17 @@ public class GenericGestureListener extends GestureDetector.SimpleOnGestureListe
     private final String TAG = GenericGestureListener.class.getSimpleName();
     protected static Animation slideUpAnimation;
     protected static Animation slideDownAnimation;
-    protected static Animation slideRightAnimation;
+    protected static Animation slideExitRightAnimation;
+    protected static Animation slideExitLeftAnimation;
+    protected static Animation slideEnterLeftAnimation;
 
     public GenericGestureListener(Context context) {
         slideUpAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_up);
         slideDownAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_down);
-        slideRightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_right);
+        slideExitRightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_right);
+        slideExitLeftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_left);
+        slideExitRightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_enter_right);
+        slideEnterLeftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_enter_left);
     }
 
     /**

@@ -37,6 +37,7 @@ public class CardInfo1 extends ActionBarActivity {
     private ProgressBar pure_stats_bar;
     private ProgressBar cool_stats_bar;
     private GestureDetectorCompat mDetector;
+    private ImageView im;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class CardInfo1 extends ActionBarActivity {
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
         // Filling text views
         TextView txt = (TextView) findViewById(R.id.card_id);
-        txt.setText("#" + String.valueOf(card_info.getId()));
+        txt.setText(getString(R.string.Card) + " #" + String.valueOf(card_info.getId()));
 
         txt = (TextView) findViewById(R.id.card_name);
         txt.setText(card_info.getName());
@@ -56,11 +57,13 @@ public class CardInfo1 extends ActionBarActivity {
         txt = (TextView) findViewById(R.id.card_attr);
         txt.setText(card_info.getAttribute().toString());
         txt = (TextView) findViewById(R.id.release_date);
+
+
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM d yyyy", Locale.US);
         if(card_info.getRelease_date()!=null)
             txt.setText(sdf.format(card_info.getRelease_date()).toString());
         else
-            txt.setText("Unknown");
+            txt.setText(R.string.unknown);
 
         // Text views for stats
         min_stats = card_info.getMinimum_statistics();
@@ -70,7 +73,7 @@ public class CardInfo1 extends ActionBarActivity {
         updateStats(min_stats);
 
         // Round Image
-        ImageView im = (ImageView) findViewById(R.id.card_image);
+        im = (ImageView) findViewById(R.id.roundImage);
         card_info.showRoundImage(null, im);
 
         level_button1 = (Button) findViewById(R.id.level_button1);
@@ -167,6 +170,17 @@ public class CardInfo1 extends ActionBarActivity {
         @Override
         public boolean onSlideLeft() {
             finish();
+            overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+            return true;
+        }
+
+        @Override
+        public boolean onSlideRight() {
+            Intent info2 = new Intent(getApplicationContext(), CardInfo2.class);
+
+            info2.putExtra("card", card_info);
+            startActivity(info2);
+            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
             return true;
         }
     }

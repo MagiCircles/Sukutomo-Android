@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Loading skill name..."
-        android:id="@+id/card_name"
+        android:id="@+id/skill_name"
         android:singleLine="true"
         android:shadowColor="@android:color/holo_purple"
         style="@style/Base.TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Loading skill description..."
-        android:id="@+id/card_rarity"
+        android:id="@+id/skill_details"
         android:layout_below="@+id/imageView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@drawable/subbar"
-        android:layout_below="@+id/card_name"
+        android:layout_below="@+id/skill_name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -67,7 +67,7 @@
         android:paddingLeft="25dp"
         android:paddingTop="2dp"
         android:layout_marginTop="38dp"
-        android:layout_below="@+id/card_rarity"
+        android:layout_below="@+id/skill_details"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Loading skill name..."
-        android:id="@+id/release_date"
+        android:id="@+id/center_skill"
         android:singleLine="true"
         android:shadowColor="@android:color/holo_purple"
         android:layout_alignParentStart="true"
@@ -90,17 +90,20 @@
         android:id="@+id/imageView2"
         android:src="@drawable/subbar"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/release_date"
+        android:layout_below="@+id/center_skill"
         android:layout_alignParentLeft="true" />
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Loading skill description..."
-        android:id="@+id/textView6"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignParentLeft="true" />
+        android:id="@+id/roundImage"
+        android:layout_gravity="right"
+        android:src="@drawable/round"
+        android:scaleType="fitXY"
+        android:minHeight="64dp"
+        android:minWidth="64dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
