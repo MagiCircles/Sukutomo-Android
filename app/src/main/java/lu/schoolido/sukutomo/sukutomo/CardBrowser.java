@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -35,7 +36,7 @@ public class CardBrowser extends Activity {
     static Bitmap bitmap;
     static ImageView img;
     static String cardImageUrl;
-    private String siteURL = "http://schoolido.lu/api/cards/";
+    private String siteURL = "http://schoolido.lu/api/cards/?page=30";
     private static int currentCard = 0;
     private static boolean showIdolized = false;
     private static LinkedList<Card> userCards;
@@ -92,6 +93,7 @@ public class CardBrowser extends Activity {
         JSONObject obj = new JSONObject(data);
         JSONArray cardList = obj.getJSONArray("results");
         int n = cardList.length();
+        Log.d("getCards", n + " cartas");
         for(int i=0; i < n; i++) {
             System.out.println(String.valueOf(cardList.getJSONObject(i)));
             userCards.add(new Card(cardList.getJSONObject(i)));

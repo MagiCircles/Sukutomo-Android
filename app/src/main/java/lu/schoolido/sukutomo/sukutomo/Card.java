@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import org.json.JSONException;
@@ -24,6 +25,7 @@ import java.util.List;
  * Created by arukantara on 23/05/15.
  */
 public class Card implements Parcelable{
+    public static final String FORMAT = "yyyy-MM-dd";
     // General
     private int id = 0;
     private String name = "";
@@ -109,7 +111,7 @@ public class Card implements Parcelable{
         card_idolized_image = object.getString("card_idolized_image");
         video_story = object.getString("video_story");
         japanese_video_story = object.getString("japanese_video_story");
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat format = new SimpleDateFormat(FORMAT);
         try {
             release_date = format.parse(object.getString("release_date"));
         } catch (ParseException e) {
@@ -130,6 +132,9 @@ public class Card implements Parcelable{
         japanese_center_skill = object.getString("japanese_center_skill");
         //center_skill_details = object.getString("center_skill_details");
         //japanese_center_skill_details = object.getString("japanese_center_skill_details");
+
+        Log.d("Card Constructor", skill + object.getString("skill"));
+        Log.d("Card Constructor", release_date + object.getString("release_date"));
     }
 
     public String getImageURL(boolean idolized) {
@@ -271,6 +276,16 @@ public class Card implements Parcelable{
         return release_date;
     }
 
+    public String getRelease_date(String format) {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(release_date);
+    }
+
+    private static Date recoverDate(String str_date, String format) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.parse(str_date);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -303,6 +318,7 @@ public class Card implements Parcelable{
         dest.writeString(japanese_center_skill);
         dest.writeString(center_skill_details);
         dest.writeString(japanese_center_skill_details);
+        dest.writeString(getRelease_date(FORMAT));
     }
 
     public static final Parcelable.Creator<Card> CREATOR
@@ -357,7 +373,7 @@ public class Card implements Parcelable{
         in.readIntArray(idolized_maximum_statistics);
         card_idolized_image = in.readString();
 
-        skill_details = in.readString();
+        skill = in.readString();
         japanese_skill = in.readString();
         skill_details = in.readString();
         japanese_skill_details = in.readString();
@@ -365,7 +381,11 @@ public class Card implements Parcelable{
         japanese_center_skill = in.readString();
         center_skill_details = in.readString();
         japanese_center_skill_details = in.readString();
-
+        try {
+            release_date = recoverDate(in.readString(), FORMAT);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
