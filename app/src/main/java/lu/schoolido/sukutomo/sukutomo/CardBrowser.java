@@ -10,11 +10,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -33,7 +33,6 @@ import java.util.LinkedList;
 
 public class CardBrowser extends Activity {
     static ProgressDialog pDialog;
-    static Bitmap bitmap;
     static ImageView img;
     static String cardImageUrl;
     private String siteURL = "http://schoolido.lu/api/cards/?page=30";
@@ -42,6 +41,7 @@ public class CardBrowser extends Activity {
     private static LinkedList<Card> userCards;
     private GestureDetectorCompat mDetector;
     private final HttpClient Client;
+    private static LruCache<String, Bitmap> mMemoryCache;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -52,6 +52,8 @@ public class CardBrowser extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_browser);
+
+        mMemoryCache = new LruCache<String, Bitmap>(25);
 
         img = (ImageView) findViewById(R.id.card_image);
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
@@ -101,11 +103,13 @@ public class CardBrowser extends Activity {
         //JSONObject obj1 = cardList.getJSONObject(1);
         //cardImageUrl = obj1.getString("card_image");
         showIdolized = false;
-        userCards.getFirst().showImage(showIdolized, bitmap, img);
+        userCards.getFirst().showImage(showIdolized, img);
     }
 
 
-
+    /**
+     * Class used to manage screen gestures.
+     */
     private final class GestureListener extends GenericGestureListener {
         private final String TAG = GestureListener.class.getSimpleName();
 
@@ -119,7 +123,7 @@ public class CardBrowser extends Activity {
         public boolean onSingleTapUp(MotionEvent e) {
             showIdolized = !showIdolized;
             //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            userCards.get(currentCard).showImage(showIdolized, img);
             return true;
         }
 
@@ -147,7 +151,7 @@ public class CardBrowser extends Activity {
                 currentCard = userCards.size() - 1;
 
             //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            userCards.get(currentCard).showImage(showIdolized, img);
 
             return true;
         }
@@ -158,12 +162,25 @@ public class CardBrowser extends Activity {
             currentCard = (currentCard + 1) % userCards.size();
 
             //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, bitmap, img);
+            userCards.get(currentCard).showImage(showIdolized, img);
             return true;
         }
 
     }
 
+    public static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
+    }
+
+    public static Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
+    }
+
+    /**
+     * Class in charge of the initial data download. It may disappear soon,
+     */
     private class LoadCards extends AsyncTask<String, String, Bitmap> {
         @Override
         protected void onPreExecute() {
@@ -177,6 +194,7 @@ public class CardBrowser extends Activity {
             String data = "";
             HttpGet httpget = new HttpGet(siteURL);
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            Bitmap bitmap = null;
             try {
                 data = Client.execute(httpget, responseHandler);
                 getCards(data);

@@ -17,9 +17,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by arukantara on 23/05/15.
@@ -144,15 +142,15 @@ public class Card implements Parcelable{
             return card_image;
     }
 
-    public void showImage(boolean idolized, Bitmap bitmap, ImageView view) {
+    public void showImage(boolean idolized, ImageView view) {
         if(idolized)
-            new LoadImage(bitmap, view).execute(card_idolized_image);
+            new LoadImage(view).execute(card_idolized_image);
         else
-            new LoadImage(bitmap, view).execute(card_image);
+            new LoadImage(view).execute(card_image);
     }
 
     public void showRoundImage(Bitmap bitmap, ImageView view) {
-        new LoadImage(bitmap, view).execute(round_card_image);
+        new LoadImage(view).execute(round_card_image);
     }
 
 
@@ -391,8 +389,7 @@ public class Card implements Parcelable{
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;
         final WeakReference<ImageView> viewReference;
-        protected LoadImage(Bitmap bitmap, ImageView view) {
-            bitmap = bitmap;
+        protected LoadImage(ImageView view) {
             viewReference = new WeakReference<ImageView>( view );
         }
 
@@ -403,7 +400,11 @@ public class Card implements Parcelable{
 
         protected Bitmap doInBackground(String... args) {
             try {
-                bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
+                bitmap = CardBrowser.getBitmapFromMemCache(args[0]);
+                if (bitmap == null) {
+                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
+                    CardBrowser.addBitmapToMemoryCache(args[0], bitmap);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -416,10 +417,8 @@ public class Card implements Parcelable{
             if(image != null){
                 ImageView imageView = viewReference.get();
                 if( imageView != null ) {
-                    imageView.setImageBitmap( bitmap );
+                    imageView.setImageBitmap( image );
                 }
-                //CardBrowser.pDialog.show();
-                //CardBrowser.pDialog.dismiss();
 
             }
         }
