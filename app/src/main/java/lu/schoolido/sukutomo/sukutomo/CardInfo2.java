@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ public class CardInfo2 extends Activity {
     private GestureDetectorCompat mDetector;
     private Card card_info;
     private ImageView im;
+    private static String baseURL = "http://schoolido.lu/api/cardids/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,28 +27,58 @@ public class CardInfo2 extends Activity {
         Intent intent = getIntent();
         card_info = (Card) intent.getParcelableExtra("card");
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
-        // Filling text views
+
+        // Skill name
         TextView txt = (TextView) findViewById(R.id.skill_name);
         if(card_info.getSkill()==null || card_info.getSkill().equalsIgnoreCase("none")  || card_info.getSkill_details().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
             txt.setText(card_info.getSkill());
 
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSearch("skill", card_info.getSkill());
+            }
+        });
+
+        // Skill details
         txt = (TextView) findViewById(R.id.skill_details);
         if(card_info.getSkill_details()==null || card_info.getSkill_details().equalsIgnoreCase("null"))
             txt.setText("");
         else
             txt.setText(card_info.getSkill_details());
 
+        // Center skill
         txt = (TextView) findViewById(R.id.center_skill);
         if(card_info.getCenter_skill()==null || card_info.getCenter_skill().equalsIgnoreCase("none") || card_info.getCenter_skill().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
             txt.setText(card_info.getCenter_skill());
 
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSearch("center_skill", card_info.getCenter_skill());
+            }
+        });
+
         // Round Image
         im = (ImageView) findViewById(R.id.roundImage);
         card_info.showRoundImage(null, im);
+    }
+
+    /** Creates a new CardBrowser Activity with the requested filter.
+     * This may create some activities and consume memory, but gives to the users
+     * the option to turn back over their steps.
+     * @param field Field to filter.
+     * @param value Value to apply to the filter
+     */
+    private void startSearch(String field, String value) {
+        Intent search = new Intent(getApplicationContext(), CardBrowser.class);
+
+        search.putExtra("url", baseURL + "?" + field + "=" + value.replace(" ", "%20"));
+        startActivity(search);
     }
 
     @Override

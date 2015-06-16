@@ -58,6 +58,9 @@ public class CardBrowser extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_browser);
 
+        Intent intent = getIntent();
+        if(intent.hasExtra("url"))
+            siteURL = intent.getStringExtra("url");
         views = new LinkedList<>();
         views.add((ImageView) findViewById(R.id.card_image));
         views.add((ImageView) findViewById(R.id.card_image2));
@@ -146,7 +149,7 @@ public class CardBrowser extends Activity {
         @Override
         public boolean onSlideUp() {
             views.get(currentView).startAnimation(super.slideExitUpAnimation);
-            if (currentCardIndex > 1)
+            if (currentCardIndex > 0)
                 currentCardIndex = currentCardIndex - 1;
             else
                 currentCardIndex = filteredCards.size() - 1;

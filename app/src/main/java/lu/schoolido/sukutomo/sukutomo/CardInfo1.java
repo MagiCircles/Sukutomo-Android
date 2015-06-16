@@ -38,6 +38,7 @@ public class CardInfo1 extends Activity {
     private ProgressBar cool_stats_bar;
     private GestureDetectorCompat mDetector;
     private ImageView im;
+    private static String baseURL = "http://schoolido.lu/api/cardids/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +51,41 @@ public class CardInfo1 extends Activity {
         TextView txt = (TextView) findViewById(R.id.card_id);
         txt.setText(getString(R.string.Card) + " #" + String.valueOf(card_info.getId()));
 
+        // Name field
         txt = (TextView) findViewById(R.id.card_name);
         txt.setText(card_info.getName());
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSearch("name", card_info.getName());
+            }
+        });
+
+        // Rarity field
         txt = (TextView) findViewById(R.id.card_rarity);
         txt.setText(card_info.getRarity().toString());
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSearch("rarity", card_info.getRarity().toString());
+            }
+        });
+
+        // Attribute
         txt = (TextView) findViewById(R.id.card_attr);
         txt.setText(card_info.getAttribute().toString());
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String attr = card_info.getAttribute().toString();
+                char first = Character.toUpperCase(attr.charAt(0));
+                startSearch("attribute", first + attr.substring(1).toLowerCase());
+            }
+        });
+
+
+        // Release Date
         txt = (TextView) findViewById(R.id.release_date);
-
-
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM d yyyy", Locale.US);
         if(card_info.getRelease_date()!=null)
             txt.setText(sdf.format(card_info.getRelease_date()).toString());
@@ -112,6 +139,19 @@ public class CardInfo1 extends Activity {
             }
         });
 
+    }
+
+    /** Creates a new CardBrowser Activity with the requested filter.
+     * This may create some activities and consume memory, but gives to the users
+     * the option to turn back over their steps.
+     * @param field Field to filter.
+     * @param value Value to apply to the filter
+     */
+    private void startSearch(String field, String value) {
+        Intent search = new Intent(getApplicationContext(), CardBrowser.class);
+
+        search.putExtra("url", baseURL + "?" + field + "=" + value.replace(" ", "%20"));
+        startActivity(search);
     }
 
     /** Updates the stats bars and text with the stats received.
