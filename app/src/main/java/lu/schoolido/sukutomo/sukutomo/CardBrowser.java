@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
@@ -33,7 +34,8 @@ import java.util.LinkedList;
 
 public class CardBrowser extends Activity {
     static ProgressDialog pDialog;
-    static ImageView img;
+    static LinkedList<ImageView> views;
+    static int currentView = 0;
     static String cardImageUrl;
     private String siteURL = "http://schoolido.lu/api/cards/?page=30";
     private static int currentCard = 0;
@@ -42,6 +44,7 @@ public class CardBrowser extends Activity {
     private GestureDetectorCompat mDetector;
     private final HttpClient Client;
     private static LruCache<String, Bitmap> mMemoryCache;
+    private static Drawable loadingImage;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -55,7 +58,10 @@ public class CardBrowser extends Activity {
 
         mMemoryCache = new LruCache<String, Bitmap>(25);
 
-        img = (ImageView) findViewById(R.id.card_image);
+        views = new LinkedList<>();
+        views.add((ImageView) findViewById(R.id.card_image));
+        views.add((ImageView) findViewById(R.id.card_image2));
+        loadingImage = getResources().getDrawable(R.drawable.loading);
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
 
         LoadCards li = new LoadCards();
@@ -103,7 +109,7 @@ public class CardBrowser extends Activity {
         //JSONObject obj1 = cardList.getJSONObject(1);
         //cardImageUrl = obj1.getString("card_image");
         showIdolized = false;
-        userCards.getFirst().showImage(showIdolized, img);
+        userCards.getFirst().showImage(showIdolized, views.getFirst());
     }
 
 
@@ -123,7 +129,7 @@ public class CardBrowser extends Activity {
         public boolean onSingleTapUp(MotionEvent e) {
             showIdolized = !showIdolized;
             //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, img);
+            userCards.get(currentCard).showImage(showIdolized, views.get(currentView));
             return true;
         }
 
@@ -144,28 +150,35 @@ public class CardBrowser extends Activity {
 
         @Override
         public boolean onSlideUp() {
-            img.startAnimation(super.slideUpAnimation);
+            views.get(currentView).startAnimation(super.slideExitUpAnimation);
             if (currentCard > 1)
                 currentCard = currentCard - 1;
             else
                 currentCard = userCards.size() - 1;
-
+            changeViews();
             //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, img);
-
+            userCards.get(currentCard).showImage(showIdolized, views.get(currentView));
+            views.get(currentView).startAnimation(super.slideEnterDownAnimation);
             return true;
         }
 
         @Override
         public boolean onSlideDown() {
-            img.startAnimation(super.slideDownAnimation);
+            views.get(currentView).startAnimation(super.slideExitDownAnimation);
             currentCard = (currentCard + 1) % userCards.size();
+            changeViews();
 
             //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, img);
+            userCards.get(currentCard).showImage(showIdolized, views.get(currentView));
+            views.get(currentView).startAnimation(super.slideEnterUpAnimation);
             return true;
         }
 
+    }
+
+    private static void changeViews() {
+        currentView = (currentView + 1) % 2;
+        views.get(currentView).setImageDrawable(loadingImage);
     }
 
     public static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
@@ -186,7 +199,7 @@ public class CardBrowser extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(CardBrowser.this);
-            pDialog.setMessage("Loading Image ....");
+            pDialog.setMessage("Loading cards ...");
             pDialog.show();
         }
 
@@ -216,7 +229,7 @@ public class CardBrowser extends Activity {
         protected void onPostExecute(Bitmap image) {
 
             if(image != null){
-                img.setImageBitmap(image);
+                views.get(currentView).setImageBitmap(image);
                 pDialog.show();
                 pDialog.dismiss();
 

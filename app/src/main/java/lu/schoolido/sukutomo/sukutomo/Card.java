@@ -62,7 +62,7 @@ public class Card implements Parcelable{
     private String center_skill_details = "None";
     private String japanese_center_skill_details = "無し";
     //private Bitmap bitmap;
-    //private ImageView img;
+    //private ImageView views;
 
     public Card(JSONObject object) throws JSONException {
         card_image = object.getString("card_image");
@@ -278,12 +278,18 @@ public class Card implements Parcelable{
 
     public String getRelease_date(String format) {
         DateFormat dateFormat = new SimpleDateFormat(format);
-        return dateFormat.format(release_date);
+        if(release_date != null)
+            return dateFormat.format(release_date);
+        else
+            return null;
     }
 
     private static Date recoverDate(String str_date, String format) throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat(format);
-        return dateFormat.parse(str_date);
+        if(str_date != null)
+            return dateFormat.parse(str_date);
+        else
+            return null;
     }
 
     @Override
@@ -421,7 +427,7 @@ public class Card implements Parcelable{
                 ImageView imageView = viewReference.get();
                 Log.d("im", "Y:" + imageView.getY());
                 if( imageView != null ) {
-                    imageView.setImageBitmap( image );
+                    imageView.setImageBitmap(image);
                     //imageView.clearAnimation();
                 }
 

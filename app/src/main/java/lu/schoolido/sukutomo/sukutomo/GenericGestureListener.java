@@ -14,18 +14,23 @@ import android.view.animation.AnimationUtils;
 public class GenericGestureListener extends GestureDetector.SimpleOnGestureListener {
     private static final int SLIDE_THRESHOLD = 100;
     private final String TAG = GenericGestureListener.class.getSimpleName();
-    protected static Animation slideUpAnimation;
-    protected static Animation slideDownAnimation;
+    protected static Animation slideExitUpAnimation;
+    protected static Animation slideExitDownAnimation;
     protected static Animation slideExitRightAnimation;
+    protected static Animation slideEnterRightAnimation;
     protected static Animation slideExitLeftAnimation;
     protected static Animation slideEnterLeftAnimation;
+    protected static Animation slideEnterUpAnimation;
+    protected static Animation slideEnterDownAnimation;
 
     public GenericGestureListener(Context context) {
-        slideUpAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_up);
-        slideDownAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_down);
+        slideExitUpAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_up);
+        slideExitDownAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_down);
+        slideEnterUpAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_enter_up);
+        slideEnterDownAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_enter_down);
         slideExitRightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_right);
         slideExitLeftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_left);
-        slideExitRightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_enter_right);
+        slideEnterRightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_enter_right);
         slideEnterLeftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_enter_left);
     }
 
