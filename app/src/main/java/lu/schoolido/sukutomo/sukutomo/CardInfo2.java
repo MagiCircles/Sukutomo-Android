@@ -27,7 +27,7 @@ public class CardInfo2 extends Activity {
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
         // Filling text views
         TextView txt = (TextView) findViewById(R.id.skill_name);
-        if(card_info.getSkill()==null || card_info.getSkill().equalsIgnoreCase("none"))
+        if(card_info.getSkill()==null || card_info.getSkill().equalsIgnoreCase("none")  || card_info.getSkill_details().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
             txt.setText(card_info.getSkill());

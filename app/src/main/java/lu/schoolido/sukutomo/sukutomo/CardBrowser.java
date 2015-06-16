@@ -33,22 +33,24 @@ import java.util.LinkedList;
 
 
 public class CardBrowser extends Activity {
-    static ProgressDialog pDialog;
-    static LinkedList<ImageView> views;
-    static int currentView = 0;
-    static String cardImageUrl;
-    private String siteURL = "http://schoolido.lu/api/cards/?page=30";
-    private static int currentCard = 0;
-    private static boolean showIdolized = false;
-    private static LinkedList<Card> userCards;
+    private ProgressDialog pDialog;
+    private LinkedList<ImageView> views;
+    private int currentView = 0;
+    private String cardImageUrl;
+    private String siteURL = "http://schoolido.lu/api/cardids/";
+    private boolean showIdolized = false;
+    private LinkedList<Integer> filteredCards;
+    private int currentCardIndex = 0;
+    private Card currentCard;
     private GestureDetectorCompat mDetector;
     private final HttpClient Client;
-    private static LruCache<String, Bitmap> mMemoryCache;
+    private static LruCache<String, Bitmap> mMemoryCache = new LruCache<String, Bitmap>(25);
     private static Drawable loadingImage;
+    private LoadCards li;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
-        userCards = new LinkedList<>();
+        filteredCards = new LinkedList<>();
     }
 
     @Override
@@ -56,15 +58,13 @@ public class CardBrowser extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_browser);
 
-        mMemoryCache = new LruCache<String, Bitmap>(25);
-
         views = new LinkedList<>();
         views.add((ImageView) findViewById(R.id.card_image));
         views.add((ImageView) findViewById(R.id.card_image2));
         loadingImage = getResources().getDrawable(R.drawable.loading);
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
 
-        LoadCards li = new LoadCards();
+        LoadCards li = new LoadCards(true);
         li.execute();
     }
 
@@ -97,19 +97,14 @@ public class CardBrowser extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected static void getCards(String data) throws JSONException {
-        JSONObject obj = new JSONObject(data);
-        JSONArray cardList = obj.getJSONArray("results");
+    protected void getCards(String data) throws JSONException {
+        JSONArray cardList = new JSONArray(data);
+        //JSONArray cardList = obj.getJSONArray();
+        Log.d("getCards", "JSONObject: " + cardList.toString());
         int n = cardList.length();
-        Log.d("getCards", n + " cartas");
         for(int i=0; i < n; i++) {
-            System.out.println(String.valueOf(cardList.getJSONObject(i)));
-            userCards.add(new Card(cardList.getJSONObject(i)));
+            filteredCards.add(cardList.getInt(i));
         }
-        //JSONObject obj1 = cardList.getJSONObject(1);
-        //cardImageUrl = obj1.getString("card_image");
-        showIdolized = false;
-        userCards.getFirst().showImage(showIdolized, views.getFirst());
     }
 
 
@@ -128,8 +123,8 @@ public class CardBrowser extends Activity {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             showIdolized = !showIdolized;
-            //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, views.get(currentView));
+            //Toast.makeText(CardBrowser.this, filteredCards.get(currentCardIndex).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            currentCard.showImage(showIdolized, views.get(currentView));
             return true;
         }
 
@@ -142,7 +137,7 @@ public class CardBrowser extends Activity {
         public boolean onSlideRight() {
             Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
 
-            info1.putExtra("card", userCards.get(currentCard));
+            info1.putExtra("card", currentCard);
             startActivity(info1);
             overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
             return true;
@@ -151,13 +146,14 @@ public class CardBrowser extends Activity {
         @Override
         public boolean onSlideUp() {
             views.get(currentView).startAnimation(super.slideExitUpAnimation);
-            if (currentCard > 1)
-                currentCard = currentCard - 1;
+            if (currentCardIndex > 1)
+                currentCardIndex = currentCardIndex - 1;
             else
-                currentCard = userCards.size() - 1;
+                currentCardIndex = filteredCards.size() - 1;
             changeViews();
-            //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, views.get(currentView));
+            //Toast.makeText(CardBrowser.this, filteredCards.get(currentCardIndex).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            LoadCards li = new LoadCards(false);
+            li.execute();
             views.get(currentView).startAnimation(super.slideEnterDownAnimation);
             return true;
         }
@@ -165,18 +161,19 @@ public class CardBrowser extends Activity {
         @Override
         public boolean onSlideDown() {
             views.get(currentView).startAnimation(super.slideExitDownAnimation);
-            currentCard = (currentCard + 1) % userCards.size();
+            currentCardIndex = (currentCardIndex + 1) % filteredCards.size();
             changeViews();
 
-            //Toast.makeText(CardBrowser.this, userCards.get(currentCard).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            userCards.get(currentCard).showImage(showIdolized, views.get(currentView));
+            //Toast.makeText(CardBrowser.this, filteredCards.get(currentCardIndex).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+            LoadCards li = new LoadCards(false);
+            li.execute();
             views.get(currentView).startAnimation(super.slideEnterUpAnimation);
             return true;
         }
 
     }
 
-    private static void changeViews() {
+    private void changeViews() {
         currentView = (currentView + 1) % 2;
         views.get(currentView).setImageDrawable(loadingImage);
     }
@@ -192,53 +189,47 @@ public class CardBrowser extends Activity {
     }
 
     /**
-     * Class in charge of the initial data download. It may disappear soon,
+     * Class in charge of the initial card id List and the card info download.
      */
-    private class LoadCards extends AsyncTask<String, String, Bitmap> {
+    private class LoadCards extends AsyncTask<String, String, Void> {
+
+        private final boolean initial;
+
+        /**
+         * @param initial indicates if the object will be used for the initial download or a single card download.
+         */
+        protected LoadCards(boolean initial) {
+            this.initial = initial;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(CardBrowser.this);
             pDialog.setMessage("Loading cards ...");
-            pDialog.show();
+            //pDialog.show();
         }
 
-        protected Bitmap doInBackground(String... args) {
+        protected Void doInBackground(String... args) {
             String data = "";
-            HttpGet httpget = new HttpGet(siteURL);
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            Bitmap bitmap = null;
             try {
-                data = Client.execute(httpget, responseHandler);
-                getCards(data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+                if(initial) {
+                    data = Client.execute(new HttpGet(siteURL), responseHandler);
+                    getCards(data);
+                }
+                String card = Client.execute(new HttpGet("http://schoolido.lu/api/cards/" + filteredCards.get(currentCardIndex) + "/"), responseHandler);
+                currentCard = new Card(new JSONObject(card));
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
-
-            try {
-                bitmap = BitmapFactory.decodeStream((InputStream) new URL(cardImageUrl).getContent());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return bitmap;
+            return null;
         }
 
-        protected void onPostExecute(Bitmap image) {
-
-            if(image != null){
-                views.get(currentView).setImageBitmap(image);
-                pDialog.show();
-                pDialog.dismiss();
-
-            }else{
-
-                pDialog.dismiss();
-                //Toast.makeText(CardBrowser.this, "Not found", Toast.LENGTH_SHORT).show();
-
-            }
+        protected void onPostExecute(Void v) {
+            pDialog.show();
+            pDialog.dismiss();
+            currentCard.showImage(showIdolized, views.get(currentView));
         }
     }
 }

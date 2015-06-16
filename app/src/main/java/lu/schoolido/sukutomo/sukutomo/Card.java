@@ -96,7 +96,7 @@ public class Card implements Parcelable{
             rarity = Rarity.N;
 
         // IdolCard
-        //event = "";
+        //event = "";new Card(
         hp = object.getInt("hp");
         minimum_statistics[0] = object.getInt("minimum_statistics_smile");
         minimum_statistics[1] = object.getInt("minimum_statistics_pure");
