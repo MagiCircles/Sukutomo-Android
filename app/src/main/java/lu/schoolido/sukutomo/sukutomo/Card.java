@@ -83,6 +83,7 @@ public class Card implements Parcelable{
             attribute = Attribute.COOL;
         japan_only = object.getBoolean("japan_only");
         card_image = object.getString("card_image");
+        Log.d("im", "URL constructor:" + card_image);
         round_card_image = object.getString("round_card_image");
         String r = object.getString("rarity");
         if(r.equalsIgnoreCase("r"))
@@ -143,7 +144,8 @@ public class Card implements Parcelable{
     }
 
     public void showImage(boolean idolized, ImageView view) {
-        if(idolized)
+        Log.d("im", "ID: " + id + "\n URL showImage:" + card_image);
+        if(idolized || is_promo)
             new LoadImage(view).execute(card_idolized_image);
         else
             new LoadImage(view).execute(card_image);
@@ -402,6 +404,7 @@ public class Card implements Parcelable{
             try {
                 bitmap = CardBrowser.getBitmapFromMemCache(args[0]);
                 if (bitmap == null) {
+                    Log.d("im", "URL:" + args[0]);
                     bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
                     CardBrowser.addBitmapToMemoryCache(args[0], bitmap);
                 }
@@ -416,8 +419,10 @@ public class Card implements Parcelable{
 
             if(image != null){
                 ImageView imageView = viewReference.get();
+                Log.d("im", "Y:" + imageView.getY());
                 if( imageView != null ) {
                     imageView.setImageBitmap( image );
+                    //imageView.clearAnimation();
                 }
 
             }
