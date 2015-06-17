@@ -15,6 +15,7 @@ import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 import org.apache.http.client.HttpClient;
@@ -66,6 +67,16 @@ public class CardBrowser extends Activity {
         views.add((ImageView) findViewById(R.id.card_image2));
         loadingImage = getResources().getDrawable(R.drawable.loading);
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
+        ImageView menuButton = (ImageView) findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
+
+                startActivity(menu);
+                overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+            }
+        });
 
         LoadCards li = new LoadCards(true);
         li.execute();
