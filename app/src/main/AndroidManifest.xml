@@ -42,6 +42,15 @@
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
+        <activity
+            android:name=".IdolsSearchActivity"
+            android:label="@string/title_activity_idols" >
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

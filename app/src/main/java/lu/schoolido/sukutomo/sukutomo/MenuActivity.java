@@ -2,7 +2,6 @@ package lu.schoolido.sukutomo.sukutomo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,22 +38,34 @@ public class MenuActivity extends Activity {
 
                 switch (position) {
                     case 0:
-                        Intent login = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(login);
-                        overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+                        startActivity(LoginActivity.class);
                         break; // Log in screen
-                    case 1: finish(); // go to the CardBrowser
-                            break;
-                    case 2: break; // go to idols list
-                    case 3: break; // go to browser view for events
-                    case 4: break; // go to browser view for the contest
-                    case 5: break; // go to browser view for users
-                    case 6: break; // go to ...
-                    case 7: break; // go to ...
+                    case 1:
+                        finish(); // go to the CardBrowser
+                        break;
+                    case 2:
+                        startActivity(IdolsSearchActivity.class);
+                        break; // go to idols list
+                    case 3:
+                        break; // go to browser view for events
+                    case 4:
+                        break; // go to browser view for the contest
+                    case 5:
+                        break; // go to browser view for users
+                    case 6:
+                        break; // go to ...
+                    case 7:
+                        break; // go to ...
                 }
 
             }
         });
+    }
+
+    private void startActivity(Class cls) {
+        Intent login = new Intent(getApplicationContext(), cls);
+        startActivity(login);
+        overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
     }
 
     @Override

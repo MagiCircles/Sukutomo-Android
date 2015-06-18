@@ -27,5 +27,10 @@
     <string name="Events">Events</string>
     <string name="Contest">Contest</string>
     <string name="Players">Players</string>
+    <string name="title_activity_idols">IdolsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="search_idols">Search idol</string>
+    <string name="search_idols_hint">Idol name, birth, etc.</string>
 
 </resources>

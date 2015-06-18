@@ -4,18 +4,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="lu.schoolido.sukutomo.sukutomo.MenuActivity"
+    tools:context="lu.schoolido.sukutomo.sukutomo.IdolsSearchActivity"
     android:background="@color/back_pink">
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/menu_list"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:divider="@color/back_pink"
-        android:dividerHeight="2dp"
-        android:background="@color/list_pink"
-        android:textAlignment="center" />
+        android:id="@+id/idolsList"
+        android:background="@color/list_pink" />
 </RelativeLayout>
