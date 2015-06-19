@@ -140,6 +140,7 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
 
                     search.putExtra("url", baseURL + "?name=" + idolName.replace(" ", "%20"));
                     startActivity(search);
+                    overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
                 }
             });
         }

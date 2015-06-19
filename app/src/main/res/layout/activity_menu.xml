@@ -16,6 +16,6 @@
         android:layout_alignParentEnd="true"
         android:divider="@color/back_pink"
         android:dividerHeight="2dp"
-        android:background="@color/list_pink"
+        android:background="#ffff51d7"
         android:textAlignment="center" />
 </RelativeLayout>

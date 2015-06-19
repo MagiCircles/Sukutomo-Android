@@ -45,11 +45,17 @@
         <activity
             android:name=".IdolsSearchActivity"
             android:label="@string/title_activity_idols" >
-            <meta-data android:name="android.app.searchable"
+            <meta-data
+                android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".WebActivity"
+            android:label="@string/title_activity_web" >
         </activity>
     </application>
 

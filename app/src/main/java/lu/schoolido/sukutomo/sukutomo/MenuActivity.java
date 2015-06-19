@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 public class MenuActivity extends Activity {
@@ -38,23 +40,27 @@ public class MenuActivity extends Activity {
 
                 switch (position) {
                     case 0:
-                        startActivity(LoginActivity.class);
+                        startActivity(LoginActivity.class, null);
                         break; // Log in screen
                     case 1:
                         finish(); // go to the CardBrowser
                         break;
                     case 2:
-                        startActivity(IdolsSearchActivity.class);
+                        startActivity(IdolsSearchActivity.class, null);
                         break; // go to idols list
                     case 3:
+                        startActivity(WebActivity.class, "http://schoolido.lu/events/");
                         break; // go to browser view for events
                     case 4:
+                        startActivity(WebActivity.class, "http://schoolido.lu/contest/");
                         break; // go to browser view for the contest
                     case 5:
+                        startActivity(WebActivity.class, "http://schoolido.lu/users/");
                         break; // go to browser view for users
                     case 6:
-                        break; // go to ...
                     case 7:
+                        Toast toast = Toast.makeText(getApplicationContext(), "Be patient, we'll develop this soon...", Toast.LENGTH_SHORT);
+                        toast.show();
                         break; // go to ...
                 }
 
@@ -62,10 +68,12 @@ public class MenuActivity extends Activity {
         });
     }
 
-    private void startActivity(Class cls) {
-        Intent login = new Intent(getApplicationContext(), cls);
-        startActivity(login);
-        overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+    private void startActivity(Class cls, String url) {
+        Intent act = new Intent(getApplicationContext(), cls);
+        if(url != null)
+            act.putExtra("url", url);
+        startActivity(act);
+        //overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
     }
 
     @Override

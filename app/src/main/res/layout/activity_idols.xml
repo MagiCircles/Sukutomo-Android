@@ -11,5 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/idolsList"
-        android:background="@color/list_pink" />
+        android:background="@color/list_pink"
+        android:divider="@color/back_pink"
+        android:dividerHeight="2dp"
+        android:fastScrollAlwaysVisible="false"
+        android:fastScrollEnabled="true" />
 </RelativeLayout>
