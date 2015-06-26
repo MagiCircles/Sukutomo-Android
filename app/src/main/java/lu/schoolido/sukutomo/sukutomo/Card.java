@@ -79,8 +79,10 @@ public class Card implements Parcelable{
             attribute = Attribute.SMILE;
         else if(at.equalsIgnoreCase("pure"))
             attribute = Attribute.PURE;
-        else
+        else if(at.equalsIgnoreCase("cool"))
             attribute = Attribute.COOL;
+        else
+            attribute = Attribute.ALL;
         japan_only = object.getBoolean("japan_only");
         card_image = object.getString("card_image");
         Log.d("im", "URL constructor:" + card_image);
@@ -352,8 +354,11 @@ public class Card implements Parcelable{
             case 1:
                 attribute = Attribute.PURE;
                 break;
-            default:
+            case 2:
                 attribute = Attribute.COOL;
+                break;
+            default:
+                attribute = Attribute.ALL;
         }
         japan_only = in.readInt() != 0;
         card_image = in.readString();
@@ -398,7 +403,7 @@ public class Card implements Parcelable{
         Bitmap bitmap;
         final WeakReference<ImageView> viewReference;
         protected LoadImage(ImageView view) {
-            viewReference = new WeakReference<ImageView>( view );
+            viewReference = new WeakReference<>( view );
         }
 
         @Override
