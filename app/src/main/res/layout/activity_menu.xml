@@ -13,9 +13,5 @@
         android:id="@+id/menu_list"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:divider="@color/back_pink"
-        android:dividerHeight="2dp"
-        android:background="#ffff51d7"
-        android:textAlignment="center" />
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

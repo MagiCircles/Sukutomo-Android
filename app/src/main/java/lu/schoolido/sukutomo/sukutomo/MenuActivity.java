@@ -3,6 +3,7 @@ package lu.schoolido.sukutomo.sukutomo;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
-public class MenuActivity extends Activity {
+public class MenuActivity extends ActionBarActivity {
     ListView listView;
 
     @Override
@@ -79,7 +80,7 @@ public class MenuActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_menu, menu);
+        //getMenuInflater().inflate(R.menu.menu_menu, menu);
         return true;
     }
 

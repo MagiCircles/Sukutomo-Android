@@ -2,7 +2,24 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:textAppearanceListItem">@color/white</item>
+        <item name="android:actionBarItemBackground">@color/bar_pink</item>
+        <item name="android:actionBarStyle">@color/bar_pink</item>
+        <item name="actionBarStyle">@style/ActionBar.Sukutomo_pink</item>
+        <item name="android:listViewStyle">@style/ListView.Sukutomo_pink</item>
     </style>
+
+    <style name="ActionBar.Sukutomo_pink" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="background">@color/bar_pink</item>
+        <item name="backgroundStacked">@color/bar_pink</item>
+        <item name="backgroundSplit">@color/bar_pink</item>
+    </style>
+
+    <style name="ListView.Sukutomo_pink" parent="android:style/Widget.ListView">
+        <item name="android:background">@color/list_pink</item>
+        <item name="android:divider">@color/back_pink</item>
+        <item name="android:dividerHeight">2dp</item>
+    </style>
+
 
 </resources>
