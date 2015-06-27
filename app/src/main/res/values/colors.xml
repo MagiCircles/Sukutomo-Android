@@ -2,8 +2,12 @@
 <resources>
     <color name="white">#ffffff</color>
     <color name="bar_pink">#ee00e4</color>
+    <color name="back_purple">#EEBBFF</color>
     <color name="back_pink">#FFCCFF</color>
+    <color name="back_green">#CCFFCC</color>
+    <color name="back_blue">#CCCCFF</color>
     <color name="title_back_pink">#DF5A9E</color>
+    <color name="all_purple">#BB55CC</color>
     <color name="smile_pink">#ffff00c5</color>
     <color name="pure_green">#FF0DC132</color>
     <color name="cool_blue">#FF0564FF</color>

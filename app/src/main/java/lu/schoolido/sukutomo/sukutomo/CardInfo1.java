@@ -12,10 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+
 
 
 /**
@@ -44,11 +46,47 @@ public class CardInfo1 extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_info1);
+        TextView txt;
+        RelativeLayout layout;
         Intent intent = getIntent();
         card_info = (Card) intent.getParcelableExtra("card");
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
+
+        // Showing different colors based on card attribute
+        switch (card_info.getAttribute()) {
+            case SMILE:
+                layout = (RelativeLayout) findViewById(R.id.card_info1);
+                layout.setBackgroundColor(getResources().getColor(R.color.back_pink));
+                txt = (TextView) findViewById(R.id.card_id);
+                txt.setBackgroundResource(R.drawable.title_back_smile);
+                txt = (TextView) findViewById(R.id.release_date_text);
+                txt.setBackgroundResource(R.drawable.title_back_smile);
+                txt = (TextView) findViewById(R.id.stats_text);
+                txt.setBackgroundResource(R.drawable.title_back_smile);
+                break;
+            case PURE:
+                layout = (RelativeLayout) findViewById(R.id.card_info1);
+                layout.setBackgroundColor(getResources().getColor(R.color.back_green));
+                txt = (TextView) findViewById(R.id.card_id);
+                txt.setBackgroundResource(R.drawable.title_back_pure);
+                txt = (TextView) findViewById(R.id.release_date_text);
+                txt.setBackgroundResource(R.drawable.title_back_pure);
+                txt = (TextView) findViewById(R.id.stats_text);
+                txt.setBackgroundResource(R.drawable.title_back_pure);
+                break;
+            case COOL:
+                layout = (RelativeLayout) findViewById(R.id.card_info1);
+                layout.setBackgroundColor(getResources().getColor(R.color.back_blue));
+                txt = (TextView) findViewById(R.id.card_id);
+                txt.setBackgroundResource(R.drawable.title_back_cool);
+                txt = (TextView) findViewById(R.id.release_date_text);
+                txt.setBackgroundResource(R.drawable.title_back_cool);
+                txt = (TextView) findViewById(R.id.stats_text);
+                txt.setBackgroundResource(R.drawable.title_back_cool);
+                break;
+        }
         // Filling text views
-        TextView txt = (TextView) findViewById(R.id.card_id);
+        txt = (TextView) findViewById(R.id.card_id);
         txt.setText(getString(R.string.Card) + " #" + String.valueOf(card_info.getId()));
 
         // Name field

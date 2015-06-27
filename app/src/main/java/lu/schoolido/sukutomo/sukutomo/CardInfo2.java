@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -24,12 +25,43 @@ public class CardInfo2 extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_info2);
+        TextView txt;
+        RelativeLayout layout;
         Intent intent = getIntent();
         card_info = (Card) intent.getParcelableExtra("card");
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
 
+
+        // Showing different colors based on card attribute
+        switch (card_info.getAttribute()) {
+            case SMILE:
+                layout = (RelativeLayout) findViewById(R.id.card_info2);
+                layout.setBackgroundColor(getResources().getColor(R.color.back_pink));
+                txt = (TextView) findViewById(R.id.card_id);
+                txt.setBackgroundResource(R.drawable.title_back_smile);
+                txt = (TextView) findViewById(R.id.release_date_text);
+                txt.setBackgroundResource(R.drawable.title_back_smile);
+                break;
+            case PURE:
+                layout = (RelativeLayout) findViewById(R.id.card_info2);
+                layout.setBackgroundColor(getResources().getColor(R.color.back_green));
+                txt = (TextView) findViewById(R.id.card_id);
+                txt.setBackgroundResource(R.drawable.title_back_pure);
+                txt = (TextView) findViewById(R.id.release_date_text);
+                txt.setBackgroundResource(R.drawable.title_back_pure);
+                break;
+            case COOL:
+                layout = (RelativeLayout) findViewById(R.id.card_info2);
+                layout.setBackgroundColor(getResources().getColor(R.color.back_blue));
+                txt = (TextView) findViewById(R.id.card_id);
+                txt.setBackgroundResource(R.drawable.title_back_cool);
+                txt = (TextView) findViewById(R.id.release_date_text);
+                txt.setBackgroundResource(R.drawable.title_back_cool);
+                break;
+        }
+
         // Skill name
-        TextView txt = (TextView) findViewById(R.id.skill_name);
+        txt = (TextView) findViewById(R.id.skill_name);
         if(card_info.getSkill()==null || card_info.getSkill().equalsIgnoreCase("none")  || card_info.getSkill_details().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
