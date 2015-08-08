@@ -180,6 +180,10 @@ public class CardInfo1 extends Activity {
             }
         });
 
+        if(card_info.is_promo()) {
+            level_button2.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     /** Creates a new CardBrowser Activity with the requested filter.

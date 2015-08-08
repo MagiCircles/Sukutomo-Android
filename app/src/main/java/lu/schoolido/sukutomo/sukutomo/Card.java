@@ -321,6 +321,7 @@ public class Card implements Parcelable{
         dest.writeString(card_image);
         dest.writeString(round_card_image);
         dest.writeInt(rarity.ordinal());
+        dest.writeInt(is_promo ? 1 : 0);
 
         dest.writeInt(hp);
         dest.writeIntArray(minimum_statistics);
@@ -387,6 +388,7 @@ public class Card implements Parcelable{
             default:
                 rarity = Rarity.N;
         }
+        is_promo = in.readInt() != 0;
 
         hp = in.readInt();
         in.readIntArray(minimum_statistics);
@@ -429,7 +431,8 @@ public class Card implements Parcelable{
                 bitmap = CardBrowser.getBitmapFromMemCache(args[0]);
                 if (bitmap == null) {
                     Log.d("im", "URL:" + args[0]);
-                    if(args[1] != null) {
+                    Log.d("im", "URL:" + args[1]);
+                    if(args[1] != null && args[1].length() > 0) {
                         bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[1]).getContent());
                         CardBrowser.addBitmapToMemoryCache(args[1], bitmap);
                     }
