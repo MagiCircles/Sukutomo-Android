@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 
 public class WebActivity extends Activity {
@@ -20,6 +21,7 @@ public class WebActivity extends Activity {
         URL = intent.getStringExtra("url");
 
         WebView wv = (WebView) findViewById(R.id.webView);
+        wv.setWebViewClient(new SukuTomoWebClient());
         wv.loadUrl(URL);
     }
 
@@ -43,5 +45,13 @@ public class WebActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class SukuTomoWebClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
     }
 }
