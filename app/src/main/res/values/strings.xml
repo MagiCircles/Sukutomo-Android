@@ -29,7 +29,6 @@
     <string name="Players">Players</string>
     <string name="title_activity_idols">Idols</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="search_idols">Search idol</string>
     <string name="search_idols_hint">Idol name, birth, etc.</string>
     <string name="title_activity_web">WebActivity</string>

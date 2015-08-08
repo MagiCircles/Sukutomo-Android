@@ -24,4 +24,10 @@
     <string name="Contest">Concurso</string>
     <string name="Players">Jugadores</string>
     <string name="search_idols">Search idol</string>
+    <string name="search_idols_hint">Nombre, cumpleaños, etc.</string>
+
+    <string name="stats">Stats</string>
+    <string name="title_activity_web">WebActivity</string>
+    <string name="title_activity_idols">Idols</string>
+    <string name="title_activity_menu">School Idol Tomodachi</string>
 </resources>
