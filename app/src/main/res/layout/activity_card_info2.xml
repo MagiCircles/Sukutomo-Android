@@ -105,12 +105,11 @@
         android:layout_gravity="right"
         android:src="@drawable/round"
         android:scaleType="fitXY"
-        android:minHeight="64dp"
-        android:minWidth="64dp"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:layout_alignTop="@+id/frameLayout"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/skill_name" />
+        android:minHeight="64dp"
+        android:minWidth="64dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
 
 </RelativeLayout>
