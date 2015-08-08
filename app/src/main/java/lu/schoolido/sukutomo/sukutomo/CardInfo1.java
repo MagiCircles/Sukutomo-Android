@@ -3,6 +3,7 @@ package lu.schoolido.sukutomo.sukutomo;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.view.Menu;
@@ -46,6 +47,8 @@ public class CardInfo1 extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_info1);
+        this.setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         TextView txt;
         RelativeLayout layout;
         Intent intent = getIntent();

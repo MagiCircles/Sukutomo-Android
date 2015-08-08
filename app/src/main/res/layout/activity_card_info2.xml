@@ -5,6 +5,7 @@
     android:screenOrientation="portrait"
     tools:context=".CardInfo1"
     android:background="@color/back_purple"
+    android:configChanges="orientation"
     android:id="@+id/card_info2">
 
     <FrameLayout

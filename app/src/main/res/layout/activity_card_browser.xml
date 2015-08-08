@@ -6,6 +6,7 @@
     android:paddingBottom="1dp" tools:context=".CardBrowser"
     android:id="@+id/Sukutomo"
     android:background="@color/back_pink"
+    android:configChanges="orientation"
     android:screenOrientation="portrait">
 
     <ImageView
