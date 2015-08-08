@@ -148,9 +148,9 @@ public class Card implements Parcelable{
     public void showImage(boolean idolized, ImageView view) {
         Log.d("im", "ID: " + id + "\n URL showImage:" + card_image);
         if(idolized || is_promo)
-            new LoadImage(view).execute(card_idolized_image);
+            new LoadImage(view).execute(card_idolized_image, card_image);
         else
-            new LoadImage(view).execute(card_image);
+            new LoadImage(view).execute(card_image, card_idolized_image);
     }
 
     public void showRoundImage(Bitmap bitmap, ImageView view) {
@@ -416,6 +416,8 @@ public class Card implements Parcelable{
                 bitmap = CardBrowser.getBitmapFromMemCache(args[0]);
                 if (bitmap == null) {
                     Log.d("im", "URL:" + args[0]);
+                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[1]).getContent());
+                    CardBrowser.addBitmapToMemoryCache(args[1], bitmap);
                     bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
                     CardBrowser.addBitmapToMemoryCache(args[0], bitmap);
                 }
