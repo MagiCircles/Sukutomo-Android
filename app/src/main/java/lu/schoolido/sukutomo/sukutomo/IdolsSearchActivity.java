@@ -34,7 +34,7 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
     private ArrayList<String> idolNames;
     private ListView listView;
     private static String baseURL = "http://schoolido.lu/api/cardids/";
-    private ArrayAdapter<String> adapter;
+    private IdolsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +125,8 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
             pDialog.show();
             pDialog.dismiss();
 
-            adapter = new ArrayAdapter<>(getApplicationContext(),
-                    R.layout.simple_white_list_item, android.R.id.text1, idolNames);
+            adapter = new IdolsAdapter(getApplicationContext(),
+                    R.layout.simple_white_list_item, idolNames);
 
             listView.setAdapter(adapter);
 
