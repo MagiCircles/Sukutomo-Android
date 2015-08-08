@@ -30,7 +30,7 @@ public class MenuActivity extends ActionBarActivity {
                 "Surprise no. 1", "Surprise no. 2"
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, options);
+                R.layout.simple_white_list_item, android.R.id.text1, options);
 
         listView.setAdapter(adapter);
 

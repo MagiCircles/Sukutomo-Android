@@ -124,7 +124,7 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
             pDialog.dismiss();
 
             adapter = new ArrayAdapter<>(getApplicationContext(),
-                    android.R.layout.simple_list_item_1, android.R.id.text1, idolNames);
+                    R.layout.simple_white_list_item, android.R.id.text1, idolNames);
 
             listView.setAdapter(adapter);
 
