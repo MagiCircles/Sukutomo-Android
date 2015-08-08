@@ -145,6 +145,11 @@ public class Card implements Parcelable{
             return card_image;
     }
 
+    /**
+     * Method used to show the card image
+     * @param idolized True if the user wants to see the idolized version.
+     * @param view View used to show the card image.
+     */
     public void showImage(boolean idolized, ImageView view) {
         Log.d("im", "ID: " + id + "\n URL showImage:" + card_image);
         if(idolized || is_promo)
@@ -153,8 +158,13 @@ public class Card implements Parcelable{
             new LoadImage(view).execute(card_image, card_idolized_image);
     }
 
+    /**
+     * Method used to show the round card image.
+     * @param bitmap
+     * @param view
+     */
     public void showRoundImage(Bitmap bitmap, ImageView view) {
-        new LoadImage(view).execute(round_card_image);
+        new LoadImage(view).execute(round_card_image, null);
     }
 
 
@@ -399,6 +409,9 @@ public class Card implements Parcelable{
         }
     }
 
+    /**
+     * Class used to manage the image download.
+     */
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;
         final WeakReference<ImageView> viewReference;
@@ -416,8 +429,10 @@ public class Card implements Parcelable{
                 bitmap = CardBrowser.getBitmapFromMemCache(args[0]);
                 if (bitmap == null) {
                     Log.d("im", "URL:" + args[0]);
-                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[1]).getContent());
-                    CardBrowser.addBitmapToMemoryCache(args[1], bitmap);
+                    if(args[1] != null) {
+                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[1]).getContent());
+                        CardBrowser.addBitmapToMemoryCache(args[1], bitmap);
+                    }
                     bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
                     CardBrowser.addBitmapToMemoryCache(args[0], bitmap);
                 }

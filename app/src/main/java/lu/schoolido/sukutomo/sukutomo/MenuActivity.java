@@ -24,7 +24,8 @@ public class MenuActivity extends ActionBarActivity {
 
         listView = (ListView) findViewById(R.id.menu_list);
         String[] options = new String[]{
-                getString(R.string.Login), getString(R.string.Cards), getString(R.string.Idols),
+                /*getString(R.string.Login), */
+                getString(R.string.Cards), getString(R.string.Idols),
                 getString(R.string.Events), getString(R.string.Contest), getString(R.string.Players),
                 "Surprise no. 1", "Surprise no. 2"
         };
@@ -40,26 +41,26 @@ public class MenuActivity extends ActionBarActivity {
                                     int position, long id) {
 
                 switch (position) {
-                    case 0:
+                    /*case 0:
                         startActivity(LoginActivity.class, null);
-                        break; // Log in screen
-                    case 1:
+                        break; // Log in screen*/
+                    case 0:
                         finish(); // go to the CardBrowser
                         break;
-                    case 2:
+                    case 1:
                         startActivity(IdolsSearchActivity.class, null);
                         break; // go to idols list
-                    case 3:
+                    case 2:
                         startActivity(WebActivity.class, "http://schoolido.lu/events/");
                         break; // go to browser view for events
-                    case 4:
+                    case 3:
                         startActivity(WebActivity.class, "http://schoolido.lu/contest/");
                         break; // go to browser view for the contest
-                    case 5:
+                    case 4:
                         startActivity(WebActivity.class, "http://schoolido.lu/users/");
                         break; // go to browser view for users
+                    case 5:
                     case 6:
-                    case 7:
                         Toast toast = Toast.makeText(getApplicationContext(), "Be patient, we'll develop this soon...", Toast.LENGTH_SHORT);
                         toast.show();
                         break; // go to ...
