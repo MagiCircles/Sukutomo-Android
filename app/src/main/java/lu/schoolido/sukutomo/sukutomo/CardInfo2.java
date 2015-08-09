@@ -150,9 +150,9 @@ public class CardInfo2 extends Activity {
         }
 
         @Override
-        public boolean onSlideLeft() {
+        public boolean onSlideRight() {
             finish();
-            overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
             return true;
         }
     }

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import org.apache.http.client.HttpClient;
@@ -29,8 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.LinkedList;
 
 
@@ -76,7 +74,36 @@ public class CardBrowser extends Activity {
                 Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
 
                 startActivity(menu);
-                overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+                overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+            }
+        });
+
+        ImageView upButton = (ImageView) findViewById(R.id.arrow_up);
+        upButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.up_down));
+        upButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slideDown();
+            }
+        });
+
+
+        ImageView downButton = (ImageView) findViewById(R.id.arrow_down);
+        downButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.down_up));
+        downButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slideUp();
+            }
+        });
+
+
+        ImageView rightButton = (ImageView) findViewById(R.id.arrow_right);
+        rightButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.right_left));
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slideLeft();
             }
         });
 
@@ -145,48 +172,58 @@ public class CardBrowser extends Activity {
         }
 
         @Override
-        public boolean onSlideLeft() {
+        public boolean onSlideRight() {
             return false;
         }
 
         @Override
-        public boolean onSlideRight() {
-            Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
-
-            info1.putExtra("card", currentCard);
-            startActivity(info1);
-            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+        public boolean onSlideLeft() {
+            slideLeft();
             return true;
         }
 
         @Override
         public boolean onSlideUp() {
-            views.get(currentView).startAnimation(super.slideExitUpAnimation);
-            if (currentCardIndex > 0)
-                currentCardIndex = currentCardIndex - 1;
-            else
-                currentCardIndex = filteredCards.size() - 1;
-            changeViews();
-            //Toast.makeText(CardBrowser.this, filteredCards.get(currentCardIndex).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            LoadCards li = new LoadCards(false);
-            li.execute();
-            views.get(currentView).startAnimation(super.slideEnterDownAnimation);
+            slideUp();
             return true;
         }
 
         @Override
         public boolean onSlideDown() {
-            views.get(currentView).startAnimation(super.slideExitDownAnimation);
-            currentCardIndex = (currentCardIndex + 1) % filteredCards.size();
-            changeViews();
-
-            //Toast.makeText(CardBrowser.this, filteredCards.get(currentCardIndex).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
-            LoadCards li = new LoadCards(false);
-            li.execute();
-            views.get(currentView).startAnimation(super.slideEnterUpAnimation);
+            slideDown();
             return true;
         }
 
+    }
+
+    private void slideLeft() {
+        Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
+
+        info1.putExtra("card", currentCard);
+        startActivity(info1);
+        overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+    }
+
+    private void slideUp() {
+        views.get(currentView).startAnimation(GenericGestureListener.slideExitUpAnimation);
+        if (currentCardIndex > 0)
+            currentCardIndex = currentCardIndex - 1;
+        else
+            currentCardIndex = filteredCards.size() - 1;
+        changeViews();
+        LoadCards li = new LoadCards(false);
+        li.execute();
+        views.get(currentView).startAnimation(GenericGestureListener.slideEnterDownAnimation);
+    }
+
+    private void slideDown() {
+        views.get(currentView).startAnimation(GenericGestureListener.slideExitDownAnimation);
+        currentCardIndex = (currentCardIndex + 1) % filteredCards.size();
+        changeViews();
+
+        LoadCards li = new LoadCards(false);
+        li.execute();
+        views.get(currentView).startAnimation(GenericGestureListener.slideEnterUpAnimation);
     }
 
     private void changeViews() {

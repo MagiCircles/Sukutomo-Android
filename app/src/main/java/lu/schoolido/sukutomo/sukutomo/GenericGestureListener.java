@@ -14,14 +14,14 @@ import android.view.animation.AnimationUtils;
 public class GenericGestureListener extends GestureDetector.SimpleOnGestureListener {
     private static final int SLIDE_THRESHOLD = 100;
     private final String TAG = GenericGestureListener.class.getSimpleName();
-    protected static Animation slideExitUpAnimation;
-    protected static Animation slideExitDownAnimation;
-    protected static Animation slideExitRightAnimation;
-    protected static Animation slideEnterRightAnimation;
-    protected static Animation slideExitLeftAnimation;
-    protected static Animation slideEnterLeftAnimation;
-    protected static Animation slideEnterUpAnimation;
-    protected static Animation slideEnterDownAnimation;
+    public static Animation slideExitUpAnimation;
+    public static Animation slideExitDownAnimation;
+    public static Animation slideExitRightAnimation;
+    public static Animation slideEnterRightAnimation;
+    public static Animation slideExitLeftAnimation;
+    public static Animation slideEnterLeftAnimation;
+    public static Animation slideEnterUpAnimation;
+    public static Animation slideEnterDownAnimation;
 
     public GenericGestureListener(Context context) {
         slideExitUpAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_exit_up);

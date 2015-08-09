@@ -257,19 +257,19 @@ public class CardInfo1 extends Activity {
         }
 
         @Override
-        public boolean onSlideLeft() {
+        public boolean onSlideRight() {
             finish();
-            overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
             return true;
         }
 
         @Override
-        public boolean onSlideRight() {
+        public boolean onSlideLeft() {
             Intent info2 = new Intent(getApplicationContext(), CardInfo2.class);
 
             info2.putExtra("card", card_info);
             startActivity(info2);
-            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+            overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
             return true;
         }
     }
