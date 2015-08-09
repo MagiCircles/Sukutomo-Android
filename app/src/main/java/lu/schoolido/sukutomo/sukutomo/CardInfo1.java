@@ -33,6 +33,7 @@ public class CardInfo1 extends Activity {
     private int[] min_stats;
     private int[] non_idolized_max_stats;
     private int[] idolized_max_stats;
+    private int hp;
     private TextView smile_stats_text;
     private TextView pure_stats_text;
     private TextView cool_stats_text;
@@ -137,6 +138,9 @@ public class CardInfo1 extends Activity {
         min_stats = card_info.getMinimum_statistics();
         non_idolized_max_stats = card_info.getNon_idolized_maximum_statistics();
         idolized_max_stats = card_info.getIdolized_maximum_statistics();
+        hp = card_info.getHp();
+        txt = (TextView) findViewById(R.id.hp1);
+        txt.setText(String.valueOf(hp));
 
         updateStats(min_stats);
 
