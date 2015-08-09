@@ -39,7 +39,7 @@ public class CardInfo2 extends Activity {
         switch (card_info.getAttribute()) {
             case SMILE:
                 layout = (RelativeLayout) findViewById(R.id.card_info2);
-                layout.setBackgroundColor(getResources().getColor(R.color.back_pink));
+                layout.setBackgroundResource(R.drawable.smile_background);
                 txt = (TextView) findViewById(R.id.card_id);
                 txt.setBackgroundResource(R.drawable.title_back_smile);
                 txt = (TextView) findViewById(R.id.release_date_text);
@@ -47,7 +47,7 @@ public class CardInfo2 extends Activity {
                 break;
             case PURE:
                 layout = (RelativeLayout) findViewById(R.id.card_info2);
-                layout.setBackgroundColor(getResources().getColor(R.color.back_green));
+                layout.setBackgroundResource(R.drawable.pure_background);
                 txt = (TextView) findViewById(R.id.card_id);
                 txt.setBackgroundResource(R.drawable.title_back_pure);
                 txt = (TextView) findViewById(R.id.release_date_text);
@@ -55,7 +55,7 @@ public class CardInfo2 extends Activity {
                 break;
             case COOL:
                 layout = (RelativeLayout) findViewById(R.id.card_info2);
-                layout.setBackgroundColor(getResources().getColor(R.color.back_blue));
+                layout.setBackgroundResource(R.drawable.cool_background);
                 txt = (TextView) findViewById(R.id.card_id);
                 txt.setBackgroundResource(R.drawable.title_back_cool);
                 txt = (TextView) findViewById(R.id.release_date_text);

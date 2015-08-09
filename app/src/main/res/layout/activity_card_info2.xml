@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@color/white"
+        android:background="@drawable/white_header"
         android:layout_alignParentTop="true"
         android:id="@+id/frameLayout"
         android:layout_above="@+id/skill_details" />
@@ -54,19 +54,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Loading skill description..."
         android:id="@+id/skill_details"
-        android:layout_below="@+id/imageView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:paddingLeft="@dimen/activity_horizontal_margin" />
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/subbar"
-        android:layout_below="@+id/skill_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/skill_name" />
 
     <TextView
         android:layout_width="wrap_content"

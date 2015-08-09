@@ -4,8 +4,11 @@
     <color name="bar_pink">#ee00e4</color>
     <color name="back_purple">#EEBBFF</color>
     <color name="back_pink">#FFCCFF</color>
+    <color name="back_pink2">#EE88AA</color>
     <color name="back_green">#CCFFCC</color>
+    <color name="back_green2">#88BB66</color>
     <color name="back_blue">#CCCCFF</color>
+    <color name="back_blue2">#9999FF</color>
     <color name="title_back_pink">#DF5A9E</color>
     <color name="all_purple">#BB55CC</color>
     <color name="smile_pink">#ffff00c5</color>
