@@ -99,7 +99,7 @@ public class CardBrowser extends Activity {
 
 
         ImageView rightButton = (ImageView) findViewById(R.id.arrow_right);
-        rightButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.right_left));
+        rightButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.left_right));
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
