@@ -8,10 +8,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
@@ -53,7 +51,7 @@ public class CardBrowser extends Activity {
     private static Drawable loadingImage;
     private final int CARDS_HEIGHT = 720;
     private final int CARDS_WIDTH = 512;
-    private Matrix m;
+    private Matrix m1, m2;
     //private LoadCards li;
 
     public CardBrowser() {
@@ -82,20 +80,20 @@ public class CardBrowser extends Activity {
 
         // Getting screen height
         Display display = getWindowManager().getDefaultDisplay();
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         int height;
 
         Point size = new Point();
         display.getSize(size);
         height = size.y;
 
-        m = views.getFirst().getImageMatrix();
-        m.reset();
-        m.setScale((height*0.96f)/CARDS_HEIGHT, (height*0.96f)/CARDS_HEIGHT);
-        //RectF drawableRect = new RectF(0, 0, CARDS_WIDTH, CARDS_HEIGHT);
-        //RectF viewRect = new RectF(0, 0, views.getFirst().getWidth(), views.getFirst().getHeight());
-        //m.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.START);
-        views.getFirst().setImageMatrix(m);
+        m1 = views.getFirst().getImageMatrix();
+        m1.reset();
+        m1.setScale((height * 0.96f) / CARDS_HEIGHT, (height * 0.96f) / CARDS_HEIGHT);
+        views.getFirst().setImageMatrix(m1);
+        m2 = views.getLast().getImageMatrix();
+        m2.reset();
+        m2.setScale((height * 0.96f) / CARDS_HEIGHT, (height * 0.96f) / CARDS_HEIGHT);
+        views.getLast().setImageMatrix(m2);
 
 
         // Shows the load image until the card image has been downloaded.
