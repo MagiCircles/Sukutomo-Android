@@ -6,12 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,7 +41,7 @@ public class CardBrowser extends Activity {
     private ProgressDialog pDialog;
     private LinkedList<ImageView> views;
     private int currentView = 0;
-    private String cardImageUrl;
+    //private String cardImageUrl;
     private String siteURL = "http://schoolido.lu/api/cardids/";
     private boolean showIdolized = false;
     private LinkedList<Integer> filteredCards;
@@ -46,7 +51,10 @@ public class CardBrowser extends Activity {
     private final HttpClient Client;
     private static LruCache<String, Bitmap> mMemoryCache = new LruCache<String, Bitmap>(25);
     private static Drawable loadingImage;
-    private LoadCards li;
+    private final int CARDS_HEIGHT = 720;
+    private final int CARDS_WIDTH = 512;
+    private Matrix m;
+    //private LoadCards li;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -57,16 +65,46 @@ public class CardBrowser extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_browser);
+
+        // Avoiding screen rotation:
         this.setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        // If a search of cards by idols or other criteria has been requested.
         Intent intent = getIntent();
         if(intent.hasExtra("url"))
             siteURL = intent.getStringExtra("url");
+
+        // Creating the views list. There are two views, allowing changing from one card to the next
+        // with a fluent animation.
         views = new LinkedList<>();
         views.add((ImageView) findViewById(R.id.card_image));
         views.add((ImageView) findViewById(R.id.card_image2));
+
+        // Getting screen height
+        Display display = getWindowManager().getDefaultDisplay();
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        int height;
+
+        Point size = new Point();
+        display.getSize(size);
+        height = size.y;
+
+        m = views.getFirst().getImageMatrix();
+        m.reset();
+        m.setScale((height*0.96f)/CARDS_HEIGHT, (height*0.96f)/CARDS_HEIGHT);
+        //RectF drawableRect = new RectF(0, 0, CARDS_WIDTH, CARDS_HEIGHT);
+        //RectF viewRect = new RectF(0, 0, views.getFirst().getWidth(), views.getFirst().getHeight());
+        //m.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.START);
+        views.getFirst().setImageMatrix(m);
+
+
+        // Shows the load image until the card image has been downloaded.
         loadingImage = getResources().getDrawable(R.drawable.loading);
+
+        // Preparing gestures:
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
+
+        // Preparing menu button:
         ImageView menuButton = (ImageView) findViewById(R.id.menuButton);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +112,11 @@ public class CardBrowser extends Activity {
                 Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
 
                 startActivity(menu);
-                overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+                //overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
             }
         });
 
+        // Up button and slide down.
         ImageView upButton = (ImageView) findViewById(R.id.arrow_up);
         upButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.up_down));
         upButton.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +127,7 @@ public class CardBrowser extends Activity {
         });
 
 
+        // Down button and slide up.
         ImageView downButton = (ImageView) findViewById(R.id.arrow_down);
         downButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.down_up));
         downButton.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +137,7 @@ public class CardBrowser extends Activity {
             }
         });
 
-
+        // Right button and slide left.
         ImageView rightButton = (ImageView) findViewById(R.id.arrow_right);
         rightButton.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.left_right));
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +147,7 @@ public class CardBrowser extends Activity {
             }
         });
 
+        // Loads the initial card info.
         LoadCards li = new LoadCards(true);
         li.execute();
     }
@@ -140,9 +181,13 @@ public class CardBrowser extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /** Get the card ids list from the JSONObject returned by the URL used.
+     * @param data
+     * @throws JSONException
+     */
     protected void getCards(String data) throws JSONException {
         JSONArray cardList = new JSONArray(data);
-        //JSONArray cardList = obj.getJSONArray();
+
         Log.d("getCards", "JSONObject: " + cardList.toString());
         int n = cardList.length();
         for(int i=0; i < n; i++) {
@@ -166,7 +211,7 @@ public class CardBrowser extends Activity {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             showIdolized = !showIdolized;
-            //Toast.makeText(CardBrowser.this, filteredCards.get(currentCardIndex).getImageURL(showIdolized), Toast.LENGTH_SHORT).show();
+
             currentCard.showImage(showIdolized, views.get(currentView));
             return true;
         }
@@ -204,6 +249,9 @@ public class CardBrowser extends Activity {
         overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
     }
 
+    /**
+     * Shows the slideUp animation and loads the previous card.
+     */
     private void slideUp() {
         views.get(currentView).startAnimation(GenericGestureListener.slideExitUpAnimation);
         if (currentCardIndex > 0)
@@ -216,6 +264,9 @@ public class CardBrowser extends Activity {
         views.get(currentView).startAnimation(GenericGestureListener.slideEnterDownAnimation);
     }
 
+    /**
+     * Shows the slideDown animation and loads the next card.
+     */
     private void slideDown() {
         views.get(currentView).startAnimation(GenericGestureListener.slideExitDownAnimation);
         currentCardIndex = (currentCardIndex + 1) % filteredCards.size();
@@ -226,17 +277,28 @@ public class CardBrowser extends Activity {
         views.get(currentView).startAnimation(GenericGestureListener.slideEnterUpAnimation);
     }
 
+    /**
+     * Change between the two card image views.
+     */
     private void changeViews() {
         currentView = (currentView + 1) % 2;
         views.get(currentView).setImageDrawable(loadingImage);
     }
 
+    /** Adds a downloaded bitmap to the Caché
+     * @param key Image identificator. Usually its URL.
+     * @param bitmap Downloaded bitmap.
+     */
     public static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
         if (getBitmapFromMemCache(key) == null) {
             mMemoryCache.put(key, bitmap);
         }
     }
 
+    /** Retrieves an image from the caché.
+     * @param key Image identificator in the caché. Usually its URL.
+     * @return Desired bitmap.
+     */
     public static Bitmap getBitmapFromMemCache(String key) {
         return mMemoryCache.get(key);
     }

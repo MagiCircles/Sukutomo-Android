@@ -17,7 +17,17 @@
         android:layout_above="@+id/card_rarity"
         android:background="@drawable/white_header"
         android:layout_alignParentTop="true"
-        android:id="@+id/whiteSpace"></FrameLayout>
+        android:id="@+id/whiteSpace">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="1/2"
+            android:id="@+id/textView"
+            android:layout_gravity="left|top"
+            android:paddingLeft="2dp" />
+    </FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"

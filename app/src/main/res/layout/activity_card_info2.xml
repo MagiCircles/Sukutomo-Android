@@ -16,7 +16,17 @@
         android:background="@drawable/white_header"
         android:layout_alignParentTop="true"
         android:id="@+id/frameLayout"
-        android:layout_above="@+id/skill_details" />
+        android:layout_above="@+id/skill_details"
+        android:paddingLeft="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="2/2"
+            android:id="@+id/textView3"
+            android:layout_gravity="left|top" />
+    </FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"
