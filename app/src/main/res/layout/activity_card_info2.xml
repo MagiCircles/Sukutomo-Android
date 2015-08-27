@@ -26,6 +26,7 @@
             android:text="2/2"
             android:id="@+id/textView3"
             android:layout_gravity="left|top" />
+
     </FrameLayout>
 
     <TextView
@@ -113,5 +114,25 @@
         android:minHeight="64dp"
         android:minWidth="64dp"
         android:layout_marginTop="@dimen/activity_vertical_margin" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/center_skill_search"
+        android:layout_gravity="left|bottom"
+        android:src="@drawable/search"
+        android:layout_below="@+id/release_date_text"
+        android:layout_toRightOf="@+id/skill_name_search"
+        android:layout_alignBottom="@+id/center_skill" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/skill_name_search"
+        android:layout_gravity="center_horizontal|bottom"
+        android:src="@drawable/search"
+        android:layout_above="@+id/skill_details"
+        android:layout_below="@+id/card_id"
+        android:layout_toRightOf="@+id/skill_name" />
 
 </RelativeLayout>

@@ -27,7 +27,21 @@
             android:id="@+id/textView"
             android:layout_gravity="left|top"
             android:paddingLeft="2dp" />
+
     </FrameLayout>
+
+    <ImageView
+        android:layout_width="29dp"
+        android:layout_height="31dp"
+        android:id="@+id/card_name_search"
+        android:layout_gravity="left|bottom"
+        android:src="@drawable/search"
+        android:layout_below="@+id/card_id"
+        android:layout_toRightOf="@+id/card_name"
+        android:layout_above="@+id/card_rarity_search"
+        android:layout_alignRight="@+id/card_rarity_search"
+        android:layout_alignEnd="@+id/card_rarity_search"
+        android:paddingLeft="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -59,7 +73,8 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/card_id"
         android:layout_alignParentLeft="true"
-        android:paddingLeft="@dimen/activity_horizontal_margin" />
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:textSize="18dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -70,7 +85,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/card_name" />
+        android:layout_below="@+id/card_name"
+        android:textSize="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -101,7 +117,8 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/release_date_text"
         android:layout_alignParentLeft="true"
-        android:paddingLeft="@dimen/activity_horizontal_margin" />
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:textSize="16dp" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -123,9 +140,11 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Attribute"
         android:id="@+id/card_attr"
-        android:layout_above="@+id/release_date_text"
-        android:layout_toRightOf="@+id/card_name"
-        android:layout_toEndOf="@+id/card_name" />
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:textSize="16dp"
+        android:layout_alignTop="@+id/card_rarity_search"
+        android:layout_toRightOf="@+id/card_rarity_search"
+        android:layout_toEndOf="@+id/card_rarity_search" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -147,7 +166,7 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/level_button1"
+        android:layout_below="@+id/levels_row"
         android:id="@+id/tableLayout"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
@@ -314,32 +333,62 @@
         </TableRow>
     </TableLayout>
 
-    <Button
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/level_1"
-        android:id="@+id/level_button1"
-        android:layout_below="@+id/stats_text"
+        android:id="@+id/card_rarity_search"
+        android:src="@drawable/search"
+        android:layout_above="@+id/release_date_text"
         android:layout_toRightOf="@+id/card_rarity"
-        android:layout_toEndOf="@+id/card_rarity"
-        android:paddingLeft="@dimen/activity_horizontal_margin" />
+        android:layout_below="@+id/card_name"
+        android:layout_alignRight="@+id/release_date"
+        android:layout_alignEnd="@+id/release_date"
+        android:paddingLeft="-10dp" />
 
-    <Button
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/level_1"
-        android:id="@+id/level_button2"
-        android:layout_below="@+id/stats_text"
-        android:layout_toRightOf="@+id/level_button1"
-        android:layout_toEndOf="@+id/level_button1" />
+        android:id="@+id/card_attr_search"
+        android:src="@drawable/search"
+        android:layout_below="@+id/whiteSpace"
+        android:layout_toRightOf="@+id/card_attr"
+        android:layout_above="@+id/release_date_text" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <TableRow
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/level_1"
-        android:id="@+id/level_button3"
         android:layout_below="@+id/stats_text"
-        android:layout_toRightOf="@+id/level_button2"
-        android:layout_toEndOf="@+id/level_button2" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/levels_row"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/level_1"
+            android:id="@+id/level_button1"
+            android:layout_below="@+id/stats_text"
+            android:layout_toRightOf="@+id/card_rarity"
+            android:layout_toEndOf="@+id/card_rarity" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/level_1"
+            android:id="@+id/level_button2"
+            android:layout_below="@+id/stats_text"
+            android:layout_toRightOf="@+id/level_button1"
+            android:layout_toEndOf="@+id/level_button1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/level_1"
+            android:id="@+id/level_button3"
+            android:layout_below="@+id/stats_text"
+            android:layout_toRightOf="@+id/level_button2"
+            android:layout_toEndOf="@+id/level_button2" />
+    </TableRow>
 
 </RelativeLayout>

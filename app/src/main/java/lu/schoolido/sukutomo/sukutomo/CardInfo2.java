@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -64,39 +65,49 @@ public class CardInfo2 extends Activity {
         }
 
         // Skill name
+        ImageView img = (ImageView) findViewById(R.id.skill_name_search);
         txt = (TextView) findViewById(R.id.skill_name);
-        if(card_info.getSkill()==null || card_info.getSkill().equalsIgnoreCase("none")  || card_info.getSkill_details().equalsIgnoreCase("null"))
+        if(card_info.getSkill().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
             txt.setText(card_info.getSkill());
 
-        txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startSearch("skill", card_info.getSkill());
-            }
-        });
+        Log.d("skill", card_info.getSkill() + " " + 1);
+        if(card_info.getSkill() != "" && card_info.getSkill() != null && !card_info.getSkill().equalsIgnoreCase("null"))
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startSearch("skill", card_info.getSkill());
+                }
+            });
+        else
+            img.setImageDrawable(null);
 
         // Skill details
         txt = (TextView) findViewById(R.id.skill_details);
-        if(card_info.getSkill_details()==null || card_info.getSkill_details().equalsIgnoreCase("null"))
+        if(card_info.getSkill_details().equalsIgnoreCase("null"))
             txt.setText("");
         else
             txt.setText(card_info.getSkill_details());
 
         // Center skill
+        img = (ImageView) findViewById(R.id.center_skill_search);
         txt = (TextView) findViewById(R.id.center_skill);
         if(card_info.getCenter_skill()==null || card_info.getCenter_skill().equalsIgnoreCase("none") || card_info.getCenter_skill().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
             txt.setText(card_info.getCenter_skill());
 
-        txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startSearch("center_skill", card_info.getCenter_skill());
-            }
-        });
+        Log.d("center_skill", card_info.getCenter_skill() + " " + 1 + " " + (card_info.getCenter_skill().equalsIgnoreCase("null")));
+        if(card_info.getCenter_skill() != "" && card_info.getCenter_skill() != null && !card_info.getCenter_skill().equalsIgnoreCase("null"))
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startSearch("center_skill", card_info.getCenter_skill());
+                }
+            });
+        else
+            img.setImageDrawable(null);
 
         // Round Image
         im = (ImageView) findViewById(R.id.roundImage);

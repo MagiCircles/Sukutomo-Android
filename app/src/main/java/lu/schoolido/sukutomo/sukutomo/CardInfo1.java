@@ -94,9 +94,10 @@ public class CardInfo1 extends Activity {
         txt.setText(getString(R.string.Card) + " #" + String.valueOf(card_info.getId()));
 
         // Name field
+        ImageView img = (ImageView) findViewById(R.id.card_name_search);
         txt = (TextView) findViewById(R.id.card_name);
         txt.setText(card_info.getName());
-        txt.setOnClickListener(new View.OnClickListener() {
+        img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startSearch("name", card_info.getName());
@@ -104,9 +105,10 @@ public class CardInfo1 extends Activity {
         });
 
         // Rarity field
+        img = (ImageView) findViewById(R.id.card_rarity_search);
         txt = (TextView) findViewById(R.id.card_rarity);
         txt.setText(card_info.getRarity().toString());
-        txt.setOnClickListener(new View.OnClickListener() {
+        img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startSearch("rarity", card_info.getRarity().toString());
@@ -114,9 +116,10 @@ public class CardInfo1 extends Activity {
         });
 
         // Attribute
+        img = (ImageView) findViewById(R.id.card_attr_search);
         txt = (TextView) findViewById(R.id.card_attr);
         txt.setText(card_info.getAttribute().toString());
-        txt.setOnClickListener(new View.OnClickListener() {
+        img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String attr = card_info.getAttribute().toString();
@@ -184,7 +187,7 @@ public class CardInfo1 extends Activity {
             }
         });
 
-        if(card_info.is_promo()) {
+        if(card_info.is_promo() || card_info.getRarity() == Rarity.N) {
             level_button2.setVisibility(View.INVISIBLE);
         }
 

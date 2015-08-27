@@ -369,6 +369,7 @@ public class CardBrowser extends Activity {
                     }
                     currentCards[i] = card;
                 }
+
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
