@@ -1,9 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="1dp"
-    android:paddingRight="1dp"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp" tools:context=".CardBrowser"
+    android:layout_height="match_parent"
+    tools:context=".CardBrowser"
     android:id="@+id/Sukutomo"
     android:background="@color/back_pink"
     android:configChanges="orientation"
@@ -21,20 +19,20 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:adjustViewBounds="true"
-        android:scaleType="matrix" />
+        android:background="@drawable/cardback_sr_idol_smile" />
 
     <ImageView android:id="@+id/card_image"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/loading"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:adjustViewBounds="true"
-        android:scaleType="matrix" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/cardback_sr_idol_smile" />
 
     <ImageView
         android:layout_width="wrap_content"

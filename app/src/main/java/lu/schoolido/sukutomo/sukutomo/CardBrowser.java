@@ -7,14 +7,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.util.LruCache;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -44,13 +42,14 @@ public class CardBrowser extends Activity {
     private boolean showIdolized = false;
     private LinkedList<Integer> filteredCards;
     private int currentCardIndex = 0;
-    private Card currentCard;
+    // Next card, previous card, current card
+    private Card[] currentCards = new Card[]{null, null, null};
     private GestureDetectorCompat mDetector;
     private final HttpClient Client;
-    private static LruCache<String, Bitmap> mMemoryCache = new LruCache<String, Bitmap>(25);
+    private static LruCache<String, Bitmap> imagesMemoryCache = new LruCache<String, Bitmap>(10);
+    private static LruCache<Integer, Card> cardsMemoryCache = new LruCache<Integer, Card>(10);
     private static Drawable loadingImage;
-    private final int CARDS_HEIGHT = 720;
-    private final int CARDS_WIDTH = 512;
+    private static Drawable srIdolSmileBack, srIdolPureBack, srIdolCoolBack, srIdolAllBack;
     private Matrix m1, m2;
     //private LoadCards li;
 
@@ -78,26 +77,13 @@ public class CardBrowser extends Activity {
         views.add((ImageView) findViewById(R.id.card_image));
         views.add((ImageView) findViewById(R.id.card_image2));
 
-        // Getting screen height
-        Display display = getWindowManager().getDefaultDisplay();
-        int height;
-
-        Point size = new Point();
-        display.getSize(size);
-        height = size.y;
-
-        m1 = views.getFirst().getImageMatrix();
-        m1.reset();
-        m1.setScale((height * 0.96f) / CARDS_HEIGHT, (height * 0.96f) / CARDS_HEIGHT);
-        views.getFirst().setImageMatrix(m1);
-        m2 = views.getLast().getImageMatrix();
-        m2.reset();
-        m2.setScale((height * 0.96f) / CARDS_HEIGHT, (height * 0.96f) / CARDS_HEIGHT);
-        views.getLast().setImageMatrix(m2);
-
-
         // Shows the load image until the card image has been downloaded.
         loadingImage = getResources().getDrawable(R.drawable.loading);
+        /*
+        srIdolAllBack = getResources().getDrawable(R.drawable.cardback_sr_idol_all);
+        srIdolCoolBack = getResources().getDrawable(R.drawable.cardback_sr_idol_cool);
+        srIdolPureBack = getResources().getDrawable(R.drawable.cardback_sr_idol_pure);
+        srIdolSmileBack = getResources().getDrawable(R.drawable.cardback_sr_idol_smile);*/
 
         // Preparing gestures:
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
@@ -210,7 +196,7 @@ public class CardBrowser extends Activity {
         public boolean onSingleTapUp(MotionEvent e) {
             showIdolized = !showIdolized;
 
-            currentCard.showImage(showIdolized, views.get(currentView));
+            currentCards[2].showImage(showIdolized, views.get(currentView));
             return true;
         }
 
@@ -242,7 +228,7 @@ public class CardBrowser extends Activity {
     private void slideLeft() {
         Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
 
-        info1.putExtra("card", currentCard);
+        info1.putExtra("card", currentCards[2]);
         startActivity(info1);
         overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
     }
@@ -252,14 +238,16 @@ public class CardBrowser extends Activity {
      */
     private void slideUp() {
         views.get(currentView).startAnimation(GenericGestureListener.slideExitUpAnimation);
-        if (currentCardIndex > 0)
-            currentCardIndex = currentCardIndex - 1;
-        else
-            currentCardIndex = filteredCards.size() - 1;
+        currentCardIndex = getPreviousCardIndex();
         changeViews();
+        setCardBackground(currentCards[1].getAttribute());
         LoadCards li = new LoadCards(false);
         li.execute();
         views.get(currentView).startAnimation(GenericGestureListener.slideEnterDownAnimation);
+    }
+
+    private int getPreviousCardIndex() {
+        return currentCardIndex > 0 ? currentCardIndex - 1 : filteredCards.size() - 1;
     }
 
     /**
@@ -267,12 +255,29 @@ public class CardBrowser extends Activity {
      */
     private void slideDown() {
         views.get(currentView).startAnimation(GenericGestureListener.slideExitDownAnimation);
-        currentCardIndex = (currentCardIndex + 1) % filteredCards.size();
+        currentCardIndex = getNextCardIndex();
         changeViews();
+        setCardBackground(currentCards[0].getAttribute());
 
         LoadCards li = new LoadCards(false);
         li.execute();
         views.get(currentView).startAnimation(GenericGestureListener.slideEnterUpAnimation);
+    }
+
+    private void setCardBackground(Attribute attr) {
+        switch (attr) {
+            case COOL: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_cool);
+                break;
+            case PURE: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_pure);
+                break;
+            case SMILE: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_smile);
+                break;
+            default: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_all);
+        }
+    }
+
+    private int getNextCardIndex() {
+        return (currentCardIndex + 1) % filteredCards.size();
     }
 
     /**
@@ -289,7 +294,17 @@ public class CardBrowser extends Activity {
      */
     public static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
         if (getBitmapFromMemCache(key) == null) {
-            mMemoryCache.put(key, bitmap);
+            imagesMemoryCache.put(key, bitmap);
+        }
+    }
+
+    /** Adds a downloaded card to the Caché
+     * @param key Card identificator.
+     * @param card Downloaded card info.
+     */
+    public static void addCardToMemoryCache(int key, Card card) {
+        if (getCardFromMemCache(key) == null) {
+            cardsMemoryCache.put(key, card);
         }
     }
 
@@ -298,7 +313,15 @@ public class CardBrowser extends Activity {
      * @return Desired bitmap.
      */
     public static Bitmap getBitmapFromMemCache(String key) {
-        return mMemoryCache.get(key);
+        return imagesMemoryCache.get(key);
+    }
+
+    /** Retrieves a card from the caché.
+     * @param key Card identificator in the caché.
+     * @return Desired card.
+     */
+    public static Card getCardFromMemCache(int key) {
+        return cardsMemoryCache.get(key);
     }
 
     /**
@@ -331,8 +354,21 @@ public class CardBrowser extends Activity {
                     data = Client.execute(new HttpGet(siteURL), responseHandler);
                     getCards(data);
                 }
-                String card = Client.execute(new HttpGet("http://schoolido.lu/api/cards/" + filteredCards.get(currentCardIndex) + "/"), responseHandler);
-                currentCard = new Card(new JSONObject(card));
+                // First id: Next card
+                // Second id: Previous card
+                // Third id: Current card
+                int[] ids = new int[]{filteredCards.get(getNextCardIndex()), filteredCards.get(getPreviousCardIndex()), filteredCards.get(currentCardIndex)};
+                String cardString;
+                Card card;
+                for(int i = 0; i < 3; i++) {
+                    card = getCardFromMemCache(ids[i]);
+                    if (card == null) {
+                        cardString = Client.execute(new HttpGet("http://schoolido.lu/api/cards/" + ids[i] + "/"), responseHandler);
+                        card = new Card(new JSONObject(cardString));
+                        CardBrowser.addCardToMemoryCache(ids[i], card);
+                    }
+                    currentCards[i] = card;
+                }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
@@ -342,7 +378,7 @@ public class CardBrowser extends Activity {
         protected void onPostExecute(Void v) {
             pDialog.show();
             pDialog.dismiss();
-            currentCard.showImage(showIdolized, views.get(currentView));
+            currentCards[2].showImage(showIdolized, views.get(currentView));
         }
     }
 }
