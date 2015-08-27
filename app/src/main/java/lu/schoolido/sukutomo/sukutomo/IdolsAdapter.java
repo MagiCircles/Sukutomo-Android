@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by arukantara on 8/08/15.
+ * This class prepares the lists elements for the IdolsSearchActivity.
  */
 public class IdolsAdapter extends ArrayAdapter<String> {
 
@@ -26,6 +26,12 @@ public class IdolsAdapter extends ArrayAdapter<String> {
         this.data = data;
     }
 
+    /** This method adds a customized color to the list elements if it has the name of one of the main idols.
+     * @param position List item position
+     * @param convertView View to be converted. Not used currently
+     * @param parent Parent of the list element
+     * @return final element to be printed instead of the original list item
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;

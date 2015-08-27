@@ -52,6 +52,7 @@ public class CardInfo1 extends Activity {
         setContentView(R.layout.activity_card_info1);
         this.setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //Initializing layout, text, gesture detector and card.
         TextView txt;
         RelativeLayout layout;
         Intent intent = getIntent();
@@ -61,8 +62,10 @@ public class CardInfo1 extends Activity {
         // Showing different colors based on card attribute
         switch (card_info.getAttribute()) {
             case SMILE:
+                // Change background to smile pink
                 layout = (RelativeLayout) findViewById(R.id.card_info1);
                 layout.setBackgroundResource(R.drawable.smile_background);
+                // Change titles' background to smile pink
                 txt = (TextView) findViewById(R.id.card_id);
                 txt.setBackgroundResource(R.drawable.title_back_smile);
                 txt = (TextView) findViewById(R.id.release_date_text);
@@ -71,8 +74,10 @@ public class CardInfo1 extends Activity {
                 txt.setBackgroundResource(R.drawable.title_back_smile);
                 break;
             case PURE:
+                // Change background to pure green
                 layout = (RelativeLayout) findViewById(R.id.card_info1);
                 layout.setBackgroundResource(R.drawable.pure_background);
+                // Change titles' background to pure green
                 txt = (TextView) findViewById(R.id.card_id);
                 txt.setBackgroundResource(R.drawable.title_back_pure);
                 txt = (TextView) findViewById(R.id.release_date_text);
@@ -81,8 +86,10 @@ public class CardInfo1 extends Activity {
                 txt.setBackgroundResource(R.drawable.title_back_pure);
                 break;
             case COOL:
+                // Change background to blue cool
                 layout = (RelativeLayout) findViewById(R.id.card_info1);
                 layout.setBackgroundResource(R.drawable.cool_background);
+                // Change titles' background to blue cool
                 txt = (TextView) findViewById(R.id.card_id);
                 txt.setBackgroundResource(R.drawable.title_back_cool);
                 txt = (TextView) findViewById(R.id.release_date_text);
@@ -154,7 +161,7 @@ public class CardInfo1 extends Activity {
         card_info.showRoundImage(null, im);
 
 
-
+        // Change level buttons texts according to the card Rarity and it promo status.
         level_button1 = (TextView) findViewById(R.id.level_button1);
         level_button2 = (TextView) findViewById(R.id.level_button2);
         level_button3 = (TextView) findViewById(R.id.level_button3);
@@ -175,6 +182,7 @@ public class CardInfo1 extends Activity {
                     break;
         }
 
+        // Adding behaviour for each level button.
         level_button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateStats(min_stats);
@@ -200,6 +208,7 @@ public class CardInfo1 extends Activity {
             }
         });
 
+        // Removing medium level button for N and promo cards.
         if(card_info.is_promo() || card_info.getRarity() == Rarity.N) {
             ViewGroup vg = (ViewGroup)(level_button2.getParent());
             vg.removeView(level_button2);

@@ -361,9 +361,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/levels_row"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
+        android:gravity="center_horizontal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -374,11 +372,11 @@
             android:layout_toRightOf="@+id/card_rarity"
             android:layout_toEndOf="@+id/card_rarity"
             android:background="@drawable/shape_min_level_on"
-            android:textSize="18dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp" />
+            android:textSize="16dp"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -389,11 +387,11 @@
             android:layout_toRightOf="@+id/level_button1"
             android:layout_toEndOf="@+id/level_button1"
             android:background="@drawable/shape_medium_level"
-            android:textSize="18dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp" />
+            android:textSize="16dp"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -404,11 +402,11 @@
             android:layout_toRightOf="@+id/level_button2"
             android:layout_toEndOf="@+id/level_button2"
             android:background="@drawable/shape_max_level"
-            android:textSize="18dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp" />
+            android:textSize="16dp"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp" />
     </TableRow>
 
 </RelativeLayout>

@@ -79,11 +79,6 @@ public class CardBrowser extends Activity {
 
         // Shows the load image until the card image has been downloaded.
         loadingImage = getResources().getDrawable(R.drawable.loading);
-        /*
-        srIdolAllBack = getResources().getDrawable(R.drawable.cardback_sr_idol_all);
-        srIdolCoolBack = getResources().getDrawable(R.drawable.cardback_sr_idol_cool);
-        srIdolPureBack = getResources().getDrawable(R.drawable.cardback_sr_idol_pure);
-        srIdolSmileBack = getResources().getDrawable(R.drawable.cardback_sr_idol_smile);*/
 
         // Preparing gestures:
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
@@ -246,10 +241,6 @@ public class CardBrowser extends Activity {
         views.get(currentView).startAnimation(GenericGestureListener.slideEnterDownAnimation);
     }
 
-    private int getPreviousCardIndex() {
-        return currentCardIndex > 0 ? currentCardIndex - 1 : filteredCards.size() - 1;
-    }
-
     /**
      * Shows the slideDown animation and loads the next card.
      */
@@ -264,6 +255,9 @@ public class CardBrowser extends Activity {
         views.get(currentView).startAnimation(GenericGestureListener.slideEnterUpAnimation);
     }
 
+    /** Sets a background to the current view depending on current card's attribute.
+     * @param attr Card's attribute
+     */
     private void setCardBackground(Attribute attr) {
         switch (attr) {
             case COOL: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_cool);
@@ -276,8 +270,18 @@ public class CardBrowser extends Activity {
         }
     }
 
+    /**
+     * @return Next card index
+     */
     private int getNextCardIndex() {
         return (currentCardIndex + 1) % filteredCards.size();
+    }
+
+    /**
+     * @return Previous card index
+     */
+    private int getPreviousCardIndex() {
+        return currentCardIndex > 0 ? currentCardIndex - 1 : filteredCards.size() - 1;
     }
 
     /**

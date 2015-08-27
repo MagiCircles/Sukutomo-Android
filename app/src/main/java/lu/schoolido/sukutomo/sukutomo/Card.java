@@ -450,12 +450,21 @@ public class Card implements Parcelable{
 
             if(image != null){
                 ImageView imageView = viewReference.get();
-                Log.d("im", "Y:" + imageView.getY());
+                /*
+                // Printing card background
+                switch (attribute) {
+                    case COOL: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_cool);
+                        break;
+                    case PURE: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_pure);
+                        break;
+                    case SMILE: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_smile);
+                        break;
+                    default: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_all);
+                }*/
+                // Printing card
                 if( imageView != null ) {
                     imageView.setImageBitmap(image);
-                    //imageView.clearAnimation();
                 }
-
             }
         }
     }
