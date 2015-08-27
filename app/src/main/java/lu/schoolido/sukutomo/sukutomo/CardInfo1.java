@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.ColorStateList;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -27,9 +29,9 @@ import java.util.Locale;
  */
 public class CardInfo1 extends Activity {
     private Card card_info;
-    private Button level_button1;
-    private Button level_button2;
-    private Button level_button3;
+    private TextView level_button1;
+    private TextView level_button2;
+    private TextView level_button3;
     private int[] min_stats;
     private int[] non_idolized_max_stats;
     private int[] idolized_max_stats;
@@ -151,10 +153,12 @@ public class CardInfo1 extends Activity {
         im = (ImageView) findViewById(R.id.roundImage);
         card_info.showRoundImage(null, im);
 
-        level_button1 = (Button) findViewById(R.id.level_button1);
+
+
+        level_button1 = (TextView) findViewById(R.id.level_button1);
+        level_button2 = (TextView) findViewById(R.id.level_button2);
+        level_button3 = (TextView) findViewById(R.id.level_button3);
         level_button1.setText(R.string.level_1);
-        level_button2 = (Button) findViewById(R.id.level_button2);
-        level_button3 = (Button) findViewById(R.id.level_button3);
 
         switch(card_info.getRarity()) {
             case N: level_button2.setText(R.string.level_30);
@@ -174,21 +178,31 @@ public class CardInfo1 extends Activity {
         level_button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateStats(min_stats);
+                level_button1.setBackgroundResource(R.drawable.shape_min_level_on);
+                level_button2.setBackgroundResource(R.drawable.shape_medium_level);
+                level_button3.setBackgroundResource(R.drawable.shape_max_level);
             }
         });
         level_button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateStats(non_idolized_max_stats);
+                level_button1.setBackgroundResource(R.drawable.shape_min_level);
+                level_button2.setBackgroundResource(R.drawable.shape_medium_level_on);
+                level_button3.setBackgroundResource(R.drawable.shape_max_level);
             }
         });
         level_button3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateStats(idolized_max_stats);
+                level_button1.setBackgroundResource(R.drawable.shape_min_level);
+                level_button2.setBackgroundResource(R.drawable.shape_medium_level);
+                level_button3.setBackgroundResource(R.drawable.shape_max_level_on);
             }
         });
 
         if(card_info.is_promo() || card_info.getRarity() == Rarity.N) {
-            level_button2.setVisibility(View.INVISIBLE);
+            ViewGroup vg = (ViewGroup)(level_button2.getParent());
+            vg.removeView(level_button2);
         }
 
     }

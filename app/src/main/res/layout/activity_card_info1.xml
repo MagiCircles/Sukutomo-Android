@@ -361,34 +361,54 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/levels_row"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/level_1"
             android:id="@+id/level_button1"
             android:layout_below="@+id/stats_text"
             android:layout_toRightOf="@+id/card_rarity"
-            android:layout_toEndOf="@+id/card_rarity" />
+            android:layout_toEndOf="@+id/card_rarity"
+            android:background="@drawable/shape_min_level_on"
+            android:textSize="18dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/level_1"
             android:id="@+id/level_button2"
             android:layout_below="@+id/stats_text"
             android:layout_toRightOf="@+id/level_button1"
-            android:layout_toEndOf="@+id/level_button1" />
+            android:layout_toEndOf="@+id/level_button1"
+            android:background="@drawable/shape_medium_level"
+            android:textSize="18dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/level_1"
             android:id="@+id/level_button3"
             android:layout_below="@+id/stats_text"
             android:layout_toRightOf="@+id/level_button2"
-            android:layout_toEndOf="@+id/level_button2" />
+            android:layout_toEndOf="@+id/level_button2"
+            android:background="@drawable/shape_max_level"
+            android:textSize="18dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
     </TableRow>
 
 </RelativeLayout>
