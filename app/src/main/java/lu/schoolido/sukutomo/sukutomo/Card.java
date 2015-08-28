@@ -153,9 +153,9 @@ public class Card implements Parcelable{
     public void showImage(boolean idolized, ImageView view) {
         Log.d("im", "ID: " + id + "\n URL showImage:" + card_image);
         if(idolized || is_promo)
-            new LoadImage(view).execute(card_idolized_image, card_image);
+            new LoadImage(view, false).execute(card_idolized_image, card_image);
         else
-            new LoadImage(view).execute(card_image, card_idolized_image);
+            new LoadImage(view, false).execute(card_image, card_idolized_image);
     }
 
     /**
@@ -164,7 +164,7 @@ public class Card implements Parcelable{
      * @param view
      */
     public void showRoundImage(Bitmap bitmap, ImageView view) {
-        new LoadImage(view).execute(round_card_image, null);
+        new LoadImage(view, true).execute(round_card_image, null);
     }
 
 
@@ -417,8 +417,12 @@ public class Card implements Parcelable{
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;
         final WeakReference<ImageView> viewReference;
-        protected LoadImage(ImageView view) {
+        // If the image to load is a roundImage we mustn't add a background.
+        private boolean isRoundImage;
+
+        protected LoadImage(ImageView view, boolean isRound) {
             viewReference = new WeakReference<>( view );
+            isRoundImage = isRound;
         }
 
         @Override
@@ -450,17 +454,23 @@ public class Card implements Parcelable{
 
             if(image != null){
                 ImageView imageView = viewReference.get();
-                /*
-                // Printing card background
-                switch (attribute) {
-                    case COOL: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_cool);
-                        break;
-                    case PURE: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_pure);
-                        break;
-                    case SMILE: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_smile);
-                        break;
-                    default: imageView.setBackgroundResource(R.drawable.cardback_sr_idol_all);
-                }*/
+
+                if(!isRoundImage) {
+                    // Printing card background
+                    switch (attribute) {
+                        case COOL:
+                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_cool);
+                            break;
+                        case PURE:
+                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_pure);
+                            break;
+                        case SMILE:
+                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_smile);
+                            break;
+                        default:
+                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_all);
+                    }
+                }
                 // Printing card
                 if( imageView != null ) {
                     imageView.setImageBitmap(image);
