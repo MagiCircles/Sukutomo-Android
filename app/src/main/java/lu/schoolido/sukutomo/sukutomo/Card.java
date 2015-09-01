@@ -1,8 +1,11 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -453,27 +456,27 @@ public class Card implements Parcelable{
             return bitmap;
         }
 
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         protected void onPostExecute(Bitmap image) {
 
             if(image != null){
                 ImageView imageView = viewReference.get();
 
                 if(!isRoundImage) {
-                    // Printing card background
-                    /*switch (attribute) {
-                        case COOL:
-                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_cool);
-                            break;
-                        case PURE:
-                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_pure);
-                            break;
-                        case SMILE:
-                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_smile);
-                            break;
-                        default:
-                            imageView.setBackgroundResource(R.drawable.cardback_sr_idol_all);
-                    }*/
                     CardBrowser.setCardBackground(Card.this, imageView);
+                    // If the card is an UR, we will use its image blurred as the background
+                    if(rarity == Rarity.UR) {
+                        ImageEdition ie = new ImageEdition(image, CardBrowser.context);
+                        ie.blurBitmap(10);
+                        Bitmap newBackground = ie.getOutput();
+
+                        // Using the best method for each version
+                        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                        if (currentapiVersion >= Build.VERSION_CODES.JELLY_BEAN)
+                            imageView.setBackground(new BitmapDrawable(null, newBackground));
+                        else
+                            imageView.setBackground(new BitmapDrawable(newBackground));
+                    }
                 }
                 // Printing card
                 if( imageView != null ) {

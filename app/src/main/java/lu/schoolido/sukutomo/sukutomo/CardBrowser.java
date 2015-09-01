@@ -50,6 +50,7 @@ public class CardBrowser extends Activity {
     private static Drawable loadingImage;
     public static ImageView loadingView;
     public static Animation loadAnimation;
+    static Context context;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -60,6 +61,7 @@ public class CardBrowser extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_browser);
+        context = getApplicationContext();
 
         // Avoiding screen loading_rotation:
         this.setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
