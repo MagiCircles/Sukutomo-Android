@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import org.json.JSONException;
@@ -427,6 +428,8 @@ public class Card implements Parcelable{
 
         @Override
         protected void onPreExecute() {
+            CardBrowser.loadingView.setVisibility(View.VISIBLE);
+            CardBrowser.loadingView.setAnimation(CardBrowser.loadAnimation);
             super.onPreExecute();
         }
 
@@ -457,7 +460,7 @@ public class Card implements Parcelable{
 
                 if(!isRoundImage) {
                     // Printing card background
-                    switch (attribute) {
+                    /*switch (attribute) {
                         case COOL:
                             imageView.setBackgroundResource(R.drawable.cardback_sr_idol_cool);
                             break;
@@ -469,13 +472,16 @@ public class Card implements Parcelable{
                             break;
                         default:
                             imageView.setBackgroundResource(R.drawable.cardback_sr_idol_all);
-                    }
+                    }*/
+                    CardBrowser.setCardBackground(Card.this, imageView);
                 }
                 // Printing card
                 if( imageView != null ) {
                     imageView.setImageBitmap(image);
                 }
             }
+            CardBrowser.loadingView.clearAnimation();
+            CardBrowser.loadingView.setVisibility(View.GONE);
         }
     }
 }

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
@@ -37,9 +37,8 @@ public class CardBrowser extends Activity {
     private ProgressDialog pDialog;
     private LinkedList<ImageView> views;
     private int currentView = 0;
-    //private String cardImageUrl;
     private String siteURL = "http://schoolido.lu/api/cardids/";
-    private boolean showIdolized = false;
+    private static boolean showIdolized = false;
     private LinkedList<Integer> filteredCards;
     private int currentCardIndex = 0;
     // Next card, previous card, current card
@@ -49,9 +48,8 @@ public class CardBrowser extends Activity {
     private static LruCache<String, Bitmap> imagesMemoryCache = new LruCache<String, Bitmap>(10);
     private static LruCache<Integer, Card> cardsMemoryCache = new LruCache<Integer, Card>(10);
     private static Drawable loadingImage;
-    private static Drawable srIdolSmileBack, srIdolPureBack, srIdolCoolBack, srIdolAllBack;
-    private Matrix m1, m2;
-    //private LoadCards li;
+    public static ImageView loadingView;
+    public static Animation loadAnimation;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -63,7 +61,7 @@ public class CardBrowser extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_browser);
 
-        // Avoiding screen rotation:
+        // Avoiding screen loading_rotation:
         this.setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // If a search of cards by idols or other criteria has been requested.
@@ -77,8 +75,12 @@ public class CardBrowser extends Activity {
         views.add((ImageView) findViewById(R.id.card_image));
         views.add((ImageView) findViewById(R.id.card_image2));
 
-        // Shows the load image until the card image has been downloaded.
+        // Saves the load image and its view, only visible when an image is loading.
         loadingImage = getResources().getDrawable(R.drawable.loading);
+        loadingView = (ImageView) findViewById(R.id.loading_view);
+        loadingView.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.loading_rotation));
+        loadAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.loading_rotation);
+
 
         // Preparing gestures:
         mDetector = new GestureDetectorCompat(this, new GestureListener(this));
@@ -94,6 +96,7 @@ public class CardBrowser extends Activity {
                 //overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
             }
         });
+
 
         // Up button and slide down.
         ImageView upButton = (ImageView) findViewById(R.id.arrow_up);
@@ -235,7 +238,7 @@ public class CardBrowser extends Activity {
         views.get(currentView).startAnimation(GenericGestureListener.slideExitUpAnimation);
         currentCardIndex = getPreviousCardIndex();
         changeViews();
-        setCardBackground(currentCards[1].getAttribute());
+        setCardBackground(currentCards[1], views.get(currentView));
         LoadCards li = new LoadCards(false);
         li.execute();
         views.get(currentView).startAnimation(GenericGestureListener.slideEnterDownAnimation);
@@ -248,7 +251,7 @@ public class CardBrowser extends Activity {
         views.get(currentView).startAnimation(GenericGestureListener.slideExitDownAnimation);
         currentCardIndex = getNextCardIndex();
         changeViews();
-        setCardBackground(currentCards[0].getAttribute());
+        setCardBackground(currentCards[0], views.get(currentView));
 
         LoadCards li = new LoadCards(false);
         li.execute();
@@ -256,17 +259,87 @@ public class CardBrowser extends Activity {
     }
 
     /** Sets a background to the current view depending on current card's attribute.
-     * @param attr Card's attribute
+     * @param card Card's to show
+     * @param view Imageview to apply the background
      */
-    private void setCardBackground(Attribute attr) {
-        switch (attr) {
-            case COOL: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_cool);
+    public static void setCardBackground(Card card, ImageView view) {
+        switch (card.getAttribute()) {
+            case COOL:
+                switch(card.getRarity()) {
+                    case N:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_n_idol_cool);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_n_nonidol_cool);
+                        break;
+                    case R:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_r_idol_cool);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_r_nonidol_cool);
+                        break;
+                    case SR:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_sr_idol_cool);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_sr_nonidol_cool);
+                        break;
+                    case UR:
+                        view.setBackgroundResource(R.drawable.cardback_ur_cool);
+                        break;
+                }
                 break;
-            case PURE: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_pure);
+            case PURE:
+                switch(card.getRarity()) {
+                    case N:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_n_idol_pure);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_n_nonidol_pure);
+                        break;
+                    case R:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_r_idol_pure);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_r_nonidol_pure);
+                        break;
+                    case SR:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_sr_idol_pure);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_sr_nonidol_pure);
+                        break;
+                    case UR:
+                        view.setBackgroundResource(R.drawable.cardback_ur_pure);
+                        break;
+                }
                 break;
-            case SMILE: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_smile);
+            case SMILE:
+                switch(card.getRarity()) {
+                    case N:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_n_idol_smile);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_n_nonidol_smile);
+                        break;
+                    case R:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_r_idol_smile);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_r_nonidol_smile);
+                        break;
+                    case SR:
+                        if(showIdolized || card.is_promo())
+                            view.setBackgroundResource(R.drawable.cardback_sr_idol_smile);
+                        else
+                            view.setBackgroundResource(R.drawable.cardback_sr_nonidol_smile);
+                        break;
+                    case UR:
+                        view.setBackgroundResource(R.drawable.cardback_ur_smile);
+                        break;
+                }
                 break;
-            default: views.get(currentView).setBackgroundResource(R.drawable.cardback_sr_idol_all);
+            default: view.setBackgroundResource(R.drawable.cardback_ur_all);
         }
     }
 
@@ -289,7 +362,7 @@ public class CardBrowser extends Activity {
      */
     private void changeViews() {
         currentView = (currentView + 1) % 2;
-        views.get(currentView).setImageDrawable(loadingImage);
+        views.get(currentView).setImageDrawable(null);
     }
 
     /** Adds a downloaded bitmap to the Caché
