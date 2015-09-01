@@ -1,11 +1,11 @@
 package lu.schoolido.sukutomo.sukutomo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +26,11 @@ public class IdolsAdapter extends ArrayAdapter<String> {
         this.data = data;
     }
 
+    static class IdolHolder {
+        ImageView icon;
+        TextView text;
+    }
+
     /** This method adds a customized color to the list elements if it has the name of one of the main idols.
      * @param position List item position
      * @param convertView View to be converted. Not used currently
@@ -34,37 +39,55 @@ public class IdolsAdapter extends ArrayAdapter<String> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        TextView text;
-        int layout;
+        View row;
+        int background, drawableItem;
+        IdolHolder holder = new IdolHolder();
 
         if(data.get(position).equalsIgnoreCase("Ayase Eli")) {
-            layout = R.layout.list_eli;
+            background = R.drawable.shape_eli;
+            drawableItem = R.drawable.chibi_eli1;
         } else if(data.get(position).equalsIgnoreCase("Hoshizora Rin")) {
-            layout = R.layout.list_rin;
+            background = R.drawable.shape_rin;
+            drawableItem = R.drawable.chibi_rin1;
         } else if(data.get(position).equalsIgnoreCase("Koizumi Hanayo")) {
-            layout = R.layout.list_hanayo;
+            background = R.drawable.shape_hanayo;
+            drawableItem = R.drawable.chibi_hanayo1;
         } else if(data.get(position).equalsIgnoreCase("Kousaka Honoka")) {
-            layout = R.layout.list_honoka;
+            background = R.drawable.shape_honoka;
+            drawableItem = R.drawable.chibi_honoka1;
         } else if(data.get(position).equalsIgnoreCase("Minami Kotori")) {
-            layout = R.layout.list_kotori;
+            background = R.drawable.shape_kotori;
+            drawableItem = R.drawable.chibi_kotori1;
         } else if(data.get(position).equalsIgnoreCase("Nishikino Maki")) {
-            layout = R.layout.list_maki;
+            background = R.drawable.shape_maki;
+            drawableItem = R.drawable.chibi_maki1;
         } else if(data.get(position).equalsIgnoreCase("Sonoda Umi")) {
-            layout = R.layout.list_umi;
+            background = R.drawable.shape_umi;
+            drawableItem = R.drawable.chibi_umi1;
         } else if(data.get(position).equalsIgnoreCase("Toujou Nozomi")) {
-            layout = R.layout.list_nozomi;
+            background = R.drawable.shape_nozomi;
+            drawableItem = R.drawable.chibi_nozomi1;
         } else if(data.get(position).equalsIgnoreCase("Yazawa Nico")) {
-            layout = R.layout.list_nico;
+            background = R.drawable.shape_nico;
+            drawableItem = R.drawable.chibi_nico1;
         } else {
-            layout = R.layout.simple_white_list_item;
+            background = R.drawable.list_item_shape;
+            drawableItem = R.drawable.dummy;
         }
 
-        row = LayoutInflater.from(getContext()).inflate(layout, parent, false);
-        text = (TextView) row;
+
+        if(drawableItem != R.drawable.dummy) {
+            row = LayoutInflater.from(getContext()).inflate(R.layout.main_idol_list_item, parent, false);
+        } else {
+            row = LayoutInflater.from(getContext()).inflate(R.layout.idol_list_item, parent, false);
+        }
+        row.setBackgroundResource(background);
+        holder.text = (TextView) row.findViewById(R.id.item_text);
+        holder.icon = (ImageView) row.findViewById(R.id.item_image);
 
         String item = getItem(position);
-        text.setText(item.toString());
+        holder.text.setText(item.toString());
+        holder.icon.setImageResource(drawableItem);
 
         return row;
     }

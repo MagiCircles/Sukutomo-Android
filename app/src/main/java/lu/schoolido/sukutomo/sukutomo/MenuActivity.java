@@ -1,6 +1,5 @@
 package lu.schoolido.sukutomo.sukutomo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -32,7 +30,7 @@ public class MenuActivity extends ActionBarActivity {
                 "Surprise no. 1", "Surprise no. 2"
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.simple_white_list_item, android.R.id.text1, options);
+                R.layout.menu_list_item, android.R.id.text1, options);
 
         listView.setAdapter(adapter);
 

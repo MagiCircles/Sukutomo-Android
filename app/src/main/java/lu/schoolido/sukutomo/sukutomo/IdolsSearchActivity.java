@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -126,7 +125,7 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
             pDialog.dismiss();
 
             adapter = new IdolsAdapter(getApplicationContext(),
-                    R.layout.simple_white_list_item, idolNames);
+                    R.layout.menu_list_item, idolNames);
 
             listView.setAdapter(adapter);
 
