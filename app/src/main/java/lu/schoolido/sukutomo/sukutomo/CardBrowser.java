@@ -345,6 +345,12 @@ public class CardBrowser extends Activity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onTrimMemory(TRIM_MEMORY_RUNNING_MODERATE);
+    }
+
     /**
      * @return Next card index
      */

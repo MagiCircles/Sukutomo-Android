@@ -1,6 +1,7 @@
 package lu.schoolido.sukutomo.sukutomo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +88,9 @@ public class IdolsAdapter extends ArrayAdapter<String> {
 
         String item = getItem(position);
         holder.text.setText(item.toString());
-        holder.icon.setImageResource(drawableItem);
+        //holder.icon.setImageResource(drawableItem);
+        holder.icon.setImageBitmap(BitmapLoader.decodeSampledBitmapFromResource(context.getResources(),
+                drawableItem, 64, 64));
 
         return row;
     }

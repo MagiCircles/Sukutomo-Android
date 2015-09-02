@@ -5,6 +5,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -89,6 +93,24 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
         return true;
     }
 
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+        for(int i = 0; i < listView.getChildCount(); i++) {
+            LinearLayout layout = (LinearLayout) listView.getChildAt(i);
+            ImageView img = (ImageView) layout.findViewById(R.id.item_image);
+            Bitmap bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
+            img.destroyDrawingCache();
+            bitmap.recycle();
+        }
+    }*/
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onTrimMemory(TRIM_MEMORY_RUNNING_MODERATE);
+    }
+
     private class LoadIdols extends AsyncTask<String, String, Void> {
         private ProgressDialog pDialog;
         @Override
@@ -141,7 +163,7 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
 
                     search.putExtra("url", baseURL + "?name=" + idolName.replace(" ", "%20"));
                     startActivity(search);
-                    overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+                    overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
                 }
             });
         }
