@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SukuTomo</string>
 
-    <string name="welcome">¡Bienvenido!</string>
+    <string name="welcome">Bienvenido a</string>
     <string name="action_settings">Preferencias</string>
     <string name="title_activity_card">Info. Carta</string>
     <string name="title_activity_card_info1">Info. Carta</string>
