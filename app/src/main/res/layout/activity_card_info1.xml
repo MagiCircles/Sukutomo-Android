@@ -36,12 +36,11 @@
         android:id="@+id/card_name_search"
         android:layout_gravity="left|bottom"
         android:src="@drawable/search"
-        android:layout_below="@+id/card_id"
-        android:layout_toRightOf="@+id/card_name"
-        android:layout_above="@+id/card_rarity_search"
-        android:layout_alignRight="@+id/card_rarity_search"
-        android:layout_alignEnd="@+id/card_rarity_search"
-        android:paddingLeft="5dp" />
+        android:paddingLeft="5dp"
+        android:layout_toLeftOf="@+id/roundImage"
+        android:layout_toStartOf="@+id/roundImage"
+        android:layout_alignTop="@+id/card_name"
+        android:layout_above="@+id/card_attr_search" />
 
     <TextView
         android:layout_width="wrap_content"
