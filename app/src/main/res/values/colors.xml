@@ -16,4 +16,6 @@
     <color name="cool_blue">#FF0564FF</color>
     <color name="list_pink">#dc10ba</color>>
     <color name="list_pink2">#fd21cb</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>
