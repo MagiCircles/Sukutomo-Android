@@ -33,4 +33,8 @@
     <string name="search_idols_hint">Idol name, birth, etc.</string>
     <string name="title_activity_web">WebActivity</string>
 
+    <string name="title_activity_splashscreen">SplashscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>
