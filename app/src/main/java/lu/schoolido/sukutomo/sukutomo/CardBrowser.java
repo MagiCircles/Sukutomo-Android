@@ -35,7 +35,6 @@ import java.util.LinkedList;
 
 
 public class CardBrowser extends Activity {
-    private ProgressDialog pDialog;
     private LinkedList<ImageView> views;
     private int currentView = 0;
     private String siteURL = "http://schoolido.lu/api/cardids/";
@@ -52,6 +51,10 @@ public class CardBrowser extends Activity {
     public static ImageView loadingView;
     public static Animation loadAnimation;
     static Context context;
+    /**
+     * Used for synchronization with AsyncTasks
+     */
+    private static boolean blocked = false;
 
     public CardBrowser() {
         Client = new DefaultHttpClient();
@@ -137,6 +140,28 @@ public class CardBrowser extends Activity {
         li.execute();
     }
 
+    /**
+     * Blocks CardBrowser navigation (use during load).
+     * @return Navigation already blocked.
+     */
+    public static boolean block() {
+        if(blocked)
+            return false;
+        else
+            return blocked = true;
+    }
+
+    /**
+     * Releases CardBrowser navigation (use after load).
+     * @return Navigation already released.
+     */
+    public static boolean release() {
+        if(blocked)
+            return !(blocked = false);
+        else
+            return blocked;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.mDetector.onTouchEvent(event);
@@ -195,9 +220,11 @@ public class CardBrowser extends Activity {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            showIdolized = !showIdolized;
+            if(!blocked) {
+                showIdolized = !showIdolized;
 
-            currentCards[2].showImage(showIdolized, views.get(currentView));
+                currentCards[2].showImage(showIdolized, views.get(currentView));
+            }
             return true;
         }
 
@@ -227,38 +254,44 @@ public class CardBrowser extends Activity {
     }
 
     private void slideLeft() {
-        Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
+        if(!blocked) {
+            Intent info1 = new Intent(getApplicationContext(), CardInfo1.class);
 
-        info1.putExtra("card", currentCards[2]);
-        startActivity(info1);
-        overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+            info1.putExtra("card", currentCards[2]);
+            startActivity(info1);
+            overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+        }
     }
 
     /**
      * Shows the slideUp animation and loads the previous card.
      */
     private void slideUp() {
-        views.get(currentView).startAnimation(GenericGestureListener.slideExitUpAnimation);
-        currentCardIndex = getPreviousCardIndex();
-        changeViews();
-        setCardBackground(currentCards[1], views.get(currentView));
-        LoadCards li = new LoadCards(false);
-        li.execute();
-        views.get(currentView).startAnimation(GenericGestureListener.slideEnterDownAnimation);
+        if(!blocked) {
+            views.get(currentView).startAnimation(GenericGestureListener.slideExitUpAnimation);
+            currentCardIndex = getPreviousCardIndex();
+            changeViews();
+            setCardBackground(currentCards[1], views.get(currentView));
+            LoadCards li = new LoadCards(false);
+            li.execute();
+            views.get(currentView).startAnimation(GenericGestureListener.slideEnterDownAnimation);
+        }
     }
 
     /**
      * Shows the slideDown animation and loads the next card.
      */
     private void slideDown() {
-        views.get(currentView).startAnimation(GenericGestureListener.slideExitDownAnimation);
-        currentCardIndex = getNextCardIndex();
-        changeViews();
-        setCardBackground(currentCards[0], views.get(currentView));
+        if(!blocked) {
+            views.get(currentView).startAnimation(GenericGestureListener.slideExitDownAnimation);
+            currentCardIndex = getNextCardIndex();
+            changeViews();
+            setCardBackground(currentCards[0], views.get(currentView));
 
-        LoadCards li = new LoadCards(false);
-        li.execute();
-        views.get(currentView).startAnimation(GenericGestureListener.slideEnterUpAnimation);
+            LoadCards li = new LoadCards(false);
+            li.execute();
+            views.get(currentView).startAnimation(GenericGestureListener.slideEnterUpAnimation);
+        }
     }
 
     /** Sets a background to the current view depending on current card's attribute.
@@ -435,9 +468,8 @@ public class CardBrowser extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(CardBrowser.this);
-            pDialog.setMessage("Loading cards ...");
-            //pDialog.show();
+            // Block the thread until Cardbrowser not blocked.
+            CardBrowser.block();
         }
 
         protected Void doInBackground(String... args) {
@@ -471,9 +503,8 @@ public class CardBrowser extends Activity {
         }
 
         protected void onPostExecute(Void v) {
-            pDialog.show();
-            pDialog.dismiss();
             currentCards[2].showImage(showIdolized, views.get(currentView));
+            CardBrowser.release();
         }
     }
 }

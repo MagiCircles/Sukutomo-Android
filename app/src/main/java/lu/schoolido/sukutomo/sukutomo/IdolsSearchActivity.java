@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -36,14 +37,17 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
     private ListView listView;
     private static String baseURL = "http://schoolido.lu/api/cardids/";
     private IdolsAdapter adapter;
+    private ImageView loadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_idols);
-        this.setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         listView = (ListView) findViewById(R.id.idolsList);
+        loadingView = (ImageView) findViewById(R.id.loading_view);
+        loadingView.setVisibility(View.GONE);
 
         idolNames = new ArrayList<>();
         LoadIdols li = new LoadIdols();
@@ -111,13 +115,12 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
     }
 
     private class LoadIdols extends AsyncTask<String, String, Void> {
-        private ProgressDialog pDialog;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(IdolsSearchActivity.this);
-            pDialog.setMessage("Loading idols...");
-            //pDialog.show();
+
+            loadingView.setVisibility(View.VISIBLE);
+            loadingView.setAnimation(CardBrowser.loadAnimation);
         }
 
         protected Void doInBackground(String... args) {
@@ -142,9 +145,6 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
         }
 
         protected void onPostExecute(Void v) {
-            pDialog.show();
-            pDialog.dismiss();
-
             adapter = new IdolsAdapter(getApplicationContext(),
                     R.layout.menu_list_item, idolNames);
 
@@ -165,6 +165,8 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
                     overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
                 }
             });
+            loadingView.clearAnimation();
+            loadingView.setVisibility(View.GONE);
         }
     }
 }
