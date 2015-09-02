@@ -1,13 +1,27 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Class used to resize bitmaps before loading them in order to avoid OutOfMemory errors.
+ * Class used to resize bitmaps before loading them and get Drawable from assets in order to avoid
+ * OutOfMemory errors.
  */
-public class BitmapLoader {
+public class BitmapAssetLoader {
+    /**
+     * @param res Application resources
+     * @param resId Id of the Resource we want to load
+     * @param reqWidth Required width
+     * @param reqHeight Required height
+     * @return Sampled image
+     */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -23,6 +37,12 @@ public class BitmapLoader {
     }
 
 
+    /**
+     * @param options
+     * @param reqWidth Required width
+     * @param reqHeight Required height
+     * @return Reduction factor needed to adjust a Bitmap to the specified dimensions without losing aspect ratio.
+     */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Original height and width of the image
         final int height = options.outHeight;
@@ -42,5 +62,20 @@ public class BitmapLoader {
         }
 
         return inSampleSize;
+    }
+
+    /** Method use to get Drawables from assets.
+     * @param path Path of the asset within main/assets folder.
+     * @param res Application resources.
+     * @return Drawable with the asset.
+     */
+    public static Drawable getAsset(String path, Resources res) {
+        try {
+            InputStream is = res.getAssets().open(path);
+            return Drawable.createFromStream(is, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
@@ -265,29 +266,30 @@ public class CardBrowser extends Activity {
      * @param view Imageview to apply the background
      */
     public static void setCardBackground(Card card, ImageView view) {
+        String assetPath = "";
         switch (card.getAttribute()) {
             case COOL:
                 switch(card.getRarity()) {
                     case N:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_n_idol_cool);
+                            assetPath = "cardback_n_idol_cool.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_n_nonidol_cool);
+                            assetPath = "cardback_n_nonidol_cool.png";
                         break;
                     case R:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_r_idol_cool);
+                            assetPath = "cardback_r_idol_cool.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_r_nonidol_cool);
+                            assetPath = "cardback_r_nonidol_cool.png";
                         break;
                     case SR:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_sr_idol_cool);
+                            assetPath = "cardback_sr_idol_cool.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_sr_nonidol_cool);
+                            assetPath = "cardback_sr_nonidol_cool.png";
                         break;
                     case UR:
-                        view.setBackgroundResource(R.drawable.cardback_ur_cool);
+                        assetPath = "cardback_ur_cool.png";
                         break;
                 }
                 break;
@@ -295,24 +297,24 @@ public class CardBrowser extends Activity {
                 switch(card.getRarity()) {
                     case N:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_n_idol_pure);
+                            assetPath = "cardback_n_idol_pure.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_n_nonidol_pure);
+                            assetPath = "cardback_n_nonidol_pure.png";
                         break;
                     case R:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_r_idol_pure);
+                            assetPath = "cardback_r_idol_pure.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_r_nonidol_pure);
+                            assetPath = "cardback_r_nonidol_pure.png";
                         break;
                     case SR:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_sr_idol_pure);
+                            assetPath = "cardback_sr_idol_pure.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_sr_nonidol_pure);
+                            assetPath = "cardback_sr_nonidol_pure.png";
                         break;
                     case UR:
-                        view.setBackgroundResource(R.drawable.cardback_ur_pure);
+                        assetPath = "cardback_ur_pure.png";
                         break;
                 }
                 break;
@@ -320,29 +322,36 @@ public class CardBrowser extends Activity {
                 switch(card.getRarity()) {
                     case N:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_n_idol_smile);
+                            assetPath = "cardback_n_idol_smile.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_n_nonidol_smile);
+                            assetPath = "cardback_n_nonidol_smile.png";
                         break;
                     case R:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_r_idol_smile);
+                            assetPath = "cardback_r_idol_smile.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_r_nonidol_smile);
+                            assetPath = "cardback_r_nonidol_smile.png";
                         break;
                     case SR:
                         if(showIdolized || card.is_promo())
-                            view.setBackgroundResource(R.drawable.cardback_sr_idol_smile);
+                            assetPath = "cardback_sr_idol_smile.png";
                         else
-                            view.setBackgroundResource(R.drawable.cardback_sr_nonidol_smile);
+                            assetPath = "cardback_sr_nonidol_smile.png";
                         break;
                     case UR:
-                        view.setBackgroundResource(R.drawable.cardback_ur_smile);
+                        assetPath = "cardback_ur_smile.png";
                         break;
                 }
                 break;
-            default: view.setBackgroundResource(R.drawable.cardback_ur_all);
+            default: assetPath = "cardback_ur_all.png";
         }
+
+        Drawable drawable = BitmapAssetLoader.getAsset(assetPath, context.getResources());
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.JELLY_BEAN)
+            view.setBackground(drawable);
+        else
+            view.setBackgroundDrawable(drawable);
     }
 
     @Override

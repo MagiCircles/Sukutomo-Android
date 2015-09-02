@@ -475,7 +475,7 @@ public class Card implements Parcelable{
                         if (currentapiVersion >= Build.VERSION_CODES.JELLY_BEAN)
                             imageView.setBackground(new BitmapDrawable(null, newBackground));
                         else
-                            imageView.setBackground(new BitmapDrawable(newBackground));
+                            imageView.setBackgroundDrawable(new BitmapDrawable(newBackground));
                     }
                 }
                 // Printing card
