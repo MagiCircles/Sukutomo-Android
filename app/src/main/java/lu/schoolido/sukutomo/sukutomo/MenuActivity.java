@@ -2,6 +2,7 @@ package lu.schoolido.sukutomo.sukutomo;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -51,13 +52,14 @@ public class MenuActivity extends ActionBarActivity {
                         startActivity(IdolsSearchActivity.class, null);
                         break; // go to idols list
                     case 2:
-                        startActivity(WebActivity.class, "http://schoolido.lu/events/");
+                        startActivity(WebActivity.class, "http://schoolido.lu/events/?hidenavbar");
                         break; // go to browser view for events
                     case 3:
-                        startActivity(WebActivity.class, "http://schoolido.lu/contest/");
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://schoolido.lu/contest/"));
+                        startActivity(browserIntent);
                         break; // go to browser view for the contest
                     case 4:
-                        startActivity(WebActivity.class, "http://schoolido.lu/users/");
+                        startActivity(WebActivity.class, "http://schoolido.lu/users/?hidenavbar");
                         break; // go to browser view for users
                     case 5:
                     case 6:

@@ -40,7 +40,7 @@
         android:layout_toLeftOf="@+id/roundImage"
         android:layout_toStartOf="@+id/roundImage"
         android:layout_alignTop="@+id/card_name"
-        android:layout_above="@+id/card_attr_search" />
+        android:layout_alignBottom="@+id/whiteSpace" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -141,9 +141,10 @@
         android:id="@+id/card_attr"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:textSize="16dp"
-        android:layout_alignTop="@+id/card_rarity_search"
-        android:layout_toRightOf="@+id/card_rarity_search"
-        android:layout_toEndOf="@+id/card_rarity_search" />
+        android:layout_below="@+id/card_rarity"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="3dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -179,14 +180,23 @@
             android:layout_height="match_parent"
             android:layout_marginTop="5dp">
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Smile"
                 android:id="@+id/smile_text1"
                 android:layout_column="0"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp" />-->
+
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:id="@+id/smile_icon"
+                android:layout_column="0"
+                android:src="@drawable/icon_smile"
+                android:layout_gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -195,7 +205,9 @@
                 android:id="@+id/smile_val1"
                 android:layout_column="3"
                 android:layout_marginLeft="5dp"
-                android:text="10" />
+                android:text="10"
+                android:textColor="@color/smile_pink"
+                android:layout_gravity="center" />
 
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
@@ -210,7 +222,8 @@
                 android:maxWidth="500dp"
                 android:max="@integer/max_smile"
                 android:minWidth="250dp"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center" />
 
         </TableRow>
 
@@ -221,16 +234,16 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Pure"
-                android:id="@+id/pure_text1"
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:id="@+id/pure_icon"
                 android:layout_column="0"
-                android:layout_marginLeft="5dp" />
+                android:src="@drawable/icon_pure"
+                android:layout_gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -239,7 +252,9 @@
                 android:id="@+id/pure_val1"
                 android:layout_column="3"
                 android:layout_marginLeft="5dp"
-                android:text="10" />
+                android:text="10"
+                android:layout_gravity="center"
+                android:textColor="@color/pure_green" />
 
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
@@ -254,7 +269,8 @@
                 android:maxWidth="500dp"
                 android:max="@integer/max_smile"
                 android:minWidth="250dp"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center" />
 
         </TableRow>
 
@@ -265,16 +281,16 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Cool"
-                android:id="@+id/cool_text1"
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:id="@+id/cool_icon"
                 android:layout_column="0"
-                android:layout_marginLeft="5dp" />
+                android:src="@drawable/icon_cool"
+                android:layout_gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -283,7 +299,9 @@
                 android:id="@+id/cool_val1"
                 android:layout_column="3"
                 android:layout_marginLeft="5dp"
-                android:text="10" />
+                android:text="10"
+                android:textColor="@color/cool_blue"
+                android:layout_gravity="center" />
 
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
@@ -298,7 +316,8 @@
                 android:maxWidth="500dp"
                 android:max="@integer/max_smile"
                 android:minWidth="250dp"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center" />
 
         </TableRow>
 
@@ -308,17 +327,16 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="HP"
-                android:id="@+id/textView2"
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:id="@+id/hp_icon"
                 android:layout_column="0"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp" />
+                android:src="@drawable/icon_hp"
+                android:layout_gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -328,7 +346,9 @@
                 android:id="@+id/hp1"
                 android:layout_column="3"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:textColor="#167700"
+                android:layout_gravity="center|top" />
         </TableRow>
     </TableLayout>
 
@@ -337,21 +357,26 @@
         android:layout_height="wrap_content"
         android:id="@+id/card_rarity_search"
         android:src="@drawable/search"
-        android:layout_above="@+id/release_date_text"
         android:layout_toRightOf="@+id/card_rarity"
-        android:layout_below="@+id/card_name"
-        android:layout_alignRight="@+id/release_date"
-        android:layout_alignEnd="@+id/release_date"
-        android:paddingLeft="-10dp" />
+        android:layout_below="@+id/whiteSpace"
+        android:layout_toStartOf="@+id/card_attr_search"
+        android:paddingLeft="0dp"
+        android:layout_alignBottom="@+id/card_rarity"
+        android:layout_toLeftOf="@+id/card_attr_search"
+        android:layout_marginLeft="3dp" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/card_attr_search"
         android:src="@drawable/search"
-        android:layout_below="@+id/whiteSpace"
         android:layout_toRightOf="@+id/card_attr"
-        android:layout_above="@+id/release_date_text" />
+        android:layout_toEndOf="@+id/card_attr"
+        android:layout_alignBottom="@+id/card_attr"
+        android:layout_alignTop="@+id/card_attr"
+        android:paddingLeft="0dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp" />
 
     <TableRow
         android:layout_width="match_parent"
@@ -407,5 +432,15 @@
             android:paddingTop="9dp"
             android:paddingBottom="9dp" />
     </TableRow>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/japan_search"
+        android:src="@drawable/search"
+        android:layout_below="@+id/release_date_text"
+        android:layout_toRightOf="@+id/release_date"
+        android:layout_toEndOf="@+id/release_date"
+        android:layout_alignBottom="@+id/release_date" />
 
 </RelativeLayout>

@@ -479,6 +479,7 @@ public class CardBrowser extends Activity {
                 if(initial) {
                     data = Client.execute(new HttpGet(siteURL), responseHandler);
                     getCards(data);
+                    currentCardIndex = filteredCards.size() - 1;
                 }
                 // First id: Next card
                 // Second id: Previous card

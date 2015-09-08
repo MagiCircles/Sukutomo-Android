@@ -67,7 +67,7 @@ public class CardInfo2 extends Activity {
         // Skill name
         ImageView img = (ImageView) findViewById(R.id.skill_name_search);
         txt = (TextView) findViewById(R.id.skill_name);
-        if(card_info.getSkill().equalsIgnoreCase("null"))
+        if (card_info.getSkill() == null || card_info.getSkill() == "" || card_info.getSkill().equalsIgnoreCase("none") || card_info.getSkill().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
             txt.setText(card_info.getSkill());
@@ -93,7 +93,7 @@ public class CardInfo2 extends Activity {
         // Center skill
         img = (ImageView) findViewById(R.id.center_skill_search);
         txt = (TextView) findViewById(R.id.center_skill);
-        if(card_info.getCenter_skill()==null || card_info.getCenter_skill().equalsIgnoreCase("none") || card_info.getCenter_skill().equalsIgnoreCase("null"))
+        if (card_info.getCenter_skill() == null || card_info.getCenter_skill() == "" || card_info.getCenter_skill().equalsIgnoreCase("none") || card_info.getCenter_skill().equalsIgnoreCase("null"))
             txt.setText(getString(R.string.none));
         else
             txt.setText(card_info.getCenter_skill());

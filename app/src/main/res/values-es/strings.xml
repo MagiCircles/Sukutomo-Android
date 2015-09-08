@@ -10,7 +10,7 @@
     <string name="Card">Carta</string>
     <string name="skill">Habilidad</string>
     <string name="center_skill">Habilidad central</string>
-    <string name="release_date">Fecha de salida</string>
+    <string name="release_date">Fecha de salida (Japón)</string>
     <string name="level_1">Nivel 1</string>
     <string name="level_30">Nivel 30</string>
     <string name="level_40">Nivel 40</string>
@@ -30,4 +30,6 @@
     <string name="title_activity_web">WebActivity</string>
     <string name="title_activity_idols">Idols</string>
     <string name="title_activity_menu">School Idol Tomodachi</string>
+    <string name="only_japan">sólo Japón</string>
+    <string name="worldwide">en todo el mundo</string>
 </resources>

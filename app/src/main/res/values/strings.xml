@@ -10,7 +10,7 @@
     <string name="Card">Card</string>
     <string name="skill">Skill</string>
     <string name="center_skill">Center skill</string>
-    <string name="release_date">Release Date</string>
+    <string name="release_date">Release Date (Japan)</string>
     <string name="stats">Stats</string>
 
     <string name="level_1">Level 1</string>
@@ -32,5 +32,7 @@
     <string name="search_idols">Search idol</string>
     <string name="search_idols_hint">Idol name, birth, etc.</string>
     <string name="title_activity_web">WebActivity</string>
+    <string name="only_japan">only Japan</string>
+    <string name="worldwide">worldwide</string>
 
 </resources>

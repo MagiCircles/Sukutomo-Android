@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -138,13 +139,30 @@ public class CardInfo1 extends Activity {
         });
 
 
-        // Release Date
+        // Release Date, and worldwide state
         txt = (TextView) findViewById(R.id.release_date);
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMM d yyyy", Locale.US);
-        if(card_info.getRelease_date()!=null)
-            txt.setText(sdf.format(card_info.getRelease_date()).toString());
-        else
-            txt.setText(R.string.unknown);
+        SimpleDateFormat sdfUS = new SimpleDateFormat("MMMM d yyyy", Locale.US);
+        SimpleDateFormat sdfES = new SimpleDateFormat("d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        String japanOnly = getString(card_info.isJapan_only() ? R.string.only_japan : R.string.worldwide);
+        if (card_info.getRelease_date() != null) {
+            if (Locale.getDefault().getDisplayLanguage().equalsIgnoreCase("spanish"))
+                txt.setText(sdfUS.format(card_info.getRelease_date()).toString() + ", " + japanOnly);
+            else
+                txt.setText(sdfES.format(card_info.getRelease_date()).toString() + ", " + japanOnly);
+        } else {
+            txt.setText(getString(R.string.unknown) + ", " + japanOnly);
+        }
+
+        img = (ImageView) findViewById(R.id.japan_search);
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String attr = Boolean.toString(card_info.isJapan_only());
+                char first = Character.toUpperCase(attr.charAt(0));
+                startSearch("japan_only", first + attr.substring(1).toLowerCase());
+            }
+        });
+
 
         // Text views for stats
         min_stats = card_info.getMinimum_statistics();
