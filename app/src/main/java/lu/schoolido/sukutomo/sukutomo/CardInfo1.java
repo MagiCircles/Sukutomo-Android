@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Attr;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -106,7 +108,7 @@ public class CardInfo1 extends Activity {
         // Name field
         ImageView img = (ImageView) findViewById(R.id.card_name_search);
         txt = (TextView) findViewById(R.id.card_name);
-        txt.setText(card_info.getName());
+        txt.setText(card_info.getName() + " / " + card_info.getJapanese_name());
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +130,7 @@ public class CardInfo1 extends Activity {
         // Attribute
         img = (ImageView) findViewById(R.id.card_attr_search);
         txt = (TextView) findViewById(R.id.card_attr);
-        txt.setText(card_info.getAttribute().toString());
+        txt.setText(getAttributeText(card_info.getAttribute()));
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,12 +145,16 @@ public class CardInfo1 extends Activity {
         txt = (TextView) findViewById(R.id.release_date);
         SimpleDateFormat sdfUS = new SimpleDateFormat("MMMM d yyyy", Locale.US);
         SimpleDateFormat sdfES = new SimpleDateFormat("d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        SimpleDateFormat sdfJP = new SimpleDateFormat("yyyy'年'MMMM'月'd'日'", Locale.JAPAN);
         String japanOnly = getString(card_info.isJapan_only() ? R.string.only_japan : R.string.worldwide);
+        Log.d("language", Locale.getDefault().getDisplayLanguage());
         if (card_info.getRelease_date() != null) {
-            if (Locale.getDefault().getDisplayLanguage().equalsIgnoreCase("spanish"))
-                txt.setText(sdfUS.format(card_info.getRelease_date()).toString() + ", " + japanOnly);
-            else
+            if (Locale.getDefault().getDisplayLanguage().equalsIgnoreCase("español") || Locale.getDefault().getDisplayLanguage().equalsIgnoreCase("spanish"))
                 txt.setText(sdfES.format(card_info.getRelease_date()).toString() + ", " + japanOnly);
+            else if (Locale.getDefault().getDisplayLanguage().equalsIgnoreCase("日本語") || Locale.getDefault().getDisplayLanguage().equalsIgnoreCase("japanese"))
+                txt.setText(sdfJP.format(card_info.getRelease_date()).toString() + "、" + japanOnly);
+            else
+                txt.setText(sdfUS.format(card_info.getRelease_date()).toString() + ", " + japanOnly);
         } else {
             txt.setText(getString(R.string.unknown) + ", " + japanOnly);
         }
@@ -232,6 +238,24 @@ public class CardInfo1 extends Activity {
             vg.removeView(level_button2);
         }
 
+    }
+
+    private String getAttributeText(Attribute attr) {
+        String str = "";
+        switch (attr) {
+            case SMILE:
+                str = "Smile / スマイル";
+                break;
+            case PURE:
+                str = "Pure / ピュア";
+                break;
+            case COOL:
+                str = "Cool / クール";
+                break;
+            default:
+                str = "All";
+        }
+        return str;
     }
 
     /** Creates a new CardBrowser Activity with the requested filter.

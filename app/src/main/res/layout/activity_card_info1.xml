@@ -391,7 +391,8 @@
             android:paddingLeft="17dp"
             android:paddingRight="17dp"
             android:paddingTop="9dp"
-            android:paddingBottom="9dp" />
+            android:paddingBottom="9dp"
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -406,7 +407,8 @@
             android:paddingLeft="17dp"
             android:paddingRight="17dp"
             android:paddingTop="9dp"
-            android:paddingBottom="9dp" />
+            android:paddingBottom="9dp"
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -421,7 +423,8 @@
             android:paddingLeft="17dp"
             android:paddingRight="17dp"
             android:paddingTop="9dp"
-            android:paddingBottom="9dp" />
+            android:paddingBottom="9dp"
+            android:layout_marginTop="5dp" />
     </TableRow>
 
     <ImageView

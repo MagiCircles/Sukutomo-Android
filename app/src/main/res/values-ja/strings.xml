@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">スクトモ</string>
+
+    <string name="welcome">Welcome to</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_card">カード情報</string>
+    <string name="title_activity_card_info1">カード情報</string>
+
+    <string name="Cards">カード</string>
+    <string name="skill">特技</string>
+    <string name="center_skill">センタースキル</string>
+    <string name="release_date">公開日時（日本）</string>
+    <string name="level_1">レベル 1</string>
+    <string name="level_30">レベル 30</string>
+    <string name="level_40">レベル 40</string>
+    <string name="level_60">レベル 60</string>
+    <string name="level_80">レベル 80</string>
+    <string name="level_100">レベル 100</string>
+    <string name="unknown">不明</string>
+    <string name="none">なし</string>
+    <string name="Login">Log in</string>
+    <string name="Events">イベント</string>
+    <string name="Contest">コンテスト</string>
+    <string name="Players">プレイヤー</string>
+    <string name="search_idols">アイドルを探す</string>
+    <string name="search_idols_hint">名、お誕生日…</string>
+
+    <string name="stats">Stats</string>
+    <string name="title_activity_web">WebActivity</string>
+    <string name="title_activity_idols">アイドル</string>
+    <string name="title_activity_menu">スクールアイドル友達</string>
+    <string name="only_japan">日本だけ</string>
+    <string name="worldwide">世界的</string>
+    <string name="Card">カード</string>
+    <string name="Idols">アイドル</string>
+</resources>

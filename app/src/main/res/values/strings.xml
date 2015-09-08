@@ -23,7 +23,7 @@
     <string name="none">None</string>
     <string name="title_activity_menu">School Idol Tomodachi</string>
     <string name="Login">Log in</string>
-    <string name="Idols" translatable="false">Idols</string>
+    <string name="Idols">Idols</string>
     <string name="Events">Events</string>
     <string name="Contest">Contest</string>
     <string name="Players">Players</string>
