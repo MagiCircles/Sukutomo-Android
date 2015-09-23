@@ -33,4 +33,8 @@
     <string name="only_japan">sólo Japón</string>
     <string name="worldwide">en todo el mundo</string>
     <string name="Idols">Idols</string>
+    <string name="ContactUs">Contáctanos</string>
+    <string name="ContactText">Contáctanos si quieres presentar alguna sugerencia o reportar un error.\n\nEmail:</string>
+    <string name="SendEmail">Enviar email</string>
+    <string name="ChooseEmailClient">Escoge un cliente de correo:</string>
 </resources>

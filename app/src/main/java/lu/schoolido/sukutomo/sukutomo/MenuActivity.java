@@ -1,5 +1,7 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -28,7 +30,7 @@ public class MenuActivity extends ActionBarActivity {
                 /*getString(R.string.Login), */
                 getString(R.string.Cards), getString(R.string.Idols),
                 getString(R.string.Events), getString(R.string.Contest), getString(R.string.Players),
-                "Surprise no. 1", "Surprise no. 2"
+                getString(R.string.ContactUs), "???"
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.menu_list_item, android.R.id.text1, options);
@@ -62,6 +64,21 @@ public class MenuActivity extends ActionBarActivity {
                         startActivity(WebActivity.class, "http://schoolido.lu/users/?hidenavbar");
                         break; // go to browser view for users
                     case 5:
+                        AlertDialog alertDialog = new AlertDialog.Builder(MenuActivity.this).create(); //Read Update
+                        alertDialog.setTitle(getString(R.string.ContactUs));
+                        alertDialog.setMessage(getString(R.string.ContactText) + "\n\n" + getString(R.string.contactEmail));
+                        alertDialog.setButton(getString(R.string.SendEmail), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                        "mailto", "arukantara@schoolido.lu", null));
+                                intent.putExtra(Intent.EXTRA_SUBJECT, "");
+                                intent.putExtra(Intent.EXTRA_TEXT, "");
+                                startActivity(Intent.createChooser(intent, getString(R.string.ChooseEmailClient)));
+                            }
+                        });
+
+                        alertDialog.show();
+                        break;
                     case 6:
                         Toast toast = Toast.makeText(getApplicationContext(), "Be patient, we'll develop this soon...", Toast.LENGTH_SHORT);
                         toast.show();

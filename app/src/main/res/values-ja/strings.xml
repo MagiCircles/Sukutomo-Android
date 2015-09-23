@@ -33,4 +33,8 @@
     <string name="worldwide">世界的</string>
     <string name="Card">カード</string>
     <string name="Idols">アイドル</string>
+    <string name="ContactUs">お問合せ</string>
+    <string name="ContactText">Contact us if you want to make a suggestion or report a bug.\n\nEmail:</string>
+    <string name="SendEmail">Send Email</string>
+    <string name="ChooseEmailClient">Choose an Email client</string>
 </resources>

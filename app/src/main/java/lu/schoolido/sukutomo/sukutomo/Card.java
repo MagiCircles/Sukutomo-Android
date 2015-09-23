@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -443,8 +444,12 @@ public class Card implements Parcelable{
                     Log.d("im", "URL:" + args[0]);
                     Log.d("im", "URL:" + args[1]);
                     if(args[1] != null && args[1].length() > 0) {
-                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[1]).getContent());
-                        CardBrowser.addBitmapToMemoryCache(args[1], bitmap);
+                        try {
+                            bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[1]).getContent());
+                            CardBrowser.addBitmapToMemoryCache(args[1], bitmap);
+                        } catch (FileNotFoundException f) {
+                            Log.d("imError", "Card image not found at specified URL.");
+                        }
                     }
                     bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
                     CardBrowser.addBitmapToMemoryCache(args[0], bitmap);
