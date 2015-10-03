@@ -37,4 +37,9 @@
     <string name="ContactText">Contáctanos si quieres presentar alguna sugerencia o reportar un error.\n\nEmail:</string>
     <string name="SendEmail">Enviar email</string>
     <string name="ChooseEmailClient">Escoge un cliente de correo:</string>
+    <string name="CheckForUpdates">Buscar actualizaciones</string>
+    <string name="ConnectionFailed">La conexión ha fallado</string>
+    <string name="DownloadingUpdate">Descargando actualización...</string>
+    <string name="NoUpdates">No hay actualizaciones</string>
+    <string name="CheckingUpdates">Buscando actualizaciones...</string>
 </resources>

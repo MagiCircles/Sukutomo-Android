@@ -39,5 +39,10 @@
     <string name="contactEmail" translatable="false">arukantara@schoolido.lu</string>
     <string name="SendEmail">Send Email</string>
     <string name="ChooseEmailClient">Choose an Email client:</string>
+    <string name="CheckForUpdates">Check for updates</string>
+    <string name="ConnectionFailed">Connection failed</string>
+    <string name="DownloadingUpdate">Downloading update...</string>
+    <string name="NoUpdates">No updates available</string>
+    <string name="CheckingUpdates">Looking for updates...</string>
 
 </resources>

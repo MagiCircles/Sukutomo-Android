@@ -37,4 +37,9 @@
     <string name="ContactText">Contact us if you want to make a suggestion or report a bug.\n\nEmail:</string>
     <string name="SendEmail">Send Email</string>
     <string name="ChooseEmailClient">Choose an Email client</string>
+    <string name="CheckForUpdates">アップデートをチェック</string>
+    <string name="ConnectionFailed">Connection failed</string>
+    <string name="DownloadingUpdate">Downloading update...</string>
+    <string name="NoUpdates">No updates available</string>
+    <string name="CheckingUpdates">アップデートをチェックしています…</string>
 </resources>
