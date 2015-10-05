@@ -3,13 +3,18 @@ package lu.schoolido.sukutomo.sukutomo;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -145,6 +151,50 @@ public class MenuActivity extends ActionBarActivity {
         private Toast noUpdatesToast;
         private Toast failToast;
         private ProgressDialog progressDialog;
+        private DownloadManager downloadManager;
+        private long downloadId;
+        private boolean downloadSuccess = false;
+
+        private String downloadCompleteIntentName = DownloadManager.ACTION_DOWNLOAD_COMPLETE;
+        private IntentFilter downloadCompleteIntentFilter = new IntentFilter(downloadCompleteIntentName);
+        private BroadcastReceiver downloadCompleteReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0L);
+                if (id != downloadId) {
+                    Log.v("DOWNLOAD", "Not the correct download ID");
+                    return;
+                }
+
+                // Obtaining the cursor position for the download:
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterById(id);
+                Cursor cursor = downloadManager.query(query);
+
+                // if the cursor is empty, we must exit the method:
+                if (!cursor.moveToFirst()) {
+                    Log.e("DOWNLOAD", "Empty row");
+                    return;
+                }
+
+                // Getting download status:
+                int statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                if (DownloadManager.STATUS_SUCCESSFUL != cursor.getInt(statusIndex)) {
+                    Log.w("DOWNLOAD", "Download Failed");
+                    return;
+                }
+
+                // Getting file URI:
+                int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
+                String downloadedUriString = cursor.getString(uriIndex);
+
+                // Opening the file to install the update:
+                Intent install = new Intent(Intent.ACTION_VIEW);
+                install.setDataAndType(Uri.fromFile(new File(downloadedUriString)), "MIME-TYPE");
+                startActivity(install);
+            }
+        };
+
 
         @Override
         protected void onPreExecute() {
@@ -157,6 +207,8 @@ public class MenuActivity extends ActionBarActivity {
             progressDialog.setMessage(getString(R.string.CheckingUpdates));
             progressDialog.setIndeterminate(true);
             progressDialog.show();
+
+            downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         }
 
 
@@ -171,9 +223,7 @@ public class MenuActivity extends ActionBarActivity {
                 conn.setRequestMethod("GET");
 
                 // Reading the response:
-                // System.out.println("Response Code: " + conn.getResponseCode());
                 InputStream in = new BufferedInputStream(conn.getInputStream());
-                // TODO find why this doesn't work.
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
                 String response = bufferedReader.readLine().trim();
                 JSONObject jsonObject = new JSONObject(response);
@@ -186,11 +236,17 @@ public class MenuActivity extends ActionBarActivity {
                     String downloadUrl = jsonObject.getString("download_link").trim();
                     // ... and pass it to the download manager request:
                     DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
-
-                    // We prepare the download and add it to the queue.
                     downloadRequest.setDescription(getString(R.string.DownloadingUpdate) + " Sukutomo v" + newVersion);
-                    DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                    downloadManager.enqueue(downloadRequest);
+
+                    // We make the download invisible for the user:
+                    downloadRequest.setVisibleInDownloadsUi(false);
+                    downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    //downloadRequest.setDestinationInExternalPublicDir("Downloads", "sukutomo_v" + newVersion + ".apk");
+
+                    // We add the download to the queue.
+                    downloadId = downloadManager.enqueue(downloadRequest);
+
+                    downloadSuccess = true;
                 } else {
                     noUpdatesToast.show();
                     progressDialog.cancel();
@@ -204,7 +260,6 @@ public class MenuActivity extends ActionBarActivity {
         }
 
         protected void onPostExecute(Void v) {
-
         }
     }
 }
