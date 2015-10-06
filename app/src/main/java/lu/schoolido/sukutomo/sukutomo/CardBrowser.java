@@ -1,6 +1,7 @@
 package lu.schoolido.sukutomo.sukutomo;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -457,6 +458,8 @@ public class CardBrowser extends Activity {
     private class LoadCards extends AsyncTask<String, String, Void> {
 
         private final boolean initial;
+        private AlertDialog.Builder errorAlert;
+        private boolean success = true;
 
         /**
          * @param initial indicates if the object will be used for the initial download or a single card download.
@@ -470,6 +473,7 @@ public class CardBrowser extends Activity {
             super.onPreExecute();
             // Block the thread until Cardbrowser not blocked.
             CardBrowser.block();
+            errorAlert = new AlertDialog.Builder(CardBrowser.this);
         }
 
         protected Void doInBackground(String... args) {
@@ -477,7 +481,17 @@ public class CardBrowser extends Activity {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             try {
                 if(initial) {
-                    data = Client.execute(new HttpGet(siteURL), responseHandler);
+                    success = false;
+                    int i = 0;
+                    do {
+                        try {
+                            data = Client.execute(new HttpGet(siteURL), responseHandler);
+                            success = true;
+                        } catch (Exception ex) {
+                            i++;
+                        }
+
+                    } while (!success && i < 3);
                     getCards(data);
                     currentCardIndex = filteredCards.size() - 1;
                 }
@@ -504,8 +518,16 @@ public class CardBrowser extends Activity {
         }
 
         protected void onPostExecute(Void v) {
-            currentCards[2].showImage(showIdolized, views.get(currentView));
             CardBrowser.release();
+
+            if (success) {
+                // if download was successful, the card image should be shown.
+                currentCards[2].showImage(showIdolized, views.get(currentView));
+            } else {
+                errorAlert.setTitle(R.string.ConnectionFailed);
+                errorAlert.setMessage(R.string.ConnectionRetry);
+                errorAlert.show();
+            }
         }
     }
 }

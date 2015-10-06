@@ -43,4 +43,5 @@
     <string name="NoUpdates">No updates available</string>
     <string name="CheckingUpdates">アップデートをチェックしています…</string>
     <string name="DownloadSuccessful">Sukutomo update download successful. Please press on the download notification to install the update.</string>
+    <string name="ConnectionRetry">Please, check your connection and restart the app.</string>
 </resources>

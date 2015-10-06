@@ -38,7 +38,7 @@ import java.net.URL;
 
 
 public class MenuActivity extends ActionBarActivity {
-    public static final float CURRENT_VERSION = 0.9f;
+    public static final float CURRENT_VERSION = 1.1f;
     ListView listView;
 
     @Override
