@@ -42,4 +42,5 @@
     <string name="DownloadingUpdate">Descargando actualización...</string>
     <string name="NoUpdates">No hay actualizaciones</string>
     <string name="CheckingUpdates">Buscando actualizaciones...</string>
+    <string name="DownloadSuccessful">Descarga de la actualización de sukutomo finalizada. Presiona en la notificación de la descarga para instalar la actualización.</string>
 </resources>

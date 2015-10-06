@@ -1,6 +1,7 @@
 package lu.schoolido.sukutomo.sukutomo;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -13,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -184,14 +186,20 @@ public class MenuActivity extends ActionBarActivity {
                     return;
                 }
 
+                /*
+
                 // Getting file URI:
                 int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
-                String downloadedUriString = cursor.getString(uriIndex);
-
-                // Opening the file to install the update:
+                String downloadedUriString = cursor.getString(uriIndex);// Opening the file to install the update:
                 Intent install = new Intent(Intent.ACTION_VIEW);
-                install.setDataAndType(Uri.fromFile(new File(downloadedUriString)), "MIME-TYPE");
-                startActivity(install);
+                install.setDataAndType(Uri.fromFile(new File(downloadedUriString)), "application/vnd.android.package-archive");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(install);*/
+                // Alerting the user that the app is ready to be installed:
+                AlertDialog.Builder successDialog = new AlertDialog.Builder(MenuActivity.this);
+                successDialog.setTitle("Sukutomo");
+                successDialog.setMessage(R.string.DownloadSuccessful);
+                successDialog.show();
             }
         };
 
@@ -200,6 +208,7 @@ public class MenuActivity extends ActionBarActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
+            // Preparing toasts...
             downloadingToast = Toast.makeText(getApplicationContext(), R.string.DownloadingUpdate, Toast.LENGTH_LONG);
             noUpdatesToast = Toast.makeText(getApplicationContext(), getString(R.string.NoUpdates) + " v" + CURRENT_VERSION, Toast.LENGTH_LONG);
             failToast = Toast.makeText(getApplicationContext(), R.string.ConnectionFailed, Toast.LENGTH_LONG);
@@ -209,6 +218,8 @@ public class MenuActivity extends ActionBarActivity {
             progressDialog.show();
 
             downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            getApplicationContext().registerReceiver(downloadCompleteReceiver, downloadCompleteIntentFilter);
+
         }
 
 
@@ -241,12 +252,10 @@ public class MenuActivity extends ActionBarActivity {
                     // We make the download invisible for the user:
                     downloadRequest.setVisibleInDownloadsUi(false);
                     downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    //downloadRequest.setDestinationInExternalPublicDir("Downloads", "sukutomo_v" + newVersion + ".apk");
+                    downloadRequest.setDestinationInExternalFilesDir(MenuActivity.this, null, "sukutomo.apk");
 
                     // We add the download to the queue.
                     downloadId = downloadManager.enqueue(downloadRequest);
-
-                    downloadSuccess = true;
                 } else {
                     noUpdatesToast.show();
                     progressDialog.cancel();
