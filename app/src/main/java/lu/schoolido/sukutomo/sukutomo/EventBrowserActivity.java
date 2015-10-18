@@ -1,7 +1,9 @@
 package lu.schoolido.sukutomo.sukutomo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ public class EventBrowserActivity extends AppCompatActivity {
     private LinearLayout eventsLayout;
     private static String baseURL = "http://schoolido.lu/api/cardids/";
     private ImageView loadingView;
+    private final String EVENTS_STORED = "EventsStored";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class EventBrowserActivity extends AppCompatActivity {
         loadingView.setVisibility(View.GONE);
 
         events = new ArrayList<>();
+
         LoadEvents le = new LoadEvents();
         le.execute();
     }
@@ -71,29 +75,60 @@ public class EventBrowserActivity extends AppCompatActivity {
         }
 
         protected Void doInBackground(String... args) {
-            // We put all events in the "events" attribute.
-            APIUtils.iteratePages(events,
-                    "http://schoolido.lu/api/events/?page_size=1000",
+            // Checking if the number of events stored to initialize the preferences:
+            SharedPreferences settings = getSharedPreferences(EVENTS_STORED, MODE_PRIVATE);
+            int n = settings.getInt(EVENTS_STORED, 0);
+            settings.edit().putInt(EVENTS_STORED, 0);
+
+
+            // A first query is made in order to get the total number of events;
+            int totalEvents = APIUtils.iteratePages(null,
+                    "http://schoolido.lu/api/events/?ordering=-beginning&page_size=1",
                     null,
                     1000
             );
+
+            // We put all the new events in the "events" attribute.
+            APIUtils.iteratePages(events,
+                    "http://schoolido.lu/api/events/?ordering=-beginning&page_size=" + (totalEvents - n),
+                    null,
+                    1000
+            );
+
+            try {
+                for (int i = 0; i < events.size(); i++) {
+                    // The event image is saved to the internal storage with a path and the
+                    // event romaji name as the image file name.
+                    Bitmap bm = APIUtils.getBitmap(events.get(i).getString("image"));
+                    String name = events.get(i).getString("romaji_name");
+                    String imagePath = APIUtils.saveToInternalStorage(getApplicationContext(), bm, "events", name);
+                    events.get(i).put("image", imagePath);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             return null;
         }
 
         protected void onPostExecute(Void v) {
+            //TODO Reload events array from database
             // The events array is iterated, adding am ImageView for each event and the
             // respective intents.
             for (int i = 0; i < events.size(); i++) {
                 ImageView imageView = new ImageView(getApplicationContext());
-                String eventURL = "";
+                String eventPath = "", eventName = "";
                 try {
-                    eventURL = events.get(i).getString("image");
+                    // The image local path and name are retrieve. The name used is the romaji name
+                    // of the event.
+                    eventPath = events.get(i).getString("image");
+                    eventName = events.get(i).getString("romaji_name");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                APIUtils utils = new APIUtils();
-                utils.loadImage(imageView, eventURL);
+
+                // The event image is loaded from the database to the ImageView.
+                APIUtils.loadImageFromStorage(imageView, eventPath, eventName);
 
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override

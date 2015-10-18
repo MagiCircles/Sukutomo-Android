@@ -1,6 +1,8 @@
 package lu.schoolido.sukutomo.sukutomo;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,7 +22,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -35,32 +40,38 @@ public class APIUtils {
     private static LruCache<String, Bitmap> imagesMemoryCache = new LruCache<String, Bitmap>(10);
 
     /**
-     * @param list     List to which we wish to add the paged elements.
+     * @param list     List to which we wish to add the paged elements. If it's null, this method only returns the number of elements.
      * @param baseURL  URL used to download the elements, without the page option.
      * @param property Property of the JSONObject we want to return. If this is null, the array will contain the entire object.
+     *
+     * @return The total number of elements inside schoolido.lu database.
      */
-    public static void iteratePages(ArrayList list, String baseURL, String property, int pageSize) {
+    public static int iteratePages(ArrayList list, String baseURL, String property, int pageSize) {
         String data = "";
+        int count = 0;
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         try {
             HttpClient Client = new DefaultHttpClient();
             data = Client.execute(new HttpGet(baseURL), responseHandler);
             JSONObject object = new JSONObject(data);
-            int count = object.getInt("count");
-            for (int i = 1; i <= Math.ceil(count / pageSize); i++) {
-                data = Client.execute(new HttpGet(baseURL + "?page=" + i), responseHandler);
-                object = new JSONObject(data);
-                JSONArray array = object.getJSONArray("results");
-                for (int j = 0; j < array.length(); j++) {
-                    if (property != null)
-                        list.add(array.getJSONObject(j).getString(property));
-                    else
-                        list.add(array.getJSONObject(j));
+            count = object.getInt("count");
+            if (list != null) {
+                for (int i = 1; i <= Math.ceil(count / pageSize); i++) {
+                    data = Client.execute(new HttpGet(baseURL + "?page=" + i), responseHandler);
+                    object = new JSONObject(data);
+                    JSONArray array = object.getJSONArray("results");
+                    for (int j = 0; j < array.length(); j++) {
+                        if (property != null)
+                            list.add(array.getJSONObject(j).getString(property));
+                        else
+                            list.add(array.getJSONObject(j));
+                    }
                 }
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+        return count;
     }
 
     /**
@@ -130,6 +141,48 @@ public class APIUtils {
                     imageView.setImageBitmap(image);
                 }
             }
+        }
+    }
+
+    public static String saveToInternalStorage(Context context, Bitmap bitmapImage, String dir, String name) {
+        ContextWrapper cw = new ContextWrapper(context);
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir(dir, Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, name);
+
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    public static void loadImageFromStorage(ImageView view, String path, String name) {
+        try {
+            File f = new File(path, name);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            view.setImageBitmap(b);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Bitmap getBitmap(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+            return bitmap;
+        } catch (Exception e) {
+            return null;
         }
     }
 }
