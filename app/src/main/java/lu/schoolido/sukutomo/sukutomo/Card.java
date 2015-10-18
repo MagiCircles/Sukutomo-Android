@@ -417,7 +417,7 @@ public class Card implements Parcelable{
     }
 
     /**
-     * Class used to manage the image download.
+     * Class used to manage the image download for cards.
      */
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;

@@ -46,5 +46,9 @@
     <string name="CheckingUpdates">Looking for updates...</string>
     <string name="DownloadSuccessful">Sukutomo update download successful. Please press on the download notification to install the update.</string>
     <string name="ConnectionRetry">Please, check your connection and restart the app.</string>
+    <string name="title_activity_event_browser">EventBrowserActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_event_info">EventInfoActivity</string>
 
 </resources>

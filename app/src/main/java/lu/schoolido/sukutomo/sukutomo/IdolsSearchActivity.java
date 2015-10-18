@@ -95,18 +95,6 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
         return true;
     }
 
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-        for(int i = 0; i < listView.getChildCount(); i++) {
-            LinearLayout layout = (LinearLayout) listView.getChildAt(i);
-            ImageView img = (ImageView) layout.findViewById(R.id.item_image);
-            Bitmap bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
-            img.destroyDrawingCache();
-            bitmap.recycle();
-        }
-    }*/
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onStop() {
@@ -124,23 +112,7 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
         }
 
         protected Void doInBackground(String... args) {
-            String data = "";
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            try {
-                HttpClient Client = new DefaultHttpClient();
-                data = Client.execute(new HttpGet("http://schoolido.lu/api/idols/"), responseHandler);
-                JSONObject object = new JSONObject(data);
-                int count = object.getInt("count");
-                for(int i = 1; i <= Math.ceil(count/10); i++) {
-                    data = Client.execute(new HttpGet("http://schoolido.lu/api/idols/?page=" + i), responseHandler);
-                    object = new JSONObject(data);
-                    JSONArray array = object.getJSONArray("results");
-                    for(int j=0; j < array.length(); j++)
-                        idolNames.add(array.getJSONObject(j).getString("name"));
-                }
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
+            APIUtils.iteratePages(idolNames, "http://schoolido.lu/api/idols/", "name", 10);
             return null;
         }
 

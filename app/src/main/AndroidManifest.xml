@@ -44,6 +44,7 @@
             android:label="@string/title_activity_menu" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -65,7 +66,13 @@
         </activity>
         <activity
             android:name=".WebActivity"
-            android:label="@string/title_activity_web" >
+            android:label="@string/title_activity_web" ></activity>
+        <activity
+            android:name=".EventBrowserActivity"
+            android:label="@string/title_activity_event_browser"></activity>
+        <activity
+            android:name=".EventInfoActivity"
+            android:label="@string/title_activity_event_info">
         </activity>
     </application>
 
