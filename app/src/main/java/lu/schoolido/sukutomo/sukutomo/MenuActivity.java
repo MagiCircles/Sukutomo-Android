@@ -76,7 +76,7 @@ public class MenuActivity extends ActionBarActivity {
                         startActivity(IdolsSearchActivity.class, null);
                         break; // go to idols list
                     case 2:
-                        startActivity(WebActivity.class, "http://schoolido.lu/events/?hidenavbar");
+                        startActivity(EventBrowserActivity.class, null);
                         break; // go to browser view for events
                     case 3:
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://schoolido.lu/contest/"));

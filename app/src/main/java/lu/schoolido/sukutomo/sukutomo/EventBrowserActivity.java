@@ -33,7 +33,7 @@ public class EventBrowserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_browser);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        eventsLayout = (LinearLayout) findViewById(R.id.eventsList);
+        eventsLayout = (LinearLayout) findViewById(R.id.events_layout);
         loadingView = (ImageView) findViewById(R.id.loading_view);
         loadingView.setVisibility(View.GONE);
 
@@ -112,7 +112,10 @@ public class EventBrowserActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            //TODO Reload events array from database
+            // The events are loaded from the database:
+            EventsOpenHelper helper = new EventsOpenHelper(getApplicationContext());
+            events = helper.getAllEvents();
+
             // The events array is iterated, adding am ImageView for each event and the
             // respective intents.
             for (int i = 0; i < events.size(); i++) {
@@ -130,20 +133,33 @@ public class EventBrowserActivity extends AppCompatActivity {
                 // The event image is loaded from the database to the ImageView.
                 APIUtils.loadImageFromStorage(imageView, eventPath, eventName);
 
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent eventInfo = new Intent(getApplicationContext(), EventInfoActivity.class);
+                // The click listener is assigned.
+                imageView.setOnClickListener(new EventButtonListener(events.get(i)));
 
-                        startActivity(eventInfo);
-                        overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
-                    }
-                });
+                // The view is appended to the layout.
                 eventsLayout.addView(imageView);
             }
 
             loadingView.clearAnimation();
             loadingView.setVisibility(View.GONE);
+        }
+    }
+
+    private class EventButtonListener implements View.OnClickListener {
+        private JSONObject event;
+
+        public EventButtonListener(JSONObject obj) {
+            event = obj;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent eventInfo = new Intent(getApplicationContext(), EventInfoActivity.class);
+
+            eventInfo.putExtra("event", event.toString());
+
+            startActivity(eventInfo);
+            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
         }
     }
 }
