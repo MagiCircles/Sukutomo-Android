@@ -157,6 +157,9 @@ public class APIUtils {
             fos = new FileOutputStream(mypath);
 
             // Use the compress method on the BitMap object to write image to the OutputStream
+            Log.d("IMAGE", fos.toString());
+            Log.d("IMAGE", bitmapImage.toString());
+            Log.d("IMAGE", Bitmap.CompressFormat.PNG.toString());
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.close();
         } catch (Exception e) {

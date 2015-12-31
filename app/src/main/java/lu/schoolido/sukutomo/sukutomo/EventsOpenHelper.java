@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +30,7 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
     private static final String TABLE_CREATE =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     "japanese_name TEXT, " +
-                    "romaji_name TEXT, " +
+                    "romaji_name TEXT unique, " +
                     "english_name TEXT, " +
                     "image TEXT, " +
                     "beginning TEXT, " +
@@ -85,17 +86,28 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
             values.put("english_end", event.getString("english_end"));
             values.put("japan_current", event.getBoolean("japan_current"));
             values.put("world_current", event.getBoolean("world_current"));
-            values.put("N_card", cards.getInt(0));
-            values.put("SR_card", cards.getInt(1));
+            if (cards.length() > 0) {
+                values.put("N_card", cards.getInt(0));
+                values.put("SR_card", cards.getInt(1));
+            } else {
+                values.put("N_card", 0);
+                values.put("SR_card", 0);
+            }
             values.put("song", event.getString("song"));
+            Log.d("insert", "song: " + event.getString("song"));
+
+            // Finally, the event is inserted in the database:
+            db.beginTransaction();
+            // TODO check if event exists
+            // I think the best idea would be to have stored what was the last stored event, and,
+            // if depending on ending date, update the event, don't do anything or insert the last one...
+            // The other option is to simply update the row if the event exists, and insert it if it doesn't exist.
+            long inserted = db.insertOrThrow(TABLE_NAME, null, values);
+            db.setTransactionSuccessful();
+            db.endTransaction();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        // Finally, the event is inserte in the database:
-        db.beginTransaction();
-        db.insert(TABLE_NAME, null, values);
-        db.endTransaction();
     }
 
     public ArrayList<JSONObject> getAllEvents() {
@@ -127,30 +139,37 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
                 null,       // where arguments (if there are ?s in the clause)
                 null,       // group by clause
                 null,       // having clause
-                "beginning" // order by clause
+                null        // order by clause
         );
+        db.setTransactionSuccessful();
         db.endTransaction();
 
         // Then the data is put into the JSONObject array...
         ArrayList<JSONObject> events = new ArrayList<>();
-        // ... starting from the first element in the cursor:
-        results.moveToFirst();
-        // the cursor is iterated until all elements are read.
         try {
-            while (!results.isAfterLast()) {
-                JSONObject object = new JSONObject();
-                for (int i = 0; i < columns.length; i++) {
-                    if (i == columns.length - 2 || i == columns.length - 3)
-                        object.put("japanese_name", results.getInt(i));
-                    else
-                        object.put("japanese_name", results.getString(i));
-                }
+            Log.d("select", "count: " + results.getCount());
+            if (results.getCount() > 0) {
+                // ... starting from the first element in the cursor:
+                results.moveToFirst();
+                Log.d("select", "first event: " + results.getString(results.getColumnIndex(columns[1])));
+                // the cursor is iterated until all elements are read.
+                while (!results.isAfterLast()) {
+                    JSONObject object = new JSONObject();
+                    for (int i = 0; i < columns.length; i++) {
+                        if (i == columns.length - 2 || i == columns.length - 3)
+                            object.put("japanese_name", results.getInt(results.getColumnIndex(columns[i])));
+                        else
+                            object.put("japanese_name", results.getString(results.getColumnIndex(columns[i])));
+                    }
 
-                results.moveToNext();
+                    results.moveToNext();
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        results.close();
 
         return events;
     }

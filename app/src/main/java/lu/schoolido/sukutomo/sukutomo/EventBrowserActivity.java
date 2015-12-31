@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,6 +76,8 @@ public class EventBrowserActivity extends AppCompatActivity {
         }
 
         protected Void doInBackground(String... args) {
+            EventsOpenHelper helper = new EventsOpenHelper(getApplicationContext());
+
             // Checking if the number of events stored to initialize the preferences:
             SharedPreferences settings = getSharedPreferences(EVENTS_STORED, MODE_PRIVATE);
             int n = settings.getInt(EVENTS_STORED, 0);
@@ -92,7 +95,7 @@ public class EventBrowserActivity extends AppCompatActivity {
             APIUtils.iteratePages(events,
                     "http://schoolido.lu/api/events/?ordering=-beginning&page_size=" + (totalEvents - n),
                     null,
-                    1000
+                    totalEvents
             );
 
             try {
@@ -102,7 +105,11 @@ public class EventBrowserActivity extends AppCompatActivity {
                     Bitmap bm = APIUtils.getBitmap(events.get(i).getString("image"));
                     String name = events.get(i).getString("romaji_name");
                     String imagePath = APIUtils.saveToInternalStorage(getApplicationContext(), bm, "events", name);
+                    Log.d("insert event images", "name: " + name);
+                    Log.d("insert event images", "image: " + imagePath);
                     events.get(i).put("image", imagePath);
+                    Log.d("insert", "i: " + i + ". name: " + name);
+                    helper.insertEvent(events.get(i));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -129,6 +136,9 @@ public class EventBrowserActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                ;
+                Log.d("event images", "name: " + eventName);
+                Log.d("event images", "image: " + eventPath);
 
                 // The event image is loaded from the database to the ImageView.
                 APIUtils.loadImageFromStorage(imageView, eventPath, eventName);
