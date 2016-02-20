@@ -44,6 +44,22 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
                     "song TEXT" +
                     ");";
 
+    private static final String[] columns = {
+            "japanese_name",
+            "romaji_name",
+            "english_name",
+            "image",
+            "beginning",
+            "end",
+            "english_beginning",
+            "english_end",
+            "japan_current",
+            "world_current",
+            "N_card",
+            "SR_card",
+            "song"
+    };
+
     EventsOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -98,37 +114,66 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
 
             // Finally, the event is inserted in the database:
             db.beginTransaction();
+            Log.d("insert", "json object returned" + this.getEventsByRomaji(event.getString("romaji_name")).toString());
             // TODO check if event exists
             // I think the best idea would be to have stored what was the last stored event, and,
             // if depending on ending date, update the event, don't do anything or insert the last one...
             // The other option is to simply update the row if the event exists, and insert it if it doesn't exist.
-            long inserted = db.insertOrThrow(TABLE_NAME, null, values);
-            db.setTransactionSuccessful();
-            db.endTransaction();
+            if (this.getEventsByRomaji(event.getString("romaji_name")) == null) {
+                long inserted = db.insertOrThrow(TABLE_NAME, null, values);
+                db.setTransactionSuccessful();
+                db.endTransaction();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public ArrayList<JSONObject> getAllEvents() {
+    public JSONObject getEventsByRomaji(String romaji) {
         // First, we get the database
         SQLiteDatabase db = getWritableDatabase();
 
-        String[] columns = {
-                "japanese_name",
-                "romaji_name",
-                "english_name",
-                "image",
-                "beginning",
-                "end",
-                "english_beginning",
-                "english_end",
-                "japan_current",
-                "world_current",
-                "N_card",
-                "SR_card",
-                "song"
-        };
+        // The events are fetched:
+        db.beginTransaction();
+        Cursor results = db.query(
+                TABLE_NAME, // table name
+                columns,    // columns
+                "romaji_name LIKE \"" + romaji + '"',       // where clause
+                null,       // where arguments (if there are ?s in the clause)
+                null,       // group by clause
+                null,       // having clause
+                null        // order by clause
+        );
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        // Then the data is put into the JSONObject...
+        JSONObject event = null;
+        try {
+            if (results.getCount() > 0) {
+                // ... getting the first (and unique) element in the cursor:
+                results.moveToFirst();
+                JSONObject object = new JSONObject();
+                for (int i = 0; i < columns.length; i++) {
+                    if (i == columns.length - 2 || i == columns.length - 3)
+                        object.put("japanese_name", results.getInt(results.getColumnIndex(columns[i])));
+                    else
+                        object.put("japanese_name", results.getString(results.getColumnIndex(columns[i])));
+                }
+                event = object;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        results.close();
+
+        return event;
+    }
+
+    public ArrayList<JSONObject> getAllEvents() {
+        // First, we get the database
+        SQLiteDatabase db = getWritableDatabase();
 
         // The events are fetched:
         db.beginTransaction();
@@ -161,7 +206,7 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
                         else
                             object.put("japanese_name", results.getString(results.getColumnIndex(columns[i])));
                     }
-
+                    events.add(object);
                     results.moveToNext();
                 }
             }
