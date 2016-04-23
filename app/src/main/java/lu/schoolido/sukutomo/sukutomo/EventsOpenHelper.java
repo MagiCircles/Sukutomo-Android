@@ -84,13 +84,7 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-
-        JSONArray cards = null;
         try {
-            // we get the cards from the JSON Object. The first one is the N card, and the second
-            // one is the SR card.
-            cards = event.getJSONArray("cards");
-
             // we put all the needed values in the ContentValues container
             values.put("japanese_name", event.getString("japanese_name"));
             values.put("romaji_name", event.getString("romaji_name"));
@@ -102,24 +96,16 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
             values.put("english_end", event.getString("english_end"));
             values.put("japan_current", event.getBoolean("japan_current"));
             values.put("world_current", event.getBoolean("world_current"));
-            if (cards.length() > 0) {
-                values.put("N_card", cards.getInt(0));
-                values.put("SR_card", cards.getInt(1));
-            } else {
-                values.put("N_card", 0);
-                values.put("SR_card", 0);
-            }
-            values.put("song", event.getString("song"));
-            Log.d("insert", "song: " + event.getString("song"));
+            values.put("N_card", 0);
+            values.put("SR_card", 0);
+            values.put("song", "");
 
             // Finally, the event is inserted in the database:
-            db.beginTransaction();
-            Log.d("insert", "json object returned" + this.getEventsByRomaji(event.getString("romaji_name")).toString());
-            // TODO check if event exists
             // I think the best idea would be to have stored what was the last stored event, and,
             // if depending on ending date, update the event, don't do anything or insert the last one...
             // The other option is to simply update the row if the event exists, and insert it if it doesn't exist.
             if (this.getEventsByRomaji(event.getString("romaji_name")) == null) {
+                db.beginTransaction();
                 long inserted = db.insertOrThrow(TABLE_NAME, null, values);
                 db.setTransactionSuccessful();
                 db.endTransaction();
@@ -202,9 +188,9 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
                     JSONObject object = new JSONObject();
                     for (int i = 0; i < columns.length; i++) {
                         if (i == columns.length - 2 || i == columns.length - 3)
-                            object.put("japanese_name", results.getInt(results.getColumnIndex(columns[i])));
+                            object.put(columns[i], results.getInt(results.getColumnIndex(columns[i])));
                         else
-                            object.put("japanese_name", results.getString(results.getColumnIndex(columns[i])));
+                            object.put(columns[i], results.getString(results.getColumnIndex(columns[i])));
                     }
                     events.add(object);
                     results.moveToNext();

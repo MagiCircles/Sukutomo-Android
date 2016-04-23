@@ -106,7 +106,7 @@ public class EventBrowserActivity extends AppCompatActivity {
                     String name = events.get(i).getString("romaji_name");
                     String imagePath = APIUtils.saveToInternalStorage(getApplicationContext(), bm, "events", name);
                     Log.d("insert event images", "name: " + name);
-                    Log.d("insert event images", "image: " + imagePath);
+                    Log.d("insert event images", "image: " + imagePath + "/" + name);
                     events.get(i).put("image", imagePath);
                     Log.d("insert", "i: " + i + ". name: " + name);
                     helper.insertEvent(events.get(i));
