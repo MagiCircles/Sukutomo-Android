@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,8 +75,9 @@ public class Card implements Parcelable{
         card_idolized_image = object.getString("card_idolized_image");
 
         id = object.getInt("id");
-        name = object.getString("name");
-        japanese_name = object.getString("japanese_name");
+        JSONObject idolInfo = object.getJSONObject("idol");
+        name = idolInfo.getString("name");
+        japanese_name = idolInfo.getString("japanese_name");
         //collection = object.getString("collection");
         //japanese_collection = object.getString("japanese_collection");
 
@@ -90,7 +92,6 @@ public class Card implements Parcelable{
             attribute = Attribute.ALL;
         japan_only = object.getBoolean("japan_only");
         card_image = object.getString("card_image");
-        Log.d("im", "URL constructor:" + card_image);
         round_card_image = object.getString("round_card_image");
         String r = object.getString("rarity");
         if(r.equalsIgnoreCase("r"))
@@ -138,9 +139,6 @@ public class Card implements Parcelable{
         japanese_center_skill = object.getString("japanese_center_skill");
         //center_skill_details = object.getString("center_skill_details");
         //japanese_center_skill_details = object.getString("japanese_center_skill_details");
-
-        Log.d("Card Constructor", skill + object.getString("skill"));
-        Log.d("Card Constructor", release_date + object.getString("release_date"));
     }
 
     public String getImageURL(boolean idolized) {
@@ -441,8 +439,6 @@ public class Card implements Parcelable{
             try {
                 bitmap = CardBrowser.getBitmapFromMemCache(args[0]);
                 if (bitmap == null) {
-                    Log.d("im", "URL:" + args[0]);
-                    Log.d("im", "URL:" + args[1]);
                     if(args[1] != null && args[1].length() > 0) {
                         try {
                             bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[1]).getContent());

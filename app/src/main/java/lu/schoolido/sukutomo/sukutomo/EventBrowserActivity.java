@@ -136,7 +136,6 @@ public class EventBrowserActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                ;
                 Log.d("event images", "name: " + eventName);
                 Log.d("event images", "image: " + eventPath);
 

@@ -199,7 +199,6 @@ public class CardBrowser extends Activity {
     protected void getCards(String data) throws JSONException {
         JSONArray cardList = new JSONArray(data);
 
-        Log.d("getCards", "JSONObject: " + cardList.toString());
         int n = cardList.length();
         for(int i=0; i < n; i++) {
             filteredCards.add(cardList.getInt(i));
