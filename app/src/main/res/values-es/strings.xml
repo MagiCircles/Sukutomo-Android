@@ -48,4 +48,7 @@
     <string name="nextPage">Siguiente</string>
     <string name="onlyWorldwide">Solo versión EN</string>
     <string name="allEvents">Todos los eventos</string>
+    <string name="title_activity_event_browser">Eventos</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_event_info">Info. Evento</string>
 </resources>
