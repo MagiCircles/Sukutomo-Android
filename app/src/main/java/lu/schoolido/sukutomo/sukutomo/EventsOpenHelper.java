@@ -116,9 +116,7 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            db.close();
         }
-        db.close();
     }
 
     public JSONObject getEventsByRomaji(String romaji) {
@@ -159,8 +157,6 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
         }
 
         results.close();
-        db.close();
-
         return event;
     }
 
@@ -191,8 +187,6 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
             date = results.getString(0);
         }
         results.close();
-        db.close();
-
         return date;
     }
 
@@ -223,8 +217,6 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
             count = results.getInt(0);
         }
         results.close();
-        db.close();
-
         return count;
     }
 
@@ -278,7 +270,6 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
         }
 
         results.close();
-        db.close();
 
         return events;
     }

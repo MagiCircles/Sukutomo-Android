@@ -143,10 +143,10 @@ public class EventBrowserActivity extends AppCompatActivity {
             if (!lastSavedDate.equalsIgnoreCase(date)) {
                 // First download:
                 if (storedEvents == 0) {
-                    int totalPages = (int) Math.ceil(totalEvents / 10);
+                    int totalPages = (int) Math.ceil(totalEvents / 15);
                     for (int i = 1; i <= totalPages + 1; i++) {
                         APIUtils.getPage(events, "http://schoolido.lu/api/events/?ordering=-beginning", null,
-                                10, i);
+                                15, i);
                     }
                 } else {
                     APIUtils.getPage(events, "http://schoolido.lu/api/events/?ordering=-beginning", null,
@@ -226,12 +226,15 @@ public class EventBrowserActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent eventInfo = new Intent(getApplicationContext(), EventInfoActivity.class);
-
-            eventInfo.putExtra("event", event.toString());
-
-            startActivity(eventInfo);
-            overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+            Intent act = new Intent(getApplicationContext(), WebActivity.class);
+            String url = null;
+            try {
+                url = "http://schoolido.lu/events/" + event.getString("japanese_name") + "/";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            act.putExtra("url", url);
+            startActivity(act);
         }
     }
 }
