@@ -1,7 +1,6 @@
 package lu.schoolido.sukutomo.sukutomo;
 
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,16 +18,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -112,7 +101,7 @@ public class IdolsSearchActivity extends ActionBarActivity implements SearchView
         }
 
         protected Void doInBackground(String... args) {
-            APIUtils.iteratePages(idolNames, "http://schoolido.lu/api/idols/", "name", 10);
+            APIUtils.iteratePages(idolNames, "http://schoolido.lu/api/idols/", "name", 10, 0);
             return null;
         }
 

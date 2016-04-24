@@ -87,7 +87,11 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
         try {
             // we put all the needed values in the ContentValues container
             values.put("japanese_name", event.getString("japanese_name"));
-            values.put("romaji_name", event.getString("romaji_name"));
+            if (event.getString("romaji_name").equalsIgnoreCase("")) {
+                values.put("romaji_name", event.getString("japanese_name"));
+            } else {
+                values.put("romaji_name", event.getString("romaji_name"));
+            }
             values.put("english_name", event.getString("english_name"));
             values.put("image", event.getString("image"));
             values.put("beginning", event.getString("beginning"));
@@ -112,7 +116,9 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            db.close();
         }
+        db.close();
     }
 
     public JSONObject getEventsByRomaji(String romaji) {
@@ -153,8 +159,73 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
         }
 
         results.close();
+        db.close();
 
         return event;
+    }
+
+    public String getLastEventDate() {
+        // First, we get the database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // The events are fetched:
+        String[] columns = {"beginning"};
+        db.beginTransaction();
+        Cursor results = db.query(
+                TABLE_NAME, // table name
+                columns,    // columns
+                null,       // where clause
+                null,       // where arguments (if there are ?s in the clause)
+                null,       // group by clause
+                null,       // having clause
+                null        // order by clause
+        );
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        String date = "";
+        // Then the data is put into the JSONObject array...
+        ArrayList<JSONObject> events = new ArrayList<>();
+        if (results.getCount() > 0) {
+            results.moveToFirst();
+            date = results.getString(0);
+        }
+        results.close();
+        db.close();
+
+        return date;
+    }
+
+    public int getStoredEventsCount() {
+        // First, we get the database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // The events are fetched:
+        String[] columns = {"count(*)"};
+        db.beginTransaction();
+        Cursor results = db.query(
+                TABLE_NAME, // table name
+                columns,    // columns
+                null,       // where clause
+                null,       // where arguments (if there are ?s in the clause)
+                null,       // group by clause
+                null,       // having clause
+                null        // order by clause
+        );
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        int count = 0;
+        // Then the data is put into the JSONObject array...
+        ArrayList<JSONObject> events = new ArrayList<>();
+        if (results.getCount() > 0) {
+            results.moveToFirst();
+            count = results.getInt(0);
+        }
+        results.close();
+        db.close();
+
+        return count;
     }
 
     public ArrayList<JSONObject> getEvents(boolean worldEvent, int page, int pageSize) {
@@ -207,6 +278,7 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
         }
 
         results.close();
+        db.close();
 
         return events;
     }

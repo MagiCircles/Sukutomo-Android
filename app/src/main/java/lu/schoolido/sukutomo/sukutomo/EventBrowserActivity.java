@@ -1,5 +1,6 @@
 package lu.schoolido.sukutomo.sukutomo;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -20,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EventBrowserActivity extends AppCompatActivity {
     private ArrayList<JSONObject> events;
@@ -30,6 +32,7 @@ public class EventBrowserActivity extends AppCompatActivity {
     private int page = 1;
     private int pageSize = 5;
     private boolean worldEvent = false;
+    private ProgressDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,6 @@ public class EventBrowserActivity extends AppCompatActivity {
         toggleButton.setChecked(worldEvent);
 
         events = new ArrayList<>();
-
         LoadEvents le = new LoadEvents();
         le.execute();
     }
@@ -125,49 +127,48 @@ public class EventBrowserActivity extends AppCompatActivity {
 
         protected Void doInBackground(String... args) {
             EventsOpenHelper helper = new EventsOpenHelper(getApplicationContext());
-
-            // Checking if the number of events stored to initialize the preferences:
-            SharedPreferences settings = getSharedPreferences(EVENTS_STORED, MODE_PRIVATE);
-            int n = settings.getInt(EVENTS_STORED, 0);
-            settings.edit().putInt(EVENTS_STORED, 0);
-
-
+            ArrayList lastEventDate = new ArrayList();
             // A first query is made in order to get the total number of events;
-            int totalEvents = APIUtils.iteratePages(null,
+            int totalEvents = APIUtils.iteratePages(lastEventDate,
                     "http://schoolido.lu/api/events/?ordering=-beginning&page_size=1",
-                    null,
-                    1000
+                    "beginning",
+                    1,
+                    1
             );
-
-            // We put all the new events in the "events" attribute.
-            /*APIUtils.iteratePages(events,
-                    "http://schoolido.lu/api/events/?ordering=-beginning&page_size=" + (totalEvents - n),
-                    null,
-                    totalEvents
-            );*/
-            APIUtils.getPage(events, "http://schoolido.lu/api/events/?ordering=-beginning", null,
-                    pageSize, page);
-
-            Log.d("DEBUG", "Events retrieved count: " + events.size());
-            // If there are no events, we have surpassed the first/last page:
-            if (events.size() <= 0) {
-                Intent newIntent = getIntent();
-                newIntent.putExtra("page", 1);
-                newIntent.putExtra("worldEvent", worldEvent);
-                finish();
-            }
-            try {
-                for (int i = 0; i < events.size(); i++) {
-                    // The event image is saved to the internal storage with a path and the
-                    // event romaji name as the image file name.
-                    Bitmap bm = APIUtils.getBitmap(events.get(i).getString("image"));
-                    String name = events.get(i).getString("romaji_name");
-                    String imagePath = APIUtils.saveToInternalStorage(getApplicationContext(), bm, "events", name);
-                    events.get(i).put("image", imagePath);
-                    helper.insertEvent(events.get(i));
+            int storedEvents = helper.getStoredEventsCount();
+            String lastSavedDate = helper.getLastEventDate();
+            String date = (String) lastEventDate.get(0);
+            // If the database is not fully updated, import current page events directly from
+            // the API and stored them in the database:
+            if (!lastSavedDate.equalsIgnoreCase(date)) {
+                // First download:
+                if (storedEvents == 0) {
+                    int totalPages = (int) Math.ceil(totalEvents / 10);
+                    for (int i = 1; i <= totalPages + 1; i++) {
+                        APIUtils.getPage(events, "http://schoolido.lu/api/events/?ordering=-beginning", null,
+                                10, i);
+                    }
+                } else {
+                    APIUtils.getPage(events, "http://schoolido.lu/api/events/?ordering=-beginning", null,
+                            pageSize, page);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+                Log.d("DEBUG", "Events retrieved count: " + events.size());
+                try {
+                    for (int i = 0; i < events.size(); i++) {
+                        // The event image is saved to the internal storage with a path and the
+                        // event romaji name as the image file name.
+                        Bitmap bm = APIUtils.getBitmap(events.get(i).getString("image"));
+                        String name = events.get(i).getString("romaji_name");
+                        if (name.equals("")) {
+                            name = events.get(i).getString("japanses_name");
+                        }
+                        String imagePath = APIUtils.saveToInternalStorage(getApplicationContext(), bm, "events", name);
+                        events.get(i).put("image", imagePath);
+                        helper.insertEvent(events.get(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             return null;
@@ -177,6 +178,13 @@ public class EventBrowserActivity extends AppCompatActivity {
             // The events are loaded from the database:
             EventsOpenHelper helper = new EventsOpenHelper(getApplicationContext());
             events = helper.getEvents(worldEvent, page, pageSize);
+            // If there are no events, we have surpassed the first/last page:
+            if (events.size() <= 0) {
+                Intent newIntent = getIntent();
+                newIntent.putExtra("page", 1);
+                newIntent.putExtra("worldEvent", worldEvent);
+                finish();
+            }
 
             // The events array is iterated, adding am ImageView for each event and the
             // respective intents.

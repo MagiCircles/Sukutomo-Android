@@ -46,7 +46,7 @@ public class APIUtils {
      *
      * @return The total number of elements returned from the API.
      */
-    public static int iteratePages(ArrayList list, String baseURL, String property, int pageSize) {
+    public static int iteratePages(ArrayList list, String baseURL, String property, int pageSize, int limitPages) {
         String data = "";
         int count = 0;
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -56,7 +56,11 @@ public class APIUtils {
             JSONObject object = new JSONObject(data);
             count = object.getInt("count");
             if (list != null) {
-                for (int i = 1; i <= Math.ceil(count / pageSize); i++) {
+                int limit = (int) Math.ceil(count / pageSize);
+                if (limitPages != 0 && limit > limitPages) {
+                    limit = limitPages;
+                }
+                for (int i = 1; i <= limit; i++) {
                     data = Client.execute(new HttpGet(baseURL + "&page=" + i), responseHandler);
                     object = new JSONObject(data);
                     JSONArray array = object.getJSONArray("results");
