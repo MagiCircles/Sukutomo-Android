@@ -11,10 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +27,9 @@ public class EventBrowserActivity extends AppCompatActivity {
     private static String baseURL = "http://schoolido.lu/api/cardids/";
     private ImageView loadingView;
     private final String EVENTS_STORED = "EventsStored";
+    private int page = 1;
+    private int pageSize = 5;
+    private boolean worldEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,51 @@ public class EventBrowserActivity extends AppCompatActivity {
         eventsLayout = (LinearLayout) findViewById(R.id.events_layout);
         loadingView = (ImageView) findViewById(R.id.loading_view);
         loadingView.setVisibility(View.GONE);
+        Intent intent = getIntent();
+        page = intent.getIntExtra("page", 1);
+        worldEvent = intent.getBooleanExtra("worldEvent", false);
+
+        //Preparing page buttons:
+        Button previousButton = (Button) findViewById(R.id.previousPage);
+        if (page > 1) {
+            previousButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent newIntent = getIntent();
+                    newIntent.putExtra("page", page - 1);
+                    newIntent.putExtra("worldEvent", worldEvent);
+                    finish();
+                    startActivity(newIntent);
+                    overridePendingTransition(R.anim.slide_enter_left, R.anim.slide_exit_right);
+                }
+            });
+        } else {
+            previousButton.setVisibility(View.INVISIBLE);
+        }
+        Button nextButton = (Button) findViewById(R.id.nextPage);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newIntent = getIntent();
+                newIntent.putExtra("page", page + 1);
+                newIntent.putExtra("worldEvent", worldEvent);
+                finish();
+                startActivity(newIntent);
+                overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+            }
+        });
+        ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newIntent = getIntent();
+                newIntent.putExtra("page", 1);
+                newIntent.putExtra("worldEvent", !worldEvent);
+                finish();
+                startActivity(newIntent);
+            }
+        });
+        toggleButton.setChecked(worldEvent);
 
         events = new ArrayList<>();
 
@@ -92,12 +140,22 @@ public class EventBrowserActivity extends AppCompatActivity {
             );
 
             // We put all the new events in the "events" attribute.
-            APIUtils.iteratePages(events,
+            /*APIUtils.iteratePages(events,
                     "http://schoolido.lu/api/events/?ordering=-beginning&page_size=" + (totalEvents - n),
                     null,
                     totalEvents
-            );
+            );*/
+            APIUtils.getPage(events, "http://schoolido.lu/api/events/?ordering=-beginning", null,
+                    pageSize, page);
 
+            Log.d("DEBUG", "Events retrieved count: " + events.size());
+            // If there are no events, we have surpassed the first/last page:
+            if (events.size() <= 0) {
+                Intent newIntent = getIntent();
+                newIntent.putExtra("page", 1);
+                newIntent.putExtra("worldEvent", worldEvent);
+                finish();
+            }
             try {
                 for (int i = 0; i < events.size(); i++) {
                     // The event image is saved to the internal storage with a path and the
@@ -105,10 +163,7 @@ public class EventBrowserActivity extends AppCompatActivity {
                     Bitmap bm = APIUtils.getBitmap(events.get(i).getString("image"));
                     String name = events.get(i).getString("romaji_name");
                     String imagePath = APIUtils.saveToInternalStorage(getApplicationContext(), bm, "events", name);
-                    Log.d("insert event images", "name: " + name);
-                    Log.d("insert event images", "image: " + imagePath + "/" + name);
                     events.get(i).put("image", imagePath);
-                    Log.d("insert", "i: " + i + ". name: " + name);
                     helper.insertEvent(events.get(i));
                 }
             } catch (JSONException e) {
@@ -121,7 +176,7 @@ public class EventBrowserActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
             // The events are loaded from the database:
             EventsOpenHelper helper = new EventsOpenHelper(getApplicationContext());
-            events = helper.getAllEvents();
+            events = helper.getEvents(worldEvent, page, pageSize);
 
             // The events array is iterated, adding am ImageView for each event and the
             // respective intents.

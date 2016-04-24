@@ -142,9 +142,9 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
                 JSONObject object = new JSONObject();
                 for (int i = 0; i < columns.length; i++) {
                     if (i == columns.length - 2 || i == columns.length - 3)
-                        object.put("japanese_name", results.getInt(results.getColumnIndex(columns[i])));
+                        object.put(columns[i], results.getInt(results.getColumnIndex(columns[i])));
                     else
-                        object.put("japanese_name", results.getString(results.getColumnIndex(columns[i])));
+                        object.put(columns[i], results.getString(results.getColumnIndex(columns[i])));
                 }
                 event = object;
             }
@@ -157,34 +157,39 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
         return event;
     }
 
-    public ArrayList<JSONObject> getAllEvents() {
+    public ArrayList<JSONObject> getEvents(boolean worldEvent, int page, int pageSize) {
         // First, we get the database
         SQLiteDatabase db = getWritableDatabase();
+        String whereClause = null;
+        if (worldEvent) {
+            whereClause = "english_beginning IS NOT NULL AND english_beginning NOT LIKE \"\" AND " +
+                    "english_beginning NOT LIKE \"null\"";
+        }
 
         // The events are fetched:
         db.beginTransaction();
         Cursor results = db.query(
                 TABLE_NAME, // table name
                 columns,    // columns
-                null,       // where clause
+                whereClause,       // where clause
                 null,       // where arguments (if there are ?s in the clause)
                 null,       // group by clause
                 null,       // having clause
-                null        // order by clause
+                "beginning DESC"        // order by clause
         );
         db.setTransactionSuccessful();
         db.endTransaction();
 
+        int current = (page - 1) * pageSize;
+        int last = page * pageSize - 1;
         // Then the data is put into the JSONObject array...
         ArrayList<JSONObject> events = new ArrayList<>();
         try {
-            Log.d("select", "count: " + results.getCount());
             if (results.getCount() > 0) {
                 // ... starting from the first element in the cursor:
-                results.moveToFirst();
-                Log.d("select", "first event: " + results.getString(results.getColumnIndex(columns[1])));
+                results.moveToPosition(current);
                 // the cursor is iterated until all elements are read.
-                while (!results.isAfterLast()) {
+                while (!results.isAfterLast() && current <= last) {
                     JSONObject object = new JSONObject();
                     for (int i = 0; i < columns.length; i++) {
                         if (i == columns.length - 2 || i == columns.length - 3)
@@ -193,6 +198,7 @@ public class EventsOpenHelper extends SQLiteOpenHelper {
                             object.put(columns[i], results.getString(results.getColumnIndex(columns[i])));
                     }
                     events.add(object);
+                    current++;
                     results.moveToNext();
                 }
             }

@@ -44,4 +44,8 @@
     <string name="CheckingUpdates">Buscando actualizaciones...</string>
     <string name="DownloadSuccessful">Descarga de la actualización de sukutomo finalizada. Presiona en la notificación de la descarga para instalar la actualización.</string>
     <string name="ConnectionRetry">Por favor, comprueba la conexión y reinicia la app.</string>
+    <string name="previousPage">Anterior</string>
+    <string name="nextPage">Siguiente</string>
+    <string name="onlyWorldwide">Solo versión EN</string>
+    <string name="allEvents">Todos los eventos</string>
 </resources>

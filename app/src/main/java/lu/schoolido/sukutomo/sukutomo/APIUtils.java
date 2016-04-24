@@ -44,7 +44,7 @@ public class APIUtils {
      * @param baseURL  URL used to download the elements, without the page option.
      * @param property Property of the JSONObject we want to return. If this is null, the array will contain the entire object.
      *
-     * @return The total number of elements inside schoolido.lu database.
+     * @return The total number of elements returned from the API.
      */
     public static int iteratePages(ArrayList list, String baseURL, String property, int pageSize) {
         String data = "";
@@ -57,7 +57,7 @@ public class APIUtils {
             count = object.getInt("count");
             if (list != null) {
                 for (int i = 1; i <= Math.ceil(count / pageSize); i++) {
-                    data = Client.execute(new HttpGet(baseURL + "?page=" + i), responseHandler);
+                    data = Client.execute(new HttpGet(baseURL + "&page=" + i), responseHandler);
                     object = new JSONObject(data);
                     JSONArray array = object.getJSONArray("results");
                     for (int j = 0; j < array.length(); j++) {
@@ -72,6 +72,39 @@ public class APIUtils {
             e.printStackTrace();
         }
         return count;
+    }
+
+    /**
+     * @param list     List to which we wish to add the paged elements.
+     * @param baseURL  URL used to download the elements, without the page and page_size options.
+     * @param property Property of the JSONObject we want to return. If this is null, the array will contain the entire object.
+     * @param pageSize Page size
+     * @param page     Page
+     *
+     * @return Next page number
+     */
+    public static String getPage(ArrayList list, String baseURL, String property, int pageSize, int page) {
+        String data = "";
+        String next = "";
+        ResponseHandler<String> responseHandler = new BasicResponseHandler();
+        try {
+            HttpClient Client = new DefaultHttpClient();
+            data = Client.execute(new HttpGet(baseURL), responseHandler);
+            JSONObject object = new JSONObject(data);
+            next = object.getString("next");
+            data = Client.execute(new HttpGet(baseURL + "&page_size=" + pageSize + "&page=" + page), responseHandler);
+            object = new JSONObject(data);
+            JSONArray array = object.getJSONArray("results");
+            for (int j = 0; j < array.length(); j++) {
+                if (property != null)
+                    list.add(array.getJSONObject(j).getString(property));
+                else
+                    list.add(array.getJSONObject(j));
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return next;
     }
 
     /**
@@ -157,9 +190,6 @@ public class APIUtils {
             fos = new FileOutputStream(mypath);
 
             // Use the compress method on the BitMap object to write image to the OutputStream
-            Log.d("IMAGE", fos.toString());
-            Log.d("IMAGE", bitmapImage.toString());
-            Log.d("IMAGE", Bitmap.CompressFormat.PNG.toString());
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.close();
         } catch (Exception e) {
